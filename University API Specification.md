@@ -1,6 +1,7 @@
 # BYU University API Standard
 
-Version 1.0
+Version 1.1 
+(for version history [see](#history))
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -98,7 +99,7 @@ The metadata property contains data about the request for this resource includin
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [here](#post) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
-|
+
 
 Metadata related to [fieldsets](#fieldsets) and [contexts](#contexts) along with any custom metadata about the resource may also be included.
 
@@ -339,13 +340,16 @@ The metadata returned for a resource collection that supports paging would look 
 See [paging](#paging) for more information about implementing paging in an API. 
 
 #### 3.2.3 Values Array
+
 The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1](#3.1) including containing the `links` and `metadata` properties. 
 
 #### 3.2.4 Empty Collections
+
 If the collection returned is empty (e.g. no resources matched a filter) the collection metadata should still be returned. Paging data should still be valid - `page_start` should be `0`, `page_end` should also be `0` since no values were returned. The `values` array should be empty. 
 
 <a name=hateoas></a> 
 ## 4.0 HATEOAS Links
+
 Hypertext As The Engine Of Application State (HATEOAS) is one of the fundamental design considerations of a REST based API. HATEOAS uses hypertext links to provide the consumers of an API with information regarding the next allowable operations the consumer is allowed to perform. 
 
 ### 4.1 Links
@@ -862,7 +866,7 @@ There are times when it makes sense to query a top level resource by a value in 
 
 #### 7.4 Wildcards
 
-Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.  
+Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
  
  <a name=meta></a> 
 ## 8.0 Meta URL Namespaces and APIs
@@ -995,37 +999,40 @@ For example, the following response could be returned when there are multiple va
  For more information about handling errors see [Errors](#errors)
 
 <a name=authorization></a> 
+
 ## 11.0 Authorization
-Authorization for access to to UAPIs falls back to the authorization schemes that individual domains employ to protect their resources from unauthorized access. UAPI resources should gain their identity information about the client and end user making the request from the JSON Web Token (JWT) contained in the `x-jwt-assertion` HTTP header and should pass this header and value to any domain APIs the resource uses to process the request. The UAPI resource should also validate the JWT signature and expiration properties. 
 
-Authorization failures should be communicated via standard HTTP Status Codes, typically using the `403` status code. 
+Authorization for access to UAPI resources falls back to the authorization schemes of individual domains. The UAPI specification only defines what level of authorization is allowed and how denied authorization is communicated to the consumer. 
 
-It is highly recommended that data level authorization be handled at the field\_set level. 
+### 11.1 Field\_set Autorization 
 
-Basic unit of authorization is the field\_set? 
+Authorization in the UAPI is done at the field\_set / sub-resource level. Authorization at the property level is not allowed. Properties shoud be grouped into field\_sets that share common authorization business requirements along with matching the model of the resource as closely as possible. 
 
+#### 11.1.1 Data Classification 
+
+Authorizing by field\_set introduces the dependency that the data classification (see [data classifications](#data_classifications)) for the entire field\_set is the data classification for the most restricted property it contains. 
+
+### 11.2 Property Authorization
+
+Authorization of visibility of properties is controlled at the field\_set level. Access to a field\_set implies at least `read-only` access is allowed for all properties contained in that field\_set. A field\_set may contain a mix of `read-only` and `modifiable` properties. 
+
+sub-resources
+
+Authorization failures should be communicated via standard HTTP Status Codes, typically using the `403 Unauthorized` status code. The status code should be in the `validation_response` property of the `metadata` section of the response for the field\_set that failed the authorization check. If the requester is not authorized for the entire resource requested the status code should also be used as the status code for the entire request. See [Errors](#errors) for more information. 
 
 <a name=errors></a> 
 ## 12.0 Errors 
 
+validation_information
+validation_response
+
+multiple field_set request
+
+
 
 ------
 ------
 ------
-## Appendix A -  Domain APIs and the UAPI Standard
-### URLs
-#### Namespaces
-The namespace designated for Domain APIs is:
-
-```
-https://api.byu.edu/domains/{domain_name}
-```
-
-The *domain_name* portion of the Domain API namespace is determined by the domain team. For example, if a domain team had chosen the domain_name "identity," its namespace would be:
-
-```
-https://api.byu.edu/domains/identity
-```
 
 
 <a name=glossary></a> 
@@ -1047,3 +1054,9 @@ https://api.byu.edu/domains/identity
 |REST|[Representational State Transfer](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 |URL|[Uniform Resource Locator](https://tools.ietf.org/html/rfc1738)
 
+<a name=history></a>
+## Version History
+|Version|Date|Changes|
+|-----|-----|-----|
+|1.0||Original published standard|
+|1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|

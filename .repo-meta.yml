@@ -6,7 +6,7 @@ $schemaver: 2.1
 repo_url: https://github.com/byu-oit/UAPI-Specification  # optional
 software:
   - name: UAPI-Specification  # optional
-    deploy_to_cmdb: true # optional
+    deploy_to_cmdb: false # optional
     type: ''
     aliases:  # optional
     short_description: University API Specification Document and related resources # optional
@@ -23,7 +23,7 @@ software:
     links: # optional
       system_documentation_url: https://github.com/byu-oit/UAPI-Specification
       swagger_urls:
-    microservice: true # optional
+    microservice: false # optional
     technologies_used: # optional
     standard_change_template:
     stages:
