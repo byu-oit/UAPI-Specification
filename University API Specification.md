@@ -1,7 +1,6 @@
 # BYU University API Standard
 
 Version 1.1 
-(for version history [see](#history))
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -20,12 +19,12 @@ The BYU University API Standard is licensed under [The Apache License, Version 
 - [3.0 Resources](#30-resources)
     - [3.1 Resource Representation](#31-resource-representation)
     - [3.2 Representing a Single Resource](#32-representing-a-single-resource)
-        -[3.2.1 Links](#321-links)
-        -[3.2.2 Metadata](#322-metadata)
-        -[3.2.3 Properties](#323-properties)
-        -[3.2.4 Representing Sub-resources](#324-representing-sub-resources)
-        -[3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
-        -[3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
+        - [3.2.1 Links](#321-links)
+        - [3.2.2 Metadata](#322-metadata)
+        - [3.2.3 Properties](#323-properties)
+        - [3.2.4 Representing Sub-resources](#324-representing-sub-resources)
+        - [3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
+        - [3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
     - [3.3 Representing a Collection of Resources](#33-representing-a-collection-of-resources)
         - [3.3.1 Collection Links](#331-collection-links)
         - [3.3.2 Collection Metadata](#332-collection-metadata)
@@ -70,11 +69,8 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [11.4.2 Sub-resource Authorization Failure](#1142-sub-resource-authorization-failure)
             - [11.4.3 Partial Authorization Failure](#1143-partial-authorization-failure)
     - [12.0 Errors](#120-errors)
-        
-
-
-
-
+    - [Glossary](#glossary)
+    - [Version History](#version-history)   
 
 
 ## 1.0 Introduction
@@ -83,7 +79,7 @@ The University API (UAPI) Specification is an effort intended to bring standardi
 
 ### 1.1 University APIs vs Domain APIs
 
-The University has designated a number of common [resources](#glossary) as part of the UAPI implementation such as students, employees, and persons. Other resources represent  specific constructs useful within a specific [business domain](#glossary). It is recommended where possible to apply the UAPI standard to domain specific APIs. Detailed information for applying the UAPI standard to domain APIs can be found [here](#x.0 Domain APIs and the UAPI Standard)
+The University has designated a number of common [resources](#glossary) as part of the UAPI implementation such as students, employees, and persons. Other resources represent  specific constructs useful within a specific [business domain](#glossary). It is recommended where possible to apply the UAPI standard to domain specific APIs. Detailed information for applying the UAPI standard to domain APIs can be found [here](#?????)
 
 ## 2.0 URLs
 
@@ -127,7 +123,7 @@ Sub-resources can also have identifiers. The URL for the work address of a perso
 
 #### 2.1.4 Composite Resource Identifier
 
-Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a [composite identifier](#glossary). A composite identifier uniquely identifies a resource by using multiple pieces of information. The UAPI specification states that values in a composite identifier be separated by a comma. 
+Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a *composite identifier*. A composite identifier uniquely identifies a resource by using multiple pieces of information. The UAPI specification states that values in a composite identifier be separated by a comma. 
 
 Composite identifiers should conform to the pattern:
 
@@ -166,11 +162,11 @@ The metadata property contains data about the request for this resource includin
 |Property|Required|Description
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
-|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [here](#100-http-post-put-delete) for more information. 
+|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 
 
-Metadata related to [field\_sets](#fieldsets) and [contexts](#contexts) along with any custom metadata about the resource may also be included.
+Metadata related to [field\_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource may also be included.
 
 The following metadata object would indicate a successful request for this resource: 
 
@@ -196,6 +192,7 @@ The following metadata would indicate an error occurred when processing the requ
   ]
  }
 ```
+See [12.0 Errors](#120-errors) for more information on error handling.
 
 #### 3.2.3 Properties
 
@@ -222,7 +219,7 @@ read-only|No|There are either business rules or authorization considerations tha
 |modifiable|Yes|The property may be modified by the consumer.
 |system|No|The value was assigned by the system. A date-time field that tracks the last time the resource was updated is a good example of a system data value.
 |derived|No|The property was derived by a "calculation" on other properties. An example might be GPA.
-|unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [Authorization](#authorization) for more information. 
+|unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [11.0 Authorization](#110-authorization) for more information. 
 |related|No|The responsibility for manipulating this property doesn't belong to this API. The business logic to modify the property exists in the "related_resource".
 
 A property would look something like this:  
@@ -365,17 +362,17 @@ A single sub-resource representation would look like:
 
 ### 3.3 Representing a Collection of Resources
 
-If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [filters](#filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1](#3.1) are returned in a JSON array named `values`. 
+If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [7.0 Filters](#70-filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
 
 #### 3.3.1 Collection Links
 
-The links object for a collection will contain [HATEOAS](#hateoas) links related to processing the collection. They may include links for paging, etc.  
+The links object for a collection will contain [HATEOAS](#40-hateoas) links related to processing the collection. They may include links for paging, etc.  
 
 #### 3.3.2 Collection Metadata
 
 The metadata associated with collections includes data about the collection that has been returned. 
 
-Metadata related to [field_sets](#field_sets) and [contexts](#contexts) along with any custom metadata about the resource collection may also be included. 
+Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource collection may also be included. 
 
 |Property|Required|Description
 |-----|-----|-----
@@ -410,7 +407,7 @@ See [paging](#paging) for more information about implementing paging in an API.
 
 #### 3.3.3 Values Array
 
-The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1](#3.1) including containing the `links` and `metadata` properties. 
+The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1 Resource Representation](#31-resource-representation) including containing the `links` and `metadata` properties. 
 
 #### 3.3.4 Empty Collections
 
@@ -820,7 +817,7 @@ Contexts are an optional part of the UAPI specification that allow APIs with a l
 
 #### 5.2.1 Context Metadata
 
-If a top-level resource supports contexts it should add the `contexts_avaiable` metadata to the field\_set metadata. The value of this property is a JSON object consisting of a JSON array for each of the available contexts. The JSON array will contain the field\_sets included in that context. 
+If a top-level resource supports contexts it should add the `contexts_available` metadata to the field\_set metadata. The value of this property is a JSON object consisting of a JSON array for each of the available contexts. The JSON array will contain the field\_sets included in that context. 
 
 An example of the context metadata is as follows: 
 
@@ -1065,7 +1062,7 @@ For example, the following response could be returned when there are multiple va
     },
 ```
 
- For more information about handling errors see [Errors](#errors)
+ For more information about handling errors see [12.0 Errors](#120-errors)
 
 
 ## 11.0 Authorization
@@ -1078,7 +1075,7 @@ Authorization in the UAPI is done at the field\_set / sub-resource level. Author
 
 #### 11.1.1 Data Classification 
 
-Authorizing by field\_set introduces the dependency that the data classification (see [data classifications](#data_classifications)) for the entire field\_set is the data classification for the most restricted property it contains. 
+Authorizing by field\_set introduces the dependency that the data classification (see [data classifications](#?????)) for the entire field\_set is the data classification for the most restricted property it contains. 
 
 ### 11.2 Top Level Resource Authorization
 
@@ -1103,7 +1100,7 @@ If the consumer requests direct access (via the URL) to a sub-resource that is n
 #### 11.4.3 Partial Authorization Failure  
 
 If the consumer requests access to multiple sub-resources via `field_sets` or `context` query parameters the response should be as follows:
-- If the consumer does not have access to the top level resource the response should be as outlined in 11.4.1.
+- If the consumer does not have access to the top level resource the response should be as outlined in [11.4.1](#1141-top-level-resource-authorization-failure).
 - If the consumer does have access to the top level resource the response code for the request should reflect the status of access to the top level resource (e.g. `200` if the resource is accessible, `404` if not found, etc.). Each field\_set property in the response body should reflect the status of access to that field\_set by setting the `validation_response` property of the `metadata` section of the field\_set. Requested field\_sets should always be included in the response body of the request even if they are unauthorized. Unauthorized field\_sets will only have their `metadata` properties set in the response body. 
 
 ## 12.0 Errors 
@@ -1121,7 +1118,6 @@ Each resource and collection of resources in the JSON response body has a `metad
 ------
 
 
-<a name=glossary></a> 
 ## Glossary
 
 |Term|Definition
@@ -1140,7 +1136,6 @@ Each resource and collection of resources in the JSON response body has a `metad
 |REST|[Representational State Transfer](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 |URL|[Uniform Resource Locator](https://tools.ietf.org/html/rfc1738)
 
-<a name=history></a>
 ## Version History
 |Version|Date|Changes|
 |-----|-----|-----|
