@@ -12,8 +12,8 @@ The BYU University API Standard is licensed under [The Apache License, Version 
     - [1.1 University APIs vs Domain APIs](#11-university-apis-vs-domain-apis)
 - [2.0 URLs](#20-urls)
     - [2.1 URL Design](#21-url-design)
-        - [2.1.1 Top Level Resources](#211-top-level-resources)
-        - [2.1.2 Sub-resources](#212-sub-resources)
+        - [2.1.1 Top Level Resource](#211-top-level-resource)
+        - [2.1.2 Sub-resource](#212-sub-resource)
         - [2.1.3 Resource (and Sub-resource) Identifier](#213-resource-and-sub-resource-identifier)
         - [2.1.4 Composite Resource Identifier](#214-composite-resource-identifier)
 - [3.0 Resources](#30-resources)
@@ -857,6 +857,8 @@ To implement collection paging a resource must include paging specific `metadata
 
 ### 6.1 Paging Metadata
 
+**Needs to be reviewed**
+
 The following `metadata` properties are required if collection paging is supported by the resource: 
 
 |Property|Description
@@ -934,9 +936,10 @@ There are times when it makes sense to query a top level resource by a value in 
 
 Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
 
-
  ## 8.0 Meta URL Namespaces and APIs
 
+
+**Under construction** 
 Resources often have related datasets that are necessary for a client to properly use the API of that resource. Those datasets may be such things as lists of accepted state and country names and their abbreviations, possible values for etc. The `meta` URL namespace specification help to clarify where these types of data sets should be located. APIs should be provided to access these datasets.
 
 Each meta dataset should have a corresponding API with the following characteristics:
@@ -1069,7 +1072,7 @@ For example, the following response could be returned when there are multiple va
 
 Authorization for access to UAPI resources falls back to the authorization schemes of individual domains. The UAPI specification only defines what level of authorization is allowed and how denied authorization is communicated to the consumer. 
 
-### 11.1 Field\_set Autorization 
+### 11.1 Field\_set Authorization 
 
 Authorization in the UAPI is done at the field\_set / sub-resource level. Authorization at the property level is not allowed. Properties shoud be grouped into field\_sets that share common authorization business requirements along with matching the model of the resource as closely as possible. 
 
