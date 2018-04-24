@@ -1,7 +1,7 @@
 # BYU University API Standard
 
-Specification Version 1.1 
-Document Version 1.0
+Specification Version 1.1   
+Document Version 1.0 DRAFT
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -59,7 +59,11 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [8.2.1 Examples of Domain Meta Data Sets](#821-examples-of-domain-meta-data-sets)
         - [8.3 Authorization](#83-authorization)
         - [8.4 Errors](#84-errors)
-    - [9.0 Binary Data](#90-binary-data)
+    - [9.0 Files](#90-files)
+        - [9.1 File Downloads](#91-file-downloads)
+            - [9.1.1 File Metadata](#911-file-metadata)
+        - [9.2 File Uploads](#92-file-uploads)
+            - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
     - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
         - [10.1 PUT](#101-put)
         - [10.2 POST](#102-post)
@@ -874,7 +878,7 @@ To implement collection paging a resource must include paging specific `metadata
 
 ### 6.1 Paging Metadata
 
-**Needs to be reviewed**
+**Under Review**
 
 The following `metadata` properties are required if collection paging is supported by the resource: 
 
@@ -1044,9 +1048,28 @@ Meta Data Sets are considered public. No authorization rules other than any API 
 
  Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. Extended error processing as outlined in [12.0 Errors](#120-errors) is not required.  
 
-## 9.0 Binary Data 
+## 9.0 Files 
 
-TBD
+**Under Review**
+
+Files includes images, PDFs, text files, JSON files, etc. Files appear as sub-resources in the URL space of the UAPI but are treated differently. 
+
+### 9.1 File Downloads
+
+Supporting downloads of these files via the UAPI is done through standard REST practices. All files should be directly accessible in a URL space that is part of the UAPI URL space and protected by appropriate measures including requiring an HTTP `Authorization` header. Requests to the URL for a file with no HTTP `Accept` header or the mime-type of the file should return the file in standard HTTP fashion. 
+
+#### 9.1.1 File Metadata
+
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/json+extended` will return data associated with the file in standard UAPI format. The mime-type `application\json+extended` is used to avoid the instance where the file itself is a JSON file. 
+
+### 9.2 File Uploads
+
+Uploading of files is left to the discretion of the API designer but should follow standard industry practices. 
+
+#### 9.2.1 Updating File Metadata
+
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/json+extended`. 
+
 
 ## 10.0 HTTP POST, PUT, DELETE
 
