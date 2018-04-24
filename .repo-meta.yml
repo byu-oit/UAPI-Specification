@@ -7,45 +7,13 @@ repo_url: https://github.com/byu-oit/UAPI-Specification  # optional
 software:
   - name: UAPI-Specification  # optional
     deploy_to_cmdb: false # optional
-    type: ''
-    aliases:  # optional
+    type: 'specification'
     short_description: University API Specification Document and related resources # optional
     assignment_group: gro:AD-Software Architecture
-    notes: # optional
     maintained_by: # optional
       - brentmoore
-    data_sensitivity: internal
-    developed_by_byu: true  # optional
-    ddd: # optional
-      business_domain:
-      ubiquitous_language_url:
-      context_map_url:
-    links: # optional
-      system_documentation_url: https://github.com/byu-oit/UAPI-Specification
-      swagger_urls:
-    microservice: false # optional
-    technologies_used: # optional
+    data_sensitivity: public
     standard_change_template:
     stages:
       development:
-        urls:  # optional
-          product_page:
-          physical_url:
-          virtual_url:
-        hosting_location: ''
-        aws_account:  # optional
-        relationships: # optional
-          depends_on:  # optional
-            db_read_write:
-            db_read_only:
-            software:
-          supports: # optional
-            software:
-            service:
-          reverse_proxy: # optional
-          runs_on: # optional
-            server_cluster:
-            virtual_server:
-            rack_server:
-            blade_server:
-    data-sensitivity: ''
+        hosting_location: 'none'
