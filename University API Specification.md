@@ -1,7 +1,7 @@
 # BYU University API Standard
 
-Version 1.1 
-(for version history [see](#history))
+Specification Version 1.1   
+Document Version 1.0 DRAFT
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -13,19 +13,19 @@ The BYU University API Standard is licensed under [The Apache License, Version 
     - [1.1 University APIs vs Domain APIs](#11-university-apis-vs-domain-apis)
 - [2.0 URLs](#20-urls)
     - [2.1 URL Design](#21-url-design)
-        - [2.1.1 Top Level Resources](#211-top-level-resources)
-        - [2.1.2 Sub-resources](#212-sub-resources)
+        - [2.1.1 Top Level Resource](#211-top-level-resource)
+        - [2.1.2 Sub-resource](#212-sub-resource)
         - [2.1.3 Resource (and Sub-resource) Identifier](#213-resource-and-sub-resource-identifier)
         - [2.1.4 Composite Resource Identifier](#214-composite-resource-identifier)
 - [3.0 Resources](#30-resources)
     - [3.1 Resource Representation](#31-resource-representation)
     - [3.2 Representing a Single Resource](#32-representing-a-single-resource)
-        -[3.2.1 Links](#321-links)
-        -[3.2.2 Metadata](#322-metadata)
-        -[3.2.3 Properties](#323-properties)
-        -[3.2.4 Representing Sub-resources](#324-representing-sub-resources)
-        -[3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
-        -[3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
+        - [3.2.1 Links](#321-links)
+        - [3.2.2 Metadata](#322-metadata)
+        - [3.2.3 Properties](#323-properties)
+        - [3.2.4 Representing Sub-resources](#324-representing-sub-resources)
+        - [3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
+        - [3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
     - [3.3 Representing a Collection of Resources](#33-representing-a-collection-of-resources)
         - [3.3.1 Collection Links](#331-collection-links)
         - [3.3.2 Collection Metadata](#332-collection-metadata)
@@ -53,8 +53,17 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [7.2 Filtering Sub-resources](#72-filtering-sub-resources)
         - [7.3 Dot Notation (Filtering With Sub-resources)](#73-dot-notation-filtering-with-sub-resources)
         - [7.4 Wildcards](#74-wildcards)
-    - [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis)
-    - [9.0 Binary Data](#90-binary-data)
+    - [8.0 Meta Data Sets and APIs](#80-meta-data-sets-and-apis)
+        - [8.1 Meta Data Set Rules](#81-meta-data-set-rules)
+        - [8.2 Domain Meta Data Sets](#82-domain-meta-data-sets)
+            - [8.2.1 Examples of Domain Meta Data Sets](#821-examples-of-domain-meta-data-sets)
+        - [8.3 Authorization](#83-authorization)
+        - [8.4 Errors](#84-errors)
+    - [9.0 Files](#90-files)
+        - [9.1 File Downloads](#91-file-downloads)
+            - [9.1.1 File Metadata](#911-file-metadata)
+        - [9.2 File Uploads](#92-file-uploads)
+            - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
     - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
         - [10.1 PUT](#101-put)
         - [10.2 POST](#102-post)
@@ -70,20 +79,25 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [11.4.2 Sub-resource Authorization Failure](#1142-sub-resource-authorization-failure)
             - [11.4.3 Partial Authorization Failure](#1143-partial-authorization-failure)
     - [12.0 Errors](#120-errors)
-        
-
-
-
-
+        - [12.1 HTTP Status Codes](#121-http-status-codes)
+        - [12.2 Error Response Format](#122-error-response-format)
+        - [12.2.1 validation\_response](#1221-validation_response)
+        - [12.2.2 validation\_information](#1222-validation_information)
+        - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
+        - [12.3.1 Single Top Level Resoure Errors](#1231-single-top-level-resoure-errors)
+        - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
+        -[12.4 Sub-resource Errors](#124-sub-resource-errors)
+        -[12.5 Partial Error Response](#125-partial-error-response)
+    - [Version History](#version-history)   
 
 
 ## 1.0 Introduction
 
-The University API (UAPI) Specification is an effort intended to bring standardization to consumers and producers of [API](#glossary)s. It presents a standard for URL design, request and response format, and HTTP methods and return codes. The UAPI standard is required for any API designated as part of the University API and recommended for other APIs whenever feasible. 
+The University API (UAPI) Specification is an effort intended to bring standardization to consumers and producers of APIs. It presents a standard for URL design, request and response format, and HTTP methods and return codes. The UAPI standard is required for any API designated as part of the University API and recommended for other APIs whenever feasible. 
 
 ### 1.1 University APIs vs Domain APIs
 
-The University has designated a number of common [resources](#glossary) as part of the UAPI implementation such as students, employees, and persons. Other resources represent  specific constructs useful within a specific [business domain](#glossary). It is recommended where possible to apply the UAPI standard to domain specific APIs. Detailed information for applying the UAPI standard to domain APIs can be found [here](#x.0 Domain APIs and the UAPI Standard)
+The University has designated a number of common resources as part of the UAPI implementation such as students, employees, and persons. Other resources represent  specific constructs useful within a specific business domain. It is recommended where possible to apply the UAPI standard to domain specific APIs. Detailed information for applying the UAPI standard to domain APIs is provided in a separate document. 
 
 ## 2.0 URLs
 
@@ -127,7 +141,7 @@ Sub-resources can also have identifiers. The URL for the work address of a perso
 
 #### 2.1.4 Composite Resource Identifier
 
-Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a [composite identifier](#glossary). A composite identifier uniquely identifies a resource by using multiple pieces of information. The UAPI specification states that values in a composite identifier be separated by a comma. 
+Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a *composite identifier*. A composite identifier uniquely identifies a resource by using multiple pieces of information. The UAPI specification states that values in a composite identifier be separated by a comma. 
 
 Composite identifiers should conform to the pattern:
 
@@ -143,7 +157,7 @@ Resources have properties associated with them. Some properties are simple name 
 
 ### 3.1 Resource Representation
 
-When a consumer of an API interacts with a resource the representation of the properties of that resource are dependent upon the [mime-type](#glossary) used. All text based resources will be represented as [JSON](#glossary) using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP Accept header should be used to indicate to the API which representation(s) the consumer is capable of processing and the HTTP Content-Type header indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
+When a consumer of an API interacts with a resource the representation of the properties of that resource are dependent upon the mime-type used. All text based resources will be represented as JSON using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP Accept header should be used to indicate to the API which representation(s) the consumer is capable of processing and the HTTP Content-Type header indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
 
 ### 3.2 Representing a Single Resource
 
@@ -166,15 +180,15 @@ The metadata property contains data about the request for this resource includin
 |Property|Required|Description
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
-|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [here](#100-http-post-put-delete) for more information. 
+|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 
 
-Metadata related to [field\_sets](#fieldsets) and [contexts](#contexts) along with any custom metadata about the resource may also be included.
+Metadata related to [field\_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource may also be included.
 
 The following metadata object would indicate a successful request for this resource: 
 
-```
+```json
     "metadata": {
       "validation_response": {
         "code": 200,
@@ -185,7 +199,7 @@ The following metadata object would indicate a successful request for this resou
 
 The following metadata would indicate an error occurred when processing the request:
 
-```
+```json
 "metadata": {
   "validation_response": {
     "code": 403,
@@ -196,6 +210,7 @@ The following metadata would indicate an error occurred when processing the requ
   ]
  }
 ```
+See [12.0 Errors](#120-errors) for more information on error handling.
 
 #### 3.2.3 Properties
 
@@ -208,7 +223,7 @@ value|Required if the api_type is not a value communicating an error.|Contains t
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms.
 |display_label|No|Provides a suggested string to use when creating a label for this property in the user interface.
-|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/year_terms"` may return a set of the valid year terms. See [Meta](#meta) for more information. 
+|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
 |long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description.
 |related_resource|Required if the api_type property is `related`.|If the api_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
@@ -222,12 +237,12 @@ read-only|No|There are either business rules or authorization considerations tha
 |modifiable|Yes|The property may be modified by the consumer.
 |system|No|The value was assigned by the system. A date-time field that tracks the last time the resource was updated is a good example of a system data value.
 |derived|No|The property was derived by a "calculation" on other properties. An example might be GPA.
-|unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [Authorization](#authorization) for more information. 
+|unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [11.0 Authorization](#110-authorization) for more information. 
 |related|No|The responsibility for manipulating this property doesn't belong to this API. The business logic to modify the property exists in the "related_resource".
 
 A property would look something like this:  
 
-```
+```json
 "byu_id": {
   "api_type": "system",
   "display_label": "BYU ID",
@@ -244,7 +259,7 @@ Single value sub-resources (i.e. those retrieved by using an identifier in the U
 
 A single top level resource representation would look like:
 
-```
+```json
 { 
     "basic": {
         "links": {
@@ -310,7 +325,7 @@ A single top level resource representation would look like:
 
 A single sub-resource representation would look like:
 
-```
+```json
 {
     "links": {
         "group_memberships__info": {
@@ -365,17 +380,17 @@ A single sub-resource representation would look like:
 
 ### 3.3 Representing a Collection of Resources
 
-If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [filters](#filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1](#3.1) are returned in a JSON array named `values`. 
+If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [7.0 Filters](#70-filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
 
 #### 3.3.1 Collection Links
 
-The links object for a collection will contain [HATEOAS](#hateoas) links related to processing the collection. They may include links for paging, etc.  
+The links object for a collection will contain [HATEOAS](#40-hateoas) links related to processing the collection. They may include links for paging, etc.  
 
 #### 3.3.2 Collection Metadata
 
 The metadata associated with collections includes data about the collection that has been returned. 
 
-Metadata related to [field_sets](#field_sets) and [contexts](#contexts) along with any custom metadata about the resource collection may also be included. 
+Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource collection may also be included. 
 
 |Property|Required|Description
 |-----|-----|-----
@@ -391,7 +406,7 @@ Metadata related to [field_sets](#field_sets) and [contexts](#contexts) along wi
 
 The metadata returned for a resource collection that supports paging would look like:
 
-```
+```json
 "metadata": {
   "validation_response": {
     "code": 200,
@@ -410,7 +425,7 @@ See [paging](#paging) for more information about implementing paging in an API.
 
 #### 3.3.3 Values Array
 
-The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1](#3.1) including containing the `links` and `metadata` properties. 
+The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1 Resource Representation](#31-resource-representation) including containing the `links` and `metadata` properties. 
 
 #### 3.3.4 Empty Collections
 
@@ -428,7 +443,7 @@ HATEOAS links are intended to convey to the consumer the next possible actions t
 
 The UAPI standard varies from traditional HATEOAS implementations in order to make things easier for consumers to utilize the `links` property. HATEOAS links in the UAPI have the following format:
 
-```
+```json
  "persons__info": {
                 "rel": "self",
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
@@ -450,6 +465,7 @@ The UAPI specification requires a `self` link be included. This link should be t
 
 An example links object for the person resource at `https://api.byu.edu/byuapi/persons/123456789` would look something like:
 
+```json
           "links": {
             "basic__info": {
                 "rel": "self",
@@ -466,7 +482,7 @@ An example links object for the person resource at `https://api.byu.edu/byuapi/p
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
                 "method": "DELETE"
             }
-
+```
 
 ## 5.0 Sub-resources, Field\_sets, and Contexts
 
@@ -488,7 +504,7 @@ The API should document the field\_sets supported in the metadata of the top lev
  
  Example `metadata`  from a top-level resource that supports field\_sets looks like:
  
-```
+```json
     "metadata": {
         "field_sets_returned": [
             "basic"
@@ -521,7 +537,7 @@ Sub-resources requested using the `field\_set` query string parameter are repres
 
 A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addresses` would look like: 
 
-```
+```json
 {
     "basic": {
         "links": {
@@ -820,10 +836,11 @@ Contexts are an optional part of the UAPI specification that allow APIs with a l
 
 #### 5.2.1 Context Metadata
 
-If a top-level resource supports contexts it should add the `contexts_avaiable` metadata to the field\_set metadata. The value of this property is a JSON object consisting of a JSON array for each of the available contexts. The JSON array will contain the field\_sets included in that context. 
+If a top-level resource supports contexts it should add the `contexts_available` metadata to the field\_set metadata. The value of this property is a JSON object consisting of a JSON array for each of the available contexts. The JSON array will contain the field\_sets included in that context. 
 
 An example of the context metadata is as follows: 
 
+```json
         "contexts_available": {
             "all": [
                 "basic",
@@ -843,6 +860,7 @@ An example of the context metadata is as follows:
                 "basic",
                 "languages"
             ]
+```
 
 #### 5.2.2 Context Query String Parameter
 
@@ -853,6 +871,8 @@ To specify a context or contexts to be returned the `contexts` query string para
 Responses generated by using the `contexts` query string parameter are represented in exactly the same way as if the consumer had requested the included field\_sets using the `field_sets` query string parameter. If the consumer specifies both the `contexts` and `field_sets` query string parameters the result should be a union of the field\_sets requests. A field\_set will only be included once in the result. 
 
 ## 6.0 Collection Paging
+
+**Under Review**
 
 Some resources and sub-resources represent a large number of instances. Returning a large number of entries in a collection can be both resource intensive and time consuming. APIs that support large number of instances should implement collection paging in order to provide the consumer a way to move through the collection in a reasonable way. It may be possible that the underlying data has changed between invocations so instances may be repeated or skipped. 
 
@@ -894,7 +914,7 @@ Additional `links` are included that provide the link to use in order to move ba
 
 An example of the collection paging links for the persons resource would be as follows:
 
-```
+```json
         "persons__first": {
             "rel": "persons__first",
             "href": "https://api.byu.edu/byuapi/persons/?page_start=1,page_size=100",
@@ -937,58 +957,119 @@ There are times when it makes sense to query a top level resource by a value in 
 
 Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
 
+ ## 8.0 Meta Data Sets and APIs
 
- ## 8.0 Meta URL Namespaces and APIs
+**Under Review** 
 
-Resources often have related datasets that are necessary for a client to properly use the API of that resource. Those datasets may be such things as lists of accepted state and country names and their abbreviations, possible values for etc. The `meta` URL namespace specification help to clarify where these types of data sets should be located. APIs should be provided to access these datasets.
+Resources often have related data sets that are necessary for a client to properly use the API. Those data sets may be such things as lists of accepted state and country names and their abbreviations, possible values for properties, etc. The `meta` URL namespace specification indicates where these types of data sets should be located and how APIs should be provided to access these data sets.
 
-Each meta dataset should have a corresponding API with the following characteristics:
+Some data sets are simply sets of acceptable values a property can contain. Others are much more complex and contain numerous properties related to each individual value.
 
-- The API should be located under `https://api.byu.edu/byuapi/meta/<top-level-resource>`.   
-- Meta APIs should provide HTTP GET support only. Updating of the values in the dataset represented by the meta API is left to the domain APIs supporting the dataset.   
+### 8.1 Meta Data Set Rules
+
+Each data set should have a corresponding API with the following characteristics:
+
+- The API should be located under `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta-api-name>`.   
+
+- Meta APIs should provide HTTP GET support only. Updating of the values in the data set represented by the meta API is left to the domain APIs supporting the data set.   
+
 - Meta API responses do not include `metadata` or `links` sections like regular UAPI top level resource responses. 
+
 - Meta APIs provide two variations of the GET verb support: 
-    -  An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api>/<key>` will return an individual entry in the dataset as a JSON set of properties. For example, an HTTP GET on the `state_code` dataset addressed at the URL `https://api.byu.edu/byuapi/meta/student/state_code/UT` would return the following:  
+    -  An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api-name>/<key>` will return an individual entry in the data set as a JSON set of properties. 
+ 
+    - An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api>` will return a collection of the individual values of the data set represented in a JSON array. Meta APIs do not support paging as defined in [6.0 Collection Paging](#60-collection-paging). 
+
+### 8.2 Domain Meta Data Sets
+
+Data sets that are referenced using the `domain` property of the properties metadata ([3.2.3 Properties](#323-properties)) should exhibit the following behavior in addition to the rules in [8.1](#81-meta-data-set-rules):
+
+- When the mime-type requested is `application-json` the following structure should be returned for each entry in the data set: 
+```json
+    {
+        "value":"<value of this entry in the data set>",
+        "description":"<short description of this entry in the data set>",
+        "long-description": "<long description of this entry in the data set>"
+    }
+```
+- All three properties are required and should be not be empty. 
+
+- Values for `description` and `long-description` can be derived from other properties of the data set to provide a standard way to represent each entry in the data set. 
+
+- If the mime-type is `application/json-extended` and the data set has additional properties a response in the standard UAPI format may be returned containing all properties of the data set. 
+
+#### 8.2.1 Examples of Domain Meta Data Sets
+   
+An HTTP GET with the `application-json` mime-type on the `state_code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code/UT` would return the following:  
     
-    ```
+    ```json
     {
         "value": "UT" ,
-        "description": "Utah"
+        "description": "Utah",
+        "long-description" : "Utah"
     }
     ```  
     
-    - An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api>` will return a collection of the individual values defined in the previous section represented in a JSON array, e.g. an HTTP GET on `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:  
+An HTTP GET with the `application-json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:  
     
-    ```
+    ```json
     {
     "values": [
         {
             "value": "ID" ,
-            "description": "Idaho"
+            "description": "Idaho",
+            "long-description":"Idaho"
         },
         {
             "value": "NV" ,
-            "description": "Nevada"
+            "description": "Nevada",
+            "long-description":"Nevada"
         },
         {
             "value": "UT" ,
-            "description": "Utah"
+            "description": "Utah",
+            "long-description":"Utah"
         },
         {
             "value": "VT" ,
-            "description": "Vermont"
+            "description": "Vermont",
+            "long-description":"Vermont"
         },
         ...
     ]
     }
     ```  
     
-    **Note:** Meta APIs do not support paging as defined in [6.0 Collection Paging](#60-collection-paging)
+### 8.3 Authorization
 
+Meta Data Sets are considered public. No authorization rules other than any API Manager subscription requirement should be enforced on these APIs. 
 
-## 9.0 Binary Data 
+ ### 8.3 Errors
 
-TBD
+ Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. Extended error processing as outlined in [12.0 Errors](#120-errors) is not required.  
+
+## 9.0 Files 
+
+**Under Review**
+
+Files includes images, PDFs, text files, JSON files, etc. Files appear as sub-resources in the URL space of the UAPI but are treated differently. 
+
+### 9.1 File Downloads
+
+Supporting downloads of these files via the UAPI is done through standard REST practices. All files should be directly accessible in a URL space that is part of the UAPI URL space and protected by appropriate measures including requiring an HTTP `Authorization` header. Requests to the URL for a file with no HTTP `Accept` header or the mime-type of the file should return the file in standard HTTP fashion. 
+
+#### 9.1.1 File Metadata
+
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/json+extended` will return data associated with the file in standard UAPI format. The mime-type `application\json+extended` is used to avoid the instance where the file itself is a JSON file. 
+
+### 9.2 File Uploads
+
+Uploading of files is left to the discretion of the API designer but should follow standard industry practices. 
+
+#### 9.2.1 Updating File Metadata
+
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/json+extended`. 
+
 
 ## 10.0 HTTP POST, PUT, DELETE
 
@@ -1000,7 +1081,7 @@ The HTTP PUT verb is used to modify a resource. PUTs against the top level resou
 
 For example, to update the `basic` field\_set of the persons resource a PUT is sent to the URL `https://api.byu.edu/byuapi/persons/123456789` with the request body as follows: 
 
-```
+```json
 {
     "first_name": "Abernathy",
     "high_school_code": "050714",
@@ -1019,7 +1100,8 @@ For example, to update the `basic` field\_set of the persons resource a PUT is s
 
 To update the work mailing address of a person resource a PUT is sent to the URL `https://api.byu.edu/byuapi/persons/123456789/addresses/WRK` with the request body as follows:
 
-```{
+```json
+{
     "address_line_1": "1234 Milky Way",
     "address_line_2": "Highland, UT 84003",
     "address_line_3": " ",
@@ -1051,7 +1133,7 @@ If errors in the request prevent the POST or PUT from happening the appropriate 
 
 For example, the following response could be returned when there are multiple validation errors.
 
-```
+```json
 "metadata": {
     "validation_response": {
             "code": 400,
@@ -1065,20 +1147,20 @@ For example, the following response could be returned when there are multiple va
     },
 ```
 
- For more information about handling errors see [Errors](#errors)
+ For more information about handling errors see [12.0 Errors](#120-errors)
 
 
 ## 11.0 Authorization
 
 Authorization for access to UAPI resources falls back to the authorization schemes of individual domains. The UAPI specification only defines what level of authorization is allowed and how denied authorization is communicated to the consumer. 
 
-### 11.1 Field\_set Autorization 
+### 11.1 Field\_set Authorization 
 
 Authorization in the UAPI is done at the field\_set / sub-resource level. Authorization at the property level is not allowed. Properties shoud be grouped into field\_sets that share common authorization business requirements along with matching the model of the resource as closely as possible. 
 
 #### 11.1.1 Data Classification 
 
-Authorizing by field\_set introduces the dependency that the data classification (see [data classifications](#data_classifications)) for the entire field\_set is the data classification for the most restricted property it contains. 
+Authorizing by field\_set introduces the dependency that the data classification (see [data classification definitions](https://infohub.byu.edu/resources/classification/summary)) for the entire field\_set is the data classification for the most restricted property it contains. 
 
 ### 11.2 Top Level Resource Authorization
 
@@ -1103,44 +1185,73 @@ If the consumer requests direct access (via the URL) to a sub-resource that is n
 #### 11.4.3 Partial Authorization Failure  
 
 If the consumer requests access to multiple sub-resources via `field_sets` or `context` query parameters the response should be as follows:
-- If the consumer does not have access to the top level resource the response should be as outlined in 11.4.1.
+- If the consumer does not have access to the top level resource the response should be as outlined in [11.4.1](#1141-top-level-resource-authorization-failure).
 - If the consumer does have access to the top level resource the response code for the request should reflect the status of access to the top level resource (e.g. `200` if the resource is accessible, `404` if not found, etc.). Each field\_set property in the response body should reflect the status of access to that field\_set by setting the `validation_response` property of the `metadata` section of the field\_set. Requested field\_sets should always be included in the response body of the request even if they are unauthorized. Unauthorized field\_sets will only have their `metadata` properties set in the response body. 
 
 ## 12.0 Errors 
 
 Each resource and collection of resources in the JSON response body has a `metadata` property. The sub-properties `validation_response` and `validation_information` are intended to convey to the consumer information about the state of the resource or resource collection. 
 
-### 12.1 validation_response
+### 12.1 HTTP Status Codes
 
+Standard [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) should be used for the overall status of the request and for each sub-resource request included in the request. 
 
-### 12.2 validation_information
+### 12.2 Error Response Format
+ 
+The response body should be formatted in standard UAPI format with only the `metadata` section being required. The `metadata` section should include the `validation_response` with the HTTP status code and description. The optional `validation_information` metadata property can also be included to provide additional information to the consumer about the reasons for the request failure. 
 
-### 12.3 HTTP Status Code
+#### 12.2.1 validation_response
 
+The `validation_response` metadata property should contain the HTTP status code and description for the operation requested on the resource in the following format: 
+
+```json
+    "validation_response": {
+        "code": 200,
+        "message": "Success"
+    }
+```
+
+#### 12.2.2 validation_information
+
+The optional `validation_information` metadata property can be used to communicate multiple status messages about the operation requested on the resource. It is a JSON array in the following format:
+
+```json
+    "validation_information": [
+         "Invalid home_country_code",
+         "Invalid home_state_code",
+         "first_name required"
+         ]
+```
+
+### 12.3 Top Level Resource Errors
+
+Requests for top level resources take three forms - requests for collections of resources (no identifier on the resource URL) and requests for specific resources (identifier included in the URL) and either of the two with `field_sets` or `contexts` query string parameters.  
+
+#### 12.3.1 Single Top Level Resource Errors
+
+Errors in processing a request for a single top level resource with no additional field\_sets requested should be returned as the HTTP status code for the request as well as the `basic` field\_set representation containing at least the `metadata` property with the `validation_response` and optionally the `validation_information` property. 
+
+#### 12.3.2 Top Level Resource Collection Errors
+
+Errors in processing a request for a collection of top level resources should proceed as follows:
+
+- If an error occurs with the overall request the HTTP status code for the request should indicate the type of error that occurred. The body of the response should contain a UAPI standard format response containing at least the `metadata` property with the `validation_response` property and optionally the `validation_information` property. 
+- If an error occurs in processing the request for one or more of the resources in the collection the `validation_response` and `validation_information` metadata properties for that resource should be set with the appropriate error information.  The HTTP status code for the entire request may be a `200 Success` even if only part of the response is error free. 
+
+### 12.4 Sub-resource Errors
+
+Errors during access to individual sub-resources with or without identifiers should be handled the same way as top level resources outlined in [12.3](#123-top-level-resource-errors). 
+ 
+### 12.5 Partial Error Response
+ 
+ A single request requesting multiple sub-resources via field\_sets presents the possibility that some sub-resource access may fail while others will succeed. To reflect this situation the following rules apply:
+ - If any part of the request succeeds the HTTP status code for the entire request is `200 Success`. 
+ - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response` and `validation_information` properties. 
+ - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
 
 ------
 
 
-<a name=glossary></a> 
-## Glossary
-
-|Term|Definition
-|-----|-----
-|consumer|
-|API|
-|domain| 
-|mime-type|
-|JSON|
-|Contract|A published definition of a resource and its associated representation and URL design. Contracts only change when a new major version of an API is published.
-|HATEOAS|[Hypermedia As The Engine Of Application State](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm#sec_5_1_5). A series of links associated with a resource that indicate the next permissible actions that can be performed on that resource. 
-|HTTP|Hypertext Transfer Protocol](https://tools.ietf.org/html/rfc2616)|
-|Property|Key/value pairs defined in a representation.**fix this**
-|Representation|The structure of a domain-model object in the context of a specified mime-type. A representation is what is returned in response to a request or what is submitted in the body of a request.
-|Resource|A domain-model object that has a structural representation and set of allowable HTTP methods.
-|REST|[Representational State Transfer](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
-|URL|[Uniform Resource Locator](https://tools.ietf.org/html/rfc1738)
-
-<a name=history></a>
 ## Version History
 |Version|Date|Changes|
 |-----|-----|-----|
