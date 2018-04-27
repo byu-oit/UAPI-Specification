@@ -220,7 +220,7 @@ Resource properties are name value pairs containing information about the state 
 |Property|Required|Description
 |-----|-----|-----
 value|Required if the api_type is not a value communicating an error.|Contains the data value to be processed.
-|api_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api_type and the rules associated with each value see they list below.
+|api_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api_type and the rules associated with each value see the list below.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms.
 |display_label|No|Provides a suggested string to use when creating a label for this property in the user interface.
@@ -487,7 +487,7 @@ An example links object for the person resource at `https://api.byu.edu/byuapi/p
 
 ## 5.0 Sub-resources, Field\_sets, and Contexts
 
-Access to individual sub-resources is accomplished by adding the desired sub-resource name and an optional identifier to the URL of the top level resource. There are cases where access to more than one sub-resource in a single request is necessary or desirable. The UAPI standard provides two query string parameters to make accessing multiple sub-resources in one call possible: `field\_sets` and `contexts`.
+Access to individual sub-resources is accomplished by adding the desired sub-resource name and an optional identifier to the URL of the top level resource. There are cases where access to more than one sub-resource in a single request is necessary or desirable. The UAPI standard provides two query string parameters to make accessing multiple sub-resources in one call possible: `field_sets` and `contexts`.
 
 ### 5.1 Field\_sets
 
@@ -534,7 +534,7 @@ The UAPI specification defines a special field\_set that doesn't directly corres
 
 #### 5.1.4 Field\_set Representation
 
-Sub-resources requested using the `field\_set` query string parameter are represented as JSON objects at the top level of the result. The name of the object is the name of the sub-resource. The representation of each sub-resource is exactly the same as if the sub-resource was accessed directly from the URL. 
+Sub-resources requested using the `field\_sets` query string parameter are represented as JSON objects at the top level of the result. The name of the object is the name of the sub-resource. The representation of each sub-resource is exactly the same as if the sub-resource was accessed directly from the URL. 
 
 A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addresses` would look like: 
 
@@ -985,7 +985,7 @@ Each data set should have a corresponding API with the following characteristics
 
 Data sets that are referenced using the `domain` property of the properties metadata ([3.2.3 Properties](#323-properties)) should exhibit the following behavior in addition to the rules in [8.1](#81-meta-data-set-rules):
 
-- When the mime-type requested is `application-json` the following structure should be returned for each entry in the data set: 
+- When the mime-type requested is `application/json` the following structure should be returned for each entry in the data set: 
 ```json
     {
         "value":"<value of this entry in the data set>",
@@ -1001,7 +1001,7 @@ Data sets that are referenced using the `domain` property of the properties meta
 
 #### 8.2.1 Examples of Domain Meta Data Sets
    
-An HTTP GET with the `application-json` mime-type on the `state_code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code/UT` would return the following:  
+An HTTP GET with the `application/json` mime-type on the `state_code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code/UT` would return the following:  
     
     ```json
     {
@@ -1011,7 +1011,7 @@ An HTTP GET with the `application-json` mime-type on the `state_code` data set l
     }
     ```  
     
-An HTTP GET with the `application-json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:  
+An HTTP GET with the `application/json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:  
     
     ```json
     {
