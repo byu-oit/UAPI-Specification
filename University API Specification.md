@@ -66,7 +66,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
     - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
         - [10.1 PUT](#101-put)
-            - [10.1.1 Resource Creation Using PUT][#1011-resource-creation-using-put]
+            - [10.1.1 Resource Creation Using PUT](#1011-resource-creation-using-put)
         - [10.2 POST](#102-post)
         - [10.3 DELETE](#103-delete)
         - [10.4 Response Representation](#104-response-representation)
