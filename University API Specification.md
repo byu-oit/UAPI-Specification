@@ -66,6 +66,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
     - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
         - [10.1 PUT](#101-put)
+            - [10.1.1 Resource Creation Using PUT][#1011-resource-creation-using-put]
         - [10.2 POST](#102-post)
         - [10.3 DELETE](#103-delete)
         - [10.4 Response Representation](#104-response-representation)
@@ -84,7 +85,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [12.2.1 validation\_response](#1221-validation_response)
         - [12.2.2 validation\_information](#1222-validation_information)
         - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
-        - [12.3.1 Single Top Level Resoure Errors](#1231-single-top-level-resoure-errors)
+        - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
         - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
         -[12.4 Sub-resource Errors](#124-sub-resource-errors)
         -[12.5 Partial Error Response](#125-partial-error-response)
@@ -1116,6 +1117,12 @@ To update the work mailing address of a person resource a PUT is sent to the URL
     "verified_flag": true
 }          
 ```
+
+#### 10.1.1 Resource Creation Using PUT
+
+There are occasions where PUT can be used to create a resource (usually a sub-resource). These occur when the identifier for the sub-resource can be determined before the sub-resource is created. For example, when there exists a defined set of possible identifier values such as the `address_type` of an address resource. The API may assume a PUT to the sub-resource will create an address of the specified type if one using that type doesn't already exist. So a PUT to the URL `https://api.byu.edu/byuapi/persons/123456789/addresses/WRK` would use the values in the body to update the address resource if one exists, otherwise it would create a new resource with that `address_type`.  
+
+Caution should be taken to ensure the logic required to determine the identifier is as minimal as possible to prevent the consumer from having to understand the logic behind identifier creation. 
 
 ### 10.2 POST
 
