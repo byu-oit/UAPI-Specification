@@ -86,8 +86,8 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
         - [12.3.1 Single Top Level Resoure Errors](#1231-single-top-level-resoure-errors)
         - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
-        -[12.4 Sub-resource Errors](#124-sub-resource-errors)
-        -[12.5 Partial Error Response](#125-partial-error-response)
+        - [12.4 Sub-resource Errors](#124-sub-resource-errors)
+        - [12.5 Partial Error Response](#125-partial-error-response)
     - [Version History](#version-history)   
 
 
