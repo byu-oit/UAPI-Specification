@@ -1,7 +1,7 @@
 # BYU University API Standard
 
 Specification Version 1.1   
-Document Version 1.0 DRAFT
+Document Version 1.1
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -66,6 +66,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
     - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
         - [10.1 PUT](#101-put)
+            - [10.1.1 Resource Creation Using PUT](#1011-resource-creation-using-put)
         - [10.2 POST](#102-post)
         - [10.3 DELETE](#103-delete)
         - [10.4 Response Representation](#104-response-representation)
@@ -74,20 +75,21 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [11.1.1 Data Classification](#1111-data-classification)
         - [11.2 Top Level Resource Authorization](#112-top-level-resource-authorization)
         - [11.3 Property Authorization](#113-property-authorization)
-        - [11.4 Authorization Failures](#114-authorization-failures)
-            - [11.4.1 Top Level Resource Authorization Failure](#1141-top-level-resource-authorization-failure)
-            - [11.4.2 Sub-resource Authorization Failure](#1142-sub-resource-authorization-failure)
-            - [11.4.3 Partial Authorization Failure](#1143-partial-authorization-failure)
+        - [11.4 Filter Authorization](#114-filter-authorization)
+        - [11.5 Authorization Failures](#115-authorization-failures)
+            - [11.5.1 Top Level Resource Authorization Failure](#1151-top-level-resource-authorization-failure)
+            - [11.5.2 Sub-resource Authorization Failure](#1152-sub-resource-authorization-failure)
+            - [11.5.3 Partial Authorization Failure](#1153-partial-authorization-failure)
     - [12.0 Errors](#120-errors)
         - [12.1 HTTP Status Codes](#121-http-status-codes)
         - [12.2 Error Response Format](#122-error-response-format)
-        - [12.2.1 validation\_response](#1221-validation_response)
-        - [12.2.2 validation\_information](#1222-validation_information)
+            - [12.2.1 validation\_response](#1221-validation_response)
+            - [12.2.2 validation\_information](#1222-validation_information)
         - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
-        - [12.3.1 Single Top Level Resoure Errors](#1231-single-top-level-resoure-errors)
-        - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
-        -[12.4 Sub-resource Errors](#124-sub-resource-errors)
-        -[12.5 Partial Error Response](#125-partial-error-response)
+            - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
+            - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
+        - [12.4 Sub-resource Errors](#124-sub-resource-errors)
+        - [12.5 Partial Error Response](#125-partial-error-response)
     - [Version History](#version-history)   
 
 
@@ -221,10 +223,10 @@ Resource properties are name value pairs containing information about the state 
 value|Required if the api_type is not a value communicating an error.|Contains the data value to be processed.
 |api_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api_type and the rules associated with each value see the list below.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
-|description|No|Explains the data value in human-friendly terms.
-|display_label|No|Provides a suggested string to use when creating a label for this property in the user interface.
+|description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
+|display_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
 |domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
-|long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description.
+|long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |related_resource|Required if the api_type property is `related`.|If the api_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
 The `api_type` field is required for all properties. It indicates more information about the value being returned such as if it is modifiable by the consumer, a derived field, a system generated value, etc. 
@@ -907,6 +909,7 @@ Additional `links` are included that provide the link to use in order to move ba
 
 |Link|Content
 |-----|-----
+|*resource-name*\_\_info|Link to retrieve this collection - see [4.0 HATEOAS Links](#40-hateoas-links)
 |*resource-name*\_\_first|Link to the first page of the collection
 |*resource-name*\_\_current|Link to the current page in the collection
 |*resource-name*\_\_last|Link to the last page of the collection
@@ -915,6 +918,11 @@ Additional `links` are included that provide the link to use in order to move ba
 An example of the collection paging links for the persons resource would be as follows:
 
 ```json
+        "persons__info": {
+            "rel": "self",
+            "href": "https://api.byu.edu/byuapi/persons/",
+            "method": "GET"
+        },
         "persons__first": {
             "rel": "persons__first",
             "href": "https://api.byu.edu/byuapi/persons/?page_start=1,page_size=100",
@@ -939,7 +947,7 @@ An example of the collection paging links for the persons resource would be as f
 
 ## 7.0 Filters
  
- A collection of resources can be filtered using query string parameters. Which of the properties of a resource can be used as filters in the query string is left to the API to define and should follow the business use cases of the top-level resource. For example our `persons` top level resource uses `byu_id` as its primary key. Unfortunately `byu_id` is only one of three keys in common use to access the `persons` resource. If a consumer wants to find a person with a specific `net_id` then a query string parameter of `net_id` should be supported by the API. Likewise it makes sense to allow for filtering on other properties such as `email_address` or `visa_status`.  Information in the Swagger definition for the API should include which properties can be used for filtering. 
+ A collection of resources can be filtered using query string parameters. Which of the properties of a resource can be used as filters in the query string is left to the API to define and should follow the business use cases of the top-level resource and follow any authorization rules for the property (see [11.4 Filter Authorization](#114-filter-authorization)). For example our `persons` top level resource uses `byu_id` as its primary key. Unfortunately `byu_id` is only one of three keys in common use to access the `persons` resource. If a consumer wants to find a person with a specific `net_id` then a query string parameter of `net_id` should be supported by the API. Likewise it makes sense to allow for filtering on other properties such as `email_address` or `phone_number`.  Information in the Swagger definition for the API should include which properties can be used for filtering. 
  
 #### 7.1 Filter Parameters 
  
@@ -996,7 +1004,11 @@ Data sets that are referenced using the `domain` property of the properties meta
 
 - Values for `description` and `long-description` can be derived from other properties of the data set to provide a standard way to represent each entry in the data set. 
 
-- If the mime-type is `application/json-extended` and the data set has additional properties a response in the standard UAPI format may be returned containing all properties of the data set. 
+- `description` should be limited to 30 characters in length. 
+
+- `long-description` should be limited to 256 characters in length. 
+
+- If the mime-type is `application/json-uapi` and the data set has additional properties a response in the standard UAPI format may be returned containing all properties of the data set. 
 
 #### 8.2.1 Examples of Domain Meta Data Sets
    
@@ -1117,6 +1129,12 @@ To update the work mailing address of a person resource a PUT is sent to the URL
 }          
 ```
 
+#### 10.1.1 Resource Creation Using PUT
+
+There are occasions where PUT can be used to create a resource (usually a sub-resource). These occur when the identifier for the sub-resource can be determined before the sub-resource is created. For example, when there exists a defined set of possible identifier values such as the `address_type` of an address resource. The API may assume a PUT to the sub-resource will create an address of the specified type if one using that type doesn't already exist. So a PUT to the URL `https://api.byu.edu/byuapi/persons/123456789/addresses/WRK` would use the values in the body to update the address resource if one exists, otherwise it would create a new resource with that `address_type`.  
+
+Caution should be taken to ensure the logic required to determine the identifier is as minimal as possible to prevent the consumer from having to understand the logic behind identifier creation. 
+
 ### 10.2 POST
 
 The HTTP POST verb is used to insert a new resource or sub-resource. Due to the complexities of creating a new resource the UAPI spec does not specify a format or restrictions on the request body. When a new resource is created an HTTP Status Code of `201` should be returned along with the `Location` HTTP header containing the URL for the new resource. 
@@ -1170,22 +1188,28 @@ In order for a consumer to have access to any part of a top level resource or su
 
 Authorization of access to properties is controlled at the field\_set level. Access to a field\_set implies that at least `read-only` access is allowed for all properties contained in the field\_set. A field\_set may contain a mix of `read-only` and `modifiable` properties. 
 
-### 11.4 Authorization Failures
+### 11.4 Filter Authorization
+
+When selecting properties to offer as filters on resources care needs to be taken to ensure that carefully constructed filtering of resources doesn't allow for inferring data the consumer is not authorized to have. Requests that include filter properties on the query string should be checked for proper authorization to the properties being requested. In general the consumer must have access to at least one field\_set that includes the requested property in order to be authorized to filter on that property. 
+
+If a filter request fails the authorization check the request should be rejected and a `403 Unauthorized` should be returned to the consumer. 
+
+### 11.5 Authorization Failures
 
 Authorization failures should be communicated via standard HTTP Status Codes, typically using the `403 Unauthorized` status code. 
 
-#### 11.4.1 Top Level Resource Authorization Failure
+#### 11.5.1 Top Level Resource Authorization Failure
 
 If the consumer does not have authorization to access any part of a top level resource the appropriate status code should be returned for the entire request. The body of the response should contain at least the `metadata` section with the appropriate `validation_response` and `validation_information` properties populated. 
 
-#### 11.4.2 Sub-resource Authorization Failure
+#### 11.5.2 Sub-resource Authorization Failure
 
 If the consumer requests direct access (via the URL) to a sub-resource that is not authorized the response code and response body should be the same as for a top-level resource request. 
 
-#### 11.4.3 Partial Authorization Failure  
+#### 11.5.3 Partial Authorization Failure  
 
 If the consumer requests access to multiple sub-resources via `field_sets` or `context` query parameters the response should be as follows:
-- If the consumer does not have access to the top level resource the response should be as outlined in [11.4.1](#1141-top-level-resource-authorization-failure).
+- If the consumer does not have access to the top level resource the response should be as outlined in [11.5.1](#1151-top-level-resource-authorization-failure).
 - If the consumer does have access to the top level resource the response code for the request should reflect the status of access to the top level resource (e.g. `200` if the resource is accessible, `404` if not found, etc.). Each field\_set property in the response body should reflect the status of access to that field\_set by setting the `validation_response` property of the `metadata` section of the field\_set. Requested field\_sets should always be included in the response body of the request even if they are unauthorized. Unauthorized field\_sets will only have their `metadata` properties set in the response body. 
 
 ## 12.0 Errors 
