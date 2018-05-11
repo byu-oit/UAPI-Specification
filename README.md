@@ -6,6 +6,8 @@ The `master` branch should contain the latest official versions of the specifica
 
 The `develop` branch contains versions of the document that are still a work in progress. Once approved the documents will be merged with the `master` branch. 
 
+Please submit any pull requests against the `develop` branch. 
+
 For questions, edits, and clarifications please feel free to open issues in this repository. 
 
 
