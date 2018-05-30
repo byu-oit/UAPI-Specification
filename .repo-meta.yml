@@ -7,7 +7,7 @@ repo_url: https://github.com/byu-oit/UAPI-Specification  # optional
 software:
   - name: UAPI-Specification  # optional
     deploy_to_cmdb: false # optional
-    type: 'specification'
+    type: specification
     short_description: University API Specification Document and related resources # optional
     assignment_group: gro:AD-Software Architecture
     maintained_by: # optional
@@ -16,4 +16,5 @@ software:
     standard_change_template:
     stages:
       development:
-        hosting_location: 'none'
+        hosting_location: none
+    technologies_used: []
