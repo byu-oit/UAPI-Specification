@@ -1,6 +1,6 @@
-##The Method to the Madness - Goals and Design Decisions of the University API Specification
+## The Method to the Madness - Goals and Design Decisions of the University API Specification
 
-###First a little history...
+### First a little history...
 
 OIT has been providing web services for close to ten years. When we started SOAP services were all the rage and REST was the new "shiny" way of doing things. Our first custom web services were SOAP, complete with lots of XML and the wonderful WSDL files nobody could understand. As our organization's use of web services started to mature teams were able to find quick and dirty ways of providing services to meet specific user needs. Along the way our C-Framework was tweaked to allow any screen built with the framework to be turned into a (RESTish) web service with minimal effort. And our web service management software was able to (poorly) turn SOAP services into REST and vis versa. With all these developments at its peak we had over nine hundred services in our registry. 
 
