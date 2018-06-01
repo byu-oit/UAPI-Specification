@@ -1,7 +1,7 @@
 # BYU University API Standard
 
 Specification Version 1.1   
-Document Version 1.1
+Document Version 1.2
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -23,6 +23,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [3.2.1 Links](#321-links)
         - [3.2.2 Metadata](#322-metadata)
         - [3.2.3 Properties](#323-properties)
+            - [3.2.3.1 Representing Dates and Times](#3231-representing-dates-and-times)
         - [3.2.4 Representing Sub-resources](#324-representing-sub-resources)
         - [3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
         - [3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
@@ -159,17 +160,21 @@ Resources have properties associated with them. Some properties are simple name 
 
 ### 3.1 Resource Representation
 
-When a consumer of an API interacts with a resource the representation of the properties of that resource are dependent upon the mime-type used. All text based resources will be represented as JSON using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP Accept header should be used to indicate to the API which representation(s) the consumer is capable of processing and the HTTP Content-Type header indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
+When a consumer of an API interacts with a resource the representation of the properties of that resource are dependent upon the mime-type used. All text based resources will be represented as JSON using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP `Accept` header should be included in the request to indicate to the API which representation(s) the consumer is capable of processing and the HTTP `Content-Type` header should be included in the response indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
 
 ### 3.2 Representing a Single Resource
 
 Single resources are addressed by URLs that end in identifiers (e.g. `https://api.byu.edu/byuapi/persons/123456789`). 
 
-Top level resources should return a default set of properties when no sub-resources have been requested (See [field\_sets](#50-sub-resources-field_sets-and-contexts) for more information on requesting multiple sub-resources in a single request). These properties should be included in a single JSON object with the name `basic`. The `basic` object and all sub-resource objects should always include the following elements:
+The resource should always include the following elements:
 
 * Links
 * Metadata
-* Properties 
+* One or more sub-resources represented as field\_sets (see [field\_sets](#51-field_sets)).
+
+Top level resources should return a default set of properties when no sub-resources have been requested. These properties should be included in a single JSON object with the name `basic`. See [The Basic Field\_set](513-the-basic-field_set) for more information. 
+
+Multiple sub-resources can be requested in a single HTTP request. See ["Sub-resources, Field\_sets, And Contexts"](#50-sub-resources-field_sets-and-contexts) for more information.
 
 #### 3.2.1 Links
 
@@ -252,6 +257,10 @@ A property would look something like this:
   "value": "123456789"
 },
 ```
+##### 3.2.3.1 Representing Dates And Times
+
+Date and Date/Time data types should be represented as strings using the [RFC-3339](https://tools.ietf.org/html/rfc3339) format. It is suggested that UTC be used instead of local time zones. 
+
 
 #### 3.2.4 Representing Sub-resources
 
@@ -262,7 +271,9 @@ Single value sub-resources (i.e. those retrieved by using an identifier in the U
 A single top level resource representation would look like:
 
 ```json
-{ 
+{
+    "links":...,
+    "metadata":..., 
     "basic": {
         "links": {
             "persons__info": {
@@ -541,6 +552,8 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
 
 ```json
 {
+    "links":...,
+    "metadata":...,
     "basic": {
         "links": {
             "basic__info": {
@@ -959,7 +972,7 @@ Filter parameters given in the query string should correspond to properties prov
  
 #### 7.3 Dot Notation (Filtering With Sub-resources)
 
-There are times when it makes sense to query a top level resource by a value in one of the sub resources. For example, if I want a list of persons whose home address is in a certain zip code. Resources can support this type of query by implementing dot (`.`) notation. Dot notation allows for a filter parameter to specify the relationship between a top level and a sub-resource property. In order to implement the above example the query string would look something like `https://api.byu.edu/byuapi/persons?persons.addresses.address_type=HOM&persons.addresses.zip_code=84604`  would return a collection of persons with a home address in the `84604` zip code.
+There are times when it makes sense to query a top level resource by a value in one of the sub resources. For example, if I want a list of persons whose home address is in a certain zip code. Resources can support this type of query by implementing dot (`.`) notation. Dot notation allows for a filter parameter to specify the relationship between a top level and a sub-resource property. In order to implement the above example the query string would look something like `https://api.byu.edu/byuapi/persons?addresses.address_type=HOM&addresses.zip_code=84604`  would return a collection of persons with a home address in the `84604` zip code.
 
 #### 7.4 Wildcards
 
