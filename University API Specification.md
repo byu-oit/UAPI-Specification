@@ -1,7 +1,7 @@
 # BYU University API Standard
 
 Specification Version 1.1   
-Document Version 1.2
+Document Version 1.3
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -45,6 +45,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [5.2.1 Context Metadata](#521-context-metadata)
             - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
             - [5.2.3 Context Representation](#523-context-representation)
+        - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
     -[6.0 Collection Paging](#60-collection-paging)
         - [6.1 Paging Metadata](#61-paging-metadata)
         - [6.2 Paging Query Parameters](#62-paging-query-parameters)
@@ -81,6 +82,10 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [11.5.1 Top Level Resource Authorization Failure](#1151-top-level-resource-authorization-failure)
             - [11.5.2 Sub-resource Authorization Failure](#1152-sub-resource-authorization-failure)
             - [11.5.3 Partial Authorization Failure](#1153-partial-authorization-failure)
+        -[11.6 Restricted Resources](#116-restricted-resources)
+            - [11.6.1 Resource Metadata](#1161-resource-metadata)
+            - [11.6.2 Authorized Access](#1162-authorized-access)
+            - [11.6.3 Unauthorized Access Attempts](#1163-unauthorized-access-attempts)
     - [12.0 Errors](#120-errors)
         - [12.1 HTTP Status Codes](#121-http-status-codes)
         - [12.2 Error Response Format](#122-error-response-format)
@@ -189,6 +194,7 @@ The metadata property contains data about the request for this resource includin
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
+|restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#11.6-restricted-resources) for more information. 
 
 
 Metadata related to [field\_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource may also be included.
@@ -197,6 +203,7 @@ The following metadata object would indicate a successful request for this resou
 
 ```json
     "metadata": {
+      "restricted" : false,
       "validation_response": {
         "code": 200,
         "message": "Success"
@@ -208,6 +215,7 @@ The following metadata would indicate an error occurred when processing the requ
 
 ```json
 "metadata": {
+  "restricted" : false,
   "validation_response": {
     "code": 403,
     "message": "Not Authorized"
@@ -288,6 +296,7 @@ A single top level resource representation would look like:
             }
         },
         "metadata": {
+            "restricted" : false,
             "validation_response": {
                 "code": 200,
                 "message": "Successful"
@@ -358,6 +367,7 @@ A single sub-resource representation would look like:
         }
     },
     "metadata": {
+        "restricted" : false,
         "validation_response": {
             "code": 200,
             "message": "Success"
@@ -410,6 +420,7 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code.
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
+|restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#11.6-restricted-resources) for more information.
 |collection_size|required|The number of items of the resource which exist in the entire collection.
 |default\_page\_size|required if API implements support for paging|Unless overridden in query parameters, this endpoint will return this number of resources in each request.
 |max\_page\_size|required if API implements support for paging|The largest number of resources this API can return in one request.
@@ -421,6 +432,7 @@ The metadata returned for a resource collection that supports paging would look 
 
 ```json
 "metadata": {
+  "restricted": false,  
   "validation_response": {
     "code": 200,
     "message": "Success"
@@ -573,6 +585,7 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
             }
         },
         "metadata": {
+            "restricted": false,  
             "validation_response": {
                 "code": 200,
                 "message": "Success"
@@ -636,6 +649,7 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
             }
         },
         "metadata": {
+            "restricted": false,  
             "collection_size": 2,
             "page_start": 1,
             "page_end": 2,
@@ -673,6 +687,7 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                     }
                 },
                 "metadata": {
+                    "restricted": false,  
                     "validation_response": {
                         "code": 200,
                         "message": "Success"
@@ -765,6 +780,7 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                     }
                 },
                 "metadata": {
+                    "restricted": false,
                     "validation_response": {
                         "code": 200,
                         "message": "Success"
@@ -884,6 +900,10 @@ To specify a context or contexts to be returned the `contexts` query string para
 #### 5.2.3 Context Representation
 
 Responses generated by using the `contexts` query string parameter are represented in exactly the same way as if the consumer had requested the included field\_sets using the `field_sets` query string parameter. If the consumer specifies both the `contexts` and `field_sets` query string parameters the result should be a union of the field\_sets requests. A field\_set will only be included once in the result. 
+
+### 5.3 Undefined Field\_set Or Context Parameter
+
+If the query string of a request contains an undefined field\_set or context the entire request should be rejected with a HTTP status code of `400`. A `metadata` property should be returned in the response body that contains the `validation_response`. A `validation_information` should also be returned containing a message or messages indicating which query string parameter is the cause of the error. 
 
 ## 6.0 Collection Paging
 
@@ -1166,6 +1186,7 @@ For example, the following response could be returned when there are multiple va
 
 ```json
 "metadata": {
+    "restricted": false,
     "validation_response": {
             "code": 400,
             "message": "Bad Request"
@@ -1225,6 +1246,24 @@ If the consumer requests access to multiple sub-resources via `field_sets` or `c
 - If the consumer does not have access to the top level resource the response should be as outlined in [11.5.1](#1151-top-level-resource-authorization-failure).
 - If the consumer does have access to the top level resource the response code for the request should reflect the status of access to the top level resource (e.g. `200` if the resource is accessible, `404` if not found, etc.). Each field\_set property in the response body should reflect the status of access to that field\_set by setting the `validation_response` property of the `metadata` section of the field\_set. Requested field\_sets should always be included in the response body of the request even if they are unauthorized. Unauthorized field\_sets will only have their `metadata` properties set in the response body. 
 
+### 11.6 Restricted Resources
+ 
+ Persons related to the university can request that their records be restricted. A person that has their restricted flag set essentially does not exist for any system that is not authorized to see restricted persons. All resources that deal with any aspect of an individual must implement the restricted resources specification requirements. Resources that do not deal with individuals should include the `metadata` element with the value always set to `false`. 
+
+ #### 11.6.1 Resource Metadata
+
+The `metadata` property for all top level and sub-resources must have the `restricted` element. That element should always be set to the value of the restricted flag for the person (`true`/`false`). The property should appear for all resources even if the consumer does not have access to restricted resources.   
+
+Because collections of top level resources represent multiple resources they do not include the `restricted` element. Each resource within the collection will have the `restricted` element for that resource. Collections of sub-resources do have the `restricted` element because they represent an aspect of the top-level resource which may represent a restricted individual. 
+
+#### 11.6.2 Authorized Access
+
+Access to restricted records by consumers with restricted record authorization should be no different than accessing any other resource provided by the API. The `restricted` element of the `metadata` property should be set to `true` to indicate to the consumer that the resource they are accessing is restricted. Consumers are then obligated to follow the guidelines regarding handling of restricted resources. 
+
+#### 11.6.3 Unauthorized Access Attempts
+
+An attempt to access a restricted top level or sub-resource by an unauthorized consumer should result in exactly the same result as the API would give if the resource did not exist. Typically the HTTP status code of `404 - Not Found` would be returned. 
+
 ## 12.0 Errors 
 
 Each resource and collection of resources in the JSON response body has a `metadata` property. The sub-properties `validation_response` and `validation_information` are intended to convey to the consumer information about the state of the resource or resource collection. 
@@ -1281,10 +1320,20 @@ Errors during access to individual sub-resources with or without identifiers sho
  
 ### 12.5 Partial Error Response
  
- A single request requesting multiple sub-resources via field\_sets presents the possibility that some sub-resource access may fail while others will succeed. To reflect this situation the following rules apply:
+ A single request to a top level resource requesting multiple sub-resources via field\_sets or contexts presents the possibility that some sub-resource access may fail while others will succeed. To reflect this situation the following rules apply:
  - If any part of the request succeeds the HTTP status code for the entire request is `200 Success`. 
- - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response` and `validation_information` properties. 
+ - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
+ 
+
+### 12.6 '404 Not Found' Errors
+
+Because of the need to protect restricted resources (see [11.6 Restricted Resources](#116-restricted-resources)), when a `404 Not Found` is to be returned special rules apply:
+
+- If the request is for a single top-level resource or sub-resource addressed directly via the URL the `404 Not Found` HTTP status code should be returned with no body attached to the result. 
+- If the request is for a top-level resource (single or collection) that includes multiple sub-resources via field\_sets or contexts and one or more of the sub-resources is not found the rules for Partial Error Response [12.5](#125-partial-error-response) should apply. 
+
+
 
 ------
 
