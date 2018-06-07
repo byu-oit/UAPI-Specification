@@ -44,9 +44,9 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [5.2 Contexts](#52-contexts)
             - [5.2.1 Context Metadata](#521-context-metadata)
             - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
-            - [5.2.3 Context Representation](#523-context-representation)
+            - [5.2.3 Context Representation](#523-context-representation)  
         - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
-    -[6.0 Collection Paging](#60-collection-paging)
+    - [6.0 Collection Paging](#60-collection-paging)
         - [6.1 Paging Metadata](#61-paging-metadata)
         - [6.2 Paging Query Parameters](#62-paging-query-parameters)
         - [6.3 Paging HATEOAS Links](#63-paging-hateoas-links)
@@ -1343,3 +1343,6 @@ Because of the need to protect restricted resources (see [11.6 Restricted Resour
 |-----|-----|-----|
 |1.0||Original published standard|
 |1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|
+|1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
+|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. 
+
