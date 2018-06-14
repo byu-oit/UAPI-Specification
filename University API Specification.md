@@ -46,7 +46,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
             - [5.2.3 Context Representation](#523-context-representation)  
         - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
-    - [6.0 Collection Paging](#60-collection-paging)
+    - [6.0 Large Collections](#60-large-collections)
         - [6.1 Paging Metadata](#61-paging-metadata)
         - [6.2 Paging Query Parameters](#62-paging-query-parameters)
         - [6.3 Paging HATEOAS Links](#63-paging-hateoas-links)
@@ -356,12 +356,12 @@ A single sub-resource representation would look like:
             "method": "GET"
         },
         "group_memberships__modify": {
-            "rel": "self",
+            "rel": "group_memberships__modify",
             "href": "https://api.byu.edu/byuapi/persons/123456789/group_memberships/ADMINISTRATIVE",
             "method": "PUT"
         },
         "group_memberships__delete": {
-            "rel": "self",
+            "rel": "group_memberships__delete",
             "href": "https://api.byu.edu/byuapi/persons/123456789/group_memberships/ADMINISTRATIVE",
             "method": "DELETE"
         }
@@ -422,13 +422,83 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 |restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#11.6-restricted-resources) for more information.
 |collection_size|required|The number of items of the resource which exist in the entire collection.
-|default\_page\_size|required if API implements support for paging|Unless overridden in query parameters, this endpoint will return this number of resources in each request.
-|max\_page\_size|required if API implements support for paging|The largest number of resources this API can return in one request.
-|page_size|required if the API implements support for paging|The number of resources which were returned in this request.
-|page_start|required if the API implements support for paging|The resource of the collection on which the returned "page" of the collection starts
-|page_end|required if the API implements support for paging|The resource of the collection on which the returned "page" of the collection ends
 
-The metadata returned for a resource collection that supports paging would look like:
+The metadata returned for a resource collection would look like:
+
+```json
+"metadata": {
+  "restricted": false,  
+  "validation_response": {
+    "code": 200,
+    "message": "Success"
+  },
+  "collection_size": 150
+ }
+```
+
+#### 3.3.3 Values Array
+
+The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1 Resource Representation](#31-resource-representation) including containing the `links` and `metadata` properties. 
+
+#### 3.3.4 Sorted Collections
+
+An API can optionally support the ability for a consumer to request the results in a collection be returned in a specific order. Results of the request will be sorted before applying any subset parameters specified in the request (see [3.3.5 Large Collections](#335-large-collections)).
+
+##### 3.3.4.1 Sorted Collection Metadata 
+
+The following `metadata` properties are required if sorting is supported by the resource: 
+
+|Property|Description
+|-----|-----
+|sort_properties_available|The properties that can be used in requesting a specific order of the collection results.
+|sort_properties_default|The default properties used to sort the collection.
+|sort_order_default|The default sort order used to sort the collection. 
+
+Sort metadata would look like the following:
+
+```json
+    "metadata": {
+        "sort_properties_available": [
+            "byu_id",
+            "net_id",
+            "sort_name"
+        ],
+        "sort_properties_default": [
+            "sort_name",
+            "net_id"
+        ],
+        "sort_order_default": "ascending"
+    },
+```
+##### 3.3.4.2 Sorted Collection Query Parameters
+
+The query parameters used to specify sort preferences are as follows: 
+
+|Parameter|Description
+|-----|-----
+|sort\_properties|Sort the result by the properties listed. Multiple properties may be listed (comma separated). If a property is listed that does not appear in the `sort_properties_available` metadata property a `400 Bad Request` HTTP status code should be returned for the request. 
+|sort\_order|Specify the order for the sort, either `ascending` or `descending`. Only a single order can be specified. The default is `ascending`.
+
+#### 3.3.5 Large Collections
+
+Some resources and sub-resources represent a large number of instances. APIs that support large numbers of instances should implement subsets in order to provide the consumer a way to move through the collection in a reasonable way. It may be possible that the underlying data has changed between invocations so instances may be repeated or skipped. 
+
+To implement subsets a resource must include specific `metadata` and `links` with the collection in the response. 
+
+Specifying the start and size of the next subset of results is done via metadata properties. Consumers can specify an offset from the beginning of the collection or the primary key of the instance to start with.
+
+##### 3.3.5.1 Collection Subsets Metadata
+
+The following `metadata` properties are required if subsets are supported by the resource: 
+
+|Property|Description
+|-----|-----
+|default\_subset\_size|Unless overridden in query parameters, this endpoint will return this number of resources in each subset.
+|max\_subset\_size|The largest number of resources this API can return in one subset.
+|subset\_start|The offset (zero based) from the beginning of the collection of the first instance in this subset.
+|subset\_size|The number of instances in this subset. 
+
+The metadata returned for a resource collection that supports subsets would look like:
 
 ```json
 "metadata": {
@@ -438,23 +508,76 @@ The metadata returned for a resource collection that supports paging would look 
     "message": "Success"
   },
   "collection_size": 150,
-  "default_page_size": 50,
-  "max_page_size": 1000,
-  "page_size": 50,
-  "page_start": 51,
-  "page_end": 100
+  "default_subset_size": 50,
+  "max_subset_size": 1000,
+  "subset_size": 50,
+  "subset_start": 51
  }
 ```
 
-See [paging](#paging) for more information about implementing paging in an API. 
+##### 3.3.5.2 Collection Subsets Query Parameters
 
-#### 3.3.3 Values Array
+In order to implement subsets the following query string parameters must be supported:
 
-The `values` array contains an entry for each individual resource representation. The representations must follow the specification in [3.1 Resource Representation](#31-resource-representation) including containing the `links` and `metadata` properties. 
+|Parameter|Description
+|-----|-----
+|subset\_start_offset|The offset for the first resource in the collection to be returned in this subset
+|subset\_size|The number of resources in the collection to return (defaults to the value of `max_subset_size`)
+|subset_start_key|The primary key of the resource to start the subset with. 
 
-#### 3.3.4 Empty Collections
+If both `subset_start_offset` and `subset_start_key` are specified in the same query string a `400 Bad Request` should be returned for the entire request. 
 
-If the collection returned is empty (e.g. no resources matched a filter) the collection metadata should still be returned. Paging data should still be valid - `page_start` should be `0`, `page_end` should also be `0` since no values were returned. The `values` array should be empty. 
+##### 3.3.5.3 Collection Subsets HATEOAS Links
+
+Additional `links` are included that provide the link to use in order to move within the collection:
+
+|Link|Content
+|-----|-----
+|*resource-name*\_\_info|Link to retrieve this collection - see [4.0 HATEOAS Links](#40-hateoas-links)
+|*resource-name*\_\_first|Link to the first subset of the collection
+|*resource-name*\_\_current|Link to the current subset in the collection
+|*resource-name*\_\_last|Link to the last subset of the collection
+|*resource-name*\_\_previous|Link to the previous subset in the collection
+|*resource-name*\_\_next|Link to the next subset in the collection
+
+An example of the subset links for the persons resource would be as follows:
+
+```json
+        "persons__info": {
+            "rel": "self",
+            "href": "https://api.byu.edu/byuapi/persons/",
+            "method": "GET"
+        },
+        "persons__first": {
+            "rel": "persons__first",
+            "href": "https://api.byu.edu/byuapi/persons/?subset_start=0,subset_size=100",
+            "method": "GET"
+        },
+        "persons__last": {
+            "rel": "persons__last",
+            "href": "https://api.byu.edu/byuapi/persons/?subset_start=345600,subset_size=100",
+            "method": "GET"
+        },
+        "persons__current": {
+            "rel": "persons__current",
+            "href": "https://api.byu.edu/byuapi/persons/?subset_start=300,subset_size=100",
+            "method": "GET"
+        },
+        "persons__next": {
+            "rel": "person__next",
+            "href": "https://api.byu.edu/byuapi/persons/?subset_start=400,subset_size=100",
+            "method": "GET"
+        },
+        "persons__previous": {
+            "rel": "persons__previous",
+            "href": "https://api.byu.edu/byuapi/persons/?subset_start=200,subset_size=100",
+            "method": "GET"
+        },
+```
+
+#### 3.3.6 Empty Collections
+
+If the collection returned is empty (e.g. no resources matched a filter) the collection metadata should still be returned. If subsets are supported subset data should still be valid - `subset_start` should be `0`, `subset_size` should also be `0` since no values were returned. The `values` array should be empty. 
 
 ## 4.0 HATEOAS Links
 
@@ -498,12 +621,12 @@ An example links object for the person resource at `https://api.byu.edu/byuapi/p
                 "method": "GET"
             },
             "basic__modify": {
-                "rel": "self",
+                "rel": "basic__modify",
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
                 "method": "PUT"
             },
             "basic__delete": {
-                "rel": "self",
+                "rel": "basic__delete",
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
                 "method": "DELETE"
             }
@@ -574,12 +697,12 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                 "method": "GET"
             },
             "basic__modify": {
-                "rel": "self",
+                "rel": "basic__modify",
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
                 "method": "PUT"
             },
             "basic__delete": {
-                "rel": "self",
+                "rel": "basic__delete",
                 "href": "https://api.byu.edu/byuapi/persons/123456789",
                 "method": "DELETE"
             }
@@ -651,11 +774,10 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
         "metadata": {
             "restricted": false,  
             "collection_size": 2,
-            "page_start": 1,
-            "page_end": 2,
-            "page_size": 2,
-            "default_page_size": 1,
-            "maximum_page_size": 100,
+            "subset_start": 1,
+            "subset_size": 2,
+            "default_subset_size": 1,
+            "maximum_subset_size": 100,
             "validation_response": {
                 "code": 200,
                 "message": "Success"
@@ -676,12 +798,12 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                         "method": "GET"
                     },
                     "addresses__modify": {
-                        "rel": "self",
+                        "rel": "addresses__modify",
                         "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/MAL",
                         "method": "PUT"
                     },
                     "addresses__delete": {
-                        "rel": "self",
+                        "rel": "addresses__delete",
                         "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/MAL",
                         "method": "DELETE"
                     }
@@ -769,12 +891,12 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                         "method": "GET"
                     },
                     "addresses__modify": {
-                        "rel": "self",
+                        "rel": "addresses__modify",
                         "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
                         "method": "PUT"
                     },
                     "addresses__delete": {
-                        "rel": "self",
+                        "rel": "addresses_delete",
                         "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
                         "method": "DELETE"
                     }
@@ -903,102 +1025,75 @@ Responses generated by using the `contexts` query string parameter are represent
 
 ### 5.3 Undefined Field\_set Or Context Parameter
 
-If the query string of a request contains an undefined field\_set or context the entire request should be rejected with a HTTP status code of `400`. A `metadata` property should be returned in the response body that contains the `validation_response`. A `validation_information` should also be returned containing a message or messages indicating which query string parameter is the cause of the error. 
+If the query string of a request contains an undefined field\_set or context the entire request should be rejected with a HTTP status code of `400 Bad Request`. A `metadata` property should be returned in the response body that contains the `validation_response`. A `validation_information` should also be returned containing a message or messages indicating which query string parameter is the cause of the error. 
 
-## 6.0 Collection Paging
-
-**Under Review**
-
-Some resources and sub-resources represent a large number of instances. Returning a large number of entries in a collection can be both resource intensive and time consuming. APIs that support large number of instances should implement collection paging in order to provide the consumer a way to move through the collection in a reasonable way. It may be possible that the underlying data has changed between invocations so instances may be repeated or skipped. 
-
-To implement collection paging a resource must include paging specific `metadata` and `links` with the collection in the response. 
-
-### 6.1 Paging Metadata
-
-The following `metadata` properties are required if collection paging is supported by the resource: 
-
-|Property|Description
-|-----|-----
-|default\_page\_size|Unless overridden in query parameters, this endpoint will return this number of resources in each request.
-|max\_page\_size|The largest number of resources this API can return in one request.
-|page\_size|The number of resources which were returned in this request.
-|page\_start|The resource of the collection on which the returned "page" of the collection starts
-|page\_end|The resource of the collection on which the returned "page" of the collection ends
-
-### 6.2 Paging Query Parameters
-
-In order to implement the collection paging the following query string parameters must be supported:
-
-|Parameter|Description
-|-----|-----
-|page\_start|The first resource in the collection to be returned with this page
-|page\_size|The number of resources in the collection to return (optional)
-
-If the `page_size` parameter is not included in a request the default specified in the `metadata` should be used. 
-
-### 6.3 Paging HATEOAS Links
-
-Additional `links` are included that provide the link to use in order to move back and forth between pages in the collection:
-
-|Link|Content
-|-----|-----
-|*resource-name*\_\_info|Link to retrieve this collection - see [4.0 HATEOAS Links](#40-hateoas-links)
-|*resource-name*\_\_first|Link to the first page of the collection
-|*resource-name*\_\_current|Link to the current page in the collection
-|*resource-name*\_\_last|Link to the last page of the collection
-|*resource-name*\_\_next|Link to the next page in the collection
-
-An example of the collection paging links for the persons resource would be as follows:
-
-```json
-        "persons__info": {
-            "rel": "self",
-            "href": "https://api.byu.edu/byuapi/persons/",
-            "method": "GET"
-        },
-        "persons__first": {
-            "rel": "persons__first",
-            "href": "https://api.byu.edu/byuapi/persons/?page_start=1,page_size=100",
-            "method": "GET"
-        },
-        "persons__last": {
-            "rel": "self",
-            "href": "https://api.byu.edu/byuapi/persons/?page_start=345600,page_size=100",
-            "method": "GET"
-        },
-        "persons__current": {
-            "rel": "self",
-            "href": "https://api.byu.edu/byuapi/persons/?page_start=300,page_size=100",
-            "method": "GET"
-        },
-        "persons__next": {
-            "rel": "self",
-            "href": "https://api.byu.edu/byuapi/persons/?page_start=400,page_size=100",
-            "method": "GET"
-        },
-```
-
-## 7.0 Filters
+## 6.0 Filters
  
  A collection of resources can be filtered using query string parameters. Which of the properties of a resource can be used as filters in the query string is left to the API to define and should follow the business use cases of the top-level resource and follow any authorization rules for the property (see [11.4 Filter Authorization](#114-filter-authorization)). For example our `persons` top level resource uses `byu_id` as its primary key. Unfortunately `byu_id` is only one of three keys in common use to access the `persons` resource. If a consumer wants to find a person with a specific `net_id` then a query string parameter of `net_id` should be supported by the API. Likewise it makes sense to allow for filtering on other properties such as `email_address` or `phone_number`.  Information in the Swagger definition for the API should include which properties can be used for filtering. 
  
-#### 7.1 Filter Parameters 
+#### 6.1 Filter Parameters 
  
 Filter parameters given in the query string should correspond to properties provided by the resource and should be defined in the Swagger definition of the resource. The `field_sets` and `contexts` query string parameters can be combined with filter parameters to customize the resulting representation. 
+
+##### 6.1.1 Combining Filters
+
+Multiple filters can be combined to create more complex filtering rules. APIs can also support multiple values per filter parameter (comma separated) as well. When multiple values are specified in a filter parameter the values are "OR"ed together. Multiple filter query string parameters are "AND"ed together. 
  
-#### 7.2 Filtering Sub-resources
+#### 6.2 Filtering Sub-resources
  
  Filters apply to the lowest level resource specified on the URL. If the URL only specifies a top level resource a collection of top level resources that match the filter will be returned. If the URL includes a sub-resource the filter will be applied to that sub-resource and the collection returned will be instances of the sub-resource. For example, the URL `https://api.byu.edu/byuapi/persons?net_id=johndoe` will return a collection of persons that have a `net_id` of `johndoe`. The URL `https://api.byu.edu/byuapi/persons/123456789/addresses?address_type=MAL` will return a collection of all mailing addresses associated to the person with the byu_id `123456789`.
  
-#### 7.3 Dot Notation (Filtering With Sub-resources)
+#### 6.3 Dot Notation (Filtering With Sub-resources)
 
 There are times when it makes sense to query a top level resource by a value in one of the sub resources. For example, if I want a list of persons whose home address is in a certain zip code. Resources can support this type of query by implementing dot (`.`) notation. Dot notation allows for a filter parameter to specify the relationship between a top level and a sub-resource property. In order to implement the above example the query string would look something like `https://api.byu.edu/byuapi/persons?addresses.address_type=HOM&addresses.zip_code=84604`  would return a collection of persons with a home address in the `84604` zip code.
 
-#### 7.4 Wildcards
+#### 6.4 Wildcards
 
 Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
 
- ## 8.0 Meta Data Sets and APIs
+## 7.0 Search
+
+Filters allow for limiting the contents of a request. An API can optionally support the ability for a consumer to search across a set of properties for resources containing specific text. 
+
+### 7.1 Search Metadata 
+
+If a resource supports searching it should add the `search_contexts_available` property to its metadata . The value of this property is a JSON object consisting of a JSON array for each of the available search contexts. The JSON array will contain the properties included in that search context in the order they will be searched. 
+
+An example of the search context metadata is as follows: 
+
+```json
+        "search_contexts_available": {
+            "identifiers": [
+                "net_id",
+                "sort_name",
+                "byu_id"
+            ],
+            "names": [
+                "preferred_last_name",
+                "last_name",
+                "preferred_first_name",
+                "first_name"
+            ],
+            "locations": [
+                "home_country",
+                "home_state"
+            ]
+```
+
+### 7.2 Search Query Parameters
+
+The query parameters used to specify search criteria are as follows: 
+
+|Parameter|Description
+|-----|-----
+|search_context|The search context to use. 
+|search_text|The text to search for in the specified context. 
+
+### 7.3 Search Results
+
+Search results are returned as a collection. The `validation_information` metadata property on each instance returned can be used to give information about why the instance was selected. The order of the instances in the collection is determined by the API. Results of the request will be sorted before applying any subset parameters specified in the request (see [3.3.5 Large Collections](#335-large-collections)).
+
+## 8.0 Meta Data Sets and APIs
 
 **Under Review** 
 
@@ -1325,14 +1420,12 @@ Errors during access to individual sub-resources with or without identifiers sho
  - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
  
-
 ### 12.6 '404 Not Found' Errors
 
 Because of the need to protect restricted resources (see [11.6 Restricted Resources](#116-restricted-resources)), when a `404 Not Found` is to be returned special rules apply:
 
 - If the request is for a single top-level resource or sub-resource addressed directly via the URL the `404 Not Found` HTTP status code should be returned with no body attached to the result. 
 - If the request is for a top-level resource (single or collection) that includes multiple sub-resources via field\_sets or contexts and one or more of the sub-resources is not found the rules for Partial Error Response [12.5](#125-partial-error-response) should apply. 
-
 
 
 ------
@@ -1344,5 +1437,5 @@ Because of the need to protect restricted resources (see [11.6 Restricted Resour
 |1.0||Original published standard|
 |1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|
 |1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
-|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. 
+|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  
 
