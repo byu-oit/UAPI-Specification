@@ -530,7 +530,7 @@ In order to implement subsets the following query string parameters must be supp
 |-----|-----
 |subset\_start_offset|The offset for the first resource in the collection to be returned in this subset
 |subset\_size|The number of resources in the collection to return (defaults to the value of `max_subset_size`)
-|subset_start_key|The primary key of the resource to start the subset with. 
+|subset_start_key|The primary key of the resource to start the subset with. Optional alternative to `subset_start_offset`. 
 
 If both `subset_start_offset` and `subset_start_key` are specified in the same query string a `400 Bad Request` should be returned for the entire request. 
 
