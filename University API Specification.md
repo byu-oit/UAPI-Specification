@@ -31,7 +31,14 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [3.3.1 Collection Links](#331-collection-links)
         - [3.3.2 Collection Metadata](#332-collection-metadata)
         - [3.3.3 Values Array](#333-values-array)
-        - [3.3.4 Empty Collections](#334-empty-collections)
+        - [3.3.4 Sorted Collections](#334-sorted-collections)
+            - [3.3.4.1 Sorted Collection Metadata](#3341-sorted-collection-metadata)
+            - [3.3.4.2 Sorted Collection Query Parameters](#3342-sorted-collection-query-parameters)
+        - [3.3.5 Large Collections](#335-large-collections)
+            - [3.3.5.1 Collection Subsets Metadata](#3351-collection-subsets-metadata)
+            - [3.3.5.2 Collection Subsets Query Parameters](#3352-collection-subsets-query-parameters)
+            - [3.3.5.3 Collection Subsets HATEOAS Links](#3353-collection-subsets-hateoas-links) 
+        - [3.3.6 Empty Collections](#334-empty-collections)
     - [4.0 HATEOAS Links](#40-hateoas-links)
         - [4.1 Links](#41-links)
         - [4.2 Link Format](#42-link-format)
@@ -46,15 +53,15 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
             - [5.2.3 Context Representation](#523-context-representation)  
         - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
-    - [6.0 Large Collections](#60-large-collections)
-        - [6.1 Paging Metadata](#61-paging-metadata)
-        - [6.2 Paging Query Parameters](#62-paging-query-parameters)
-        - [6.3 Paging HATEOAS Links](#63-paging-hateoas-links)
-    - [7.0 Filters](#70-filters)
-        - [7.1 Filter Parameters](#71-filter-parameters)
-        - [7.2 Filtering Sub-resources](#72-filtering-sub-resources)
-        - [7.3 Dot Notation (Filtering With Sub-resources)](#73-dot-notation-filtering-with-sub-resources)
-        - [7.4 Wildcards](#74-wildcards)
+    - [6.0 Filters](#60-filters)
+        - [6.1 Filter Parameters](#61-filter-parameters)
+        - [6.2 Filtering Sub-resources](#62-filtering-sub-resources)
+        - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
+        - [6.4 Wildcards](#64-wildcards)
+    - [7.0 Search](#70-search)
+        - [7.1 Search Metadata](#71-search-metadata)
+        - [7.2 Search Query Parameters](#72-search-query-parameters)
+        - [7.3 Search Results](#73-search-results)
     - [8.0 Meta Data Sets and APIs](#80-meta-data-sets-and-apis)
         - [8.1 Meta Data Set Rules](#81-meta-data-set-rules)
         - [8.2 Domain Meta Data Sets](#82-domain-meta-data-sets)
@@ -1097,96 +1104,72 @@ Search results are returned as a collection. The `validation_information` metada
 
 **Under Review** 
 
-Resources often have related data sets that are necessary for a client to properly use the API. Those data sets may be such things as lists of accepted state and country names and their abbreviations, possible values for properties, etc. The `meta` URL namespace specification indicates where these types of data sets should be located and how APIs should be provided to access these data sets.
+Resources often have associated sets of terms, like accepted state and country names and their abbreviations, that define possible values for properties. These terms, or controlled vocabularies, are necessary for a client to properly use the API. The controlled vocabularies associated with a BYU API resource should be made available through an API published in the the `meta` URL namespace.
 
-Some data sets are simply sets of acceptable values a property can contain. Others are much more complex and contain numerous properties related to each individual value.
+### 8.1 Meta Data APIs
 
-### 8.1 Meta Data Set Rules
-
-Each data set should have a corresponding API with the following characteristics:
-
-- The API should be located under `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta-api-name>`.   
-
-- Meta APIs should provide HTTP GET support only. Updating of the values in the data set represented by the meta API is left to the domain APIs supporting the data set.   
-
+Each controlled vocabulary should have a corresponding API with the following characteristics:
+- The API should be located under `https://api.byu.edu/byuapi/meta/<top-level-resource>/<vocabulary-name>`.
+- Meta APIs should provide HTTP GET support only. Updating values in the controlled vocabulary is left to the domain APIs supporting the data set.
 - Meta API responses do not include `metadata` or `links` sections like regular UAPI top level resource responses. 
+- Meta APIs provide a single GET verb on the URL `https://api.byu.edu/byuapi/meta/<top-level-resource>/vocabulary-name>` that returns the controlled vocabulary as a JSON array.
+- Meta APIs do not support paging.
 
-- Meta APIs provide two variations of the GET verb support: 
-    -  An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api-name>/<key>` will return an individual entry in the data set as a JSON set of properties. 
- 
-    - An HTTP GET on the URL  `https://api.byu.edu/byuapi/meta/<top-level-resource>/<meta api>` will return a collection of the individual values of the data set represented in a JSON array. Meta APIs do not support paging as defined in [6.0 Collection Paging](#60-collection-paging). 
+### 8.2 Domain Meta Data
 
-### 8.2 Domain Meta Data Sets
-
-Data sets that are referenced using the `domain` property of the properties metadata ([3.2.3 Properties](#323-properties)) should exhibit the following behavior in addition to the rules in [8.1](#81-meta-data-set-rules):
-
-- When the mime-type requested is `application/json` the following structure should be returned for each entry in the data set: 
+Controlled vocabularies that are referenced using the `domain` property of the properties metadata ([3.2.3 Properties](#323-properties)) should be structured as follows:
 ```json
     {
-        "value":"<value of this entry in the data set>",
-        "description":"<short description of this entry in the data set>",
-        "long-description": "<long description of this entry in the data set>"
+        "value":"<value of this term in the controlled vocabulary>",
+        "description":"<short description of this term>",
+        "long-description": "<long description of this term>"
     }
 ```
+
 - All three properties are required and should be not be empty. 
-
 - Values for `description` and `long-description` can be derived from other properties of the data set to provide a standard way to represent each entry in the data set. 
-
-- `description` should be limited to 30 characters in length. 
-
+- `description` should be limited to 30 characters in length. It is intended for uses like populating a drop-down list.
 - `long-description` should be limited to 256 characters in length. 
 
-- If the mime-type is `application/json-uapi` and the data set has additional properties a response in the standard UAPI format may be returned containing all properties of the data set. 
+#### 8.2.1 Examples of Domain Meta Data
 
-#### 8.2.1 Examples of Domain Meta Data Sets
-   
-An HTTP GET with the `application/json` mime-type on the `state_code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code/UT` would return the following:  
+An HTTP GET with the `application/json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:
     
-    ```json
+```json
     {
-        "value": "UT" ,
-        "description": "Utah",
-        "long-description" : "Utah"
+        "values": [
+            {
+                "value": "ID" ,
+                "description": "Idaho",
+                "long-description":"Idaho"
+            },
+            {
+                "value": "NV" ,
+                "description": "Nevada",
+                "long-description":"Nevada"
+            },
+            {
+                "value": "UT" ,
+                "description": "Utah",
+                "long-description":"Utah"
+            },
+            {
+                "value": "VT" ,
+                "description": "Vermont",
+                "long-description":"Vermont"
+            },
+            ...
+        ]
     }
-    ```  
-    
-An HTTP GET with the `application/json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:  
-    
-    ```json
-    {
-    "values": [
-        {
-            "value": "ID" ,
-            "description": "Idaho",
-            "long-description":"Idaho"
-        },
-        {
-            "value": "NV" ,
-            "description": "Nevada",
-            "long-description":"Nevada"
-        },
-        {
-            "value": "UT" ,
-            "description": "Utah",
-            "long-description":"Utah"
-        },
-        {
-            "value": "VT" ,
-            "description": "Vermont",
-            "long-description":"Vermont"
-        },
-        ...
-    ]
-    }
-    ```  
+```
     
 ### 8.3 Authorization
 
 Meta Data Sets are considered public. No authorization rules other than any API Manager subscription requirement should be enforced on these APIs. 
 
- ### 8.3 Errors
+### 8.3 Errors
 
- Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. Extended error processing as outlined in [12.0 Errors](#120-errors) is not required.  
+Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. Extended error processing as outlined in [12.0 Errors](#120-errors) is not required.
 
 ## 9.0 Files 
 
@@ -1343,7 +1326,7 @@ If the consumer requests access to multiple sub-resources via `field_sets` or `c
 
 ### 11.6 Restricted Resources
  
- Persons related to the university can request that their records be restricted. A person that has their restricted flag set essentially does not exist for any system that is not authorized to see restricted persons. All resources that deal with any aspect of an individual must implement the restricted resources specification requirements. Resources that do not deal with individuals should include the `metadata` element with the value always set to `false`. 
+ Persons related to the university can request that their records be restricted. A person that has their restricted flag set essentially does not exist for any system that is not authorized to see restricted persons. All resources that deal with any aspect of an individual must implement the restricted resources specification requirements. Resources that do not deal with individuals may include the `metadata` element with the value always set to `false`. 
 
  #### 11.6.1 Resource Metadata
 
@@ -1416,7 +1399,7 @@ Errors during access to individual sub-resources with or without identifiers sho
 ### 12.5 Partial Error Response
  
  A single request to a top level resource requesting multiple sub-resources via field\_sets or contexts presents the possibility that some sub-resource access may fail while others will succeed. To reflect this situation the following rules apply:
- - If any part of the request succeeds the HTTP status code for the entire request is `200 Success`. 
+ - The HTTP status code for the entire request is `200 Success`. 
  - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
  
