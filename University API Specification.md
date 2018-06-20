@@ -59,9 +59,10 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
         - [6.4 Wildcards](#64-wildcards)
     - [7.0 Search](#70-search)
-        - [7.1 Search Metadata](#71-search-metadata)
-        - [7.2 Search Query Parameters](#72-search-query-parameters)
-        - [7.3 Search Results](#73-search-results)
+        - [7.1 Search Context](#71-search-context)
+        - [7.2 Search Metadata](#72-search-metadata)
+        - [7.3 Search Query Parameters](#73-search-query-parameters)
+        - [7.4 Search Results](#74-search-results)
     - [8.0 Meta Data Sets and APIs](#80-meta-data-sets-and-apis)
         - [8.1 Meta Data Set Rules](#81-meta-data-set-rules)
         - [8.2 Domain Meta Data Sets](#82-domain-meta-data-sets)
@@ -1060,9 +1061,13 @@ Individual resources can choose to support a wildcard in their query string para
 
 ## 7.0 Search
 
-Filters allow for limiting the contents of a request. An API can optionally support the ability for a consumer to search across a set of properties for resources containing specific text. 
+Filters allow for limiting the contents of a request. An API can optionally support the ability for a consumer to search across a predefined set of properties for resources containing specific text.   
 
-### 7.1 Search Metadata 
+### 7.1 Search Context
+
+Searching can be done across multiple properties at the same time. APIs group searchable properties into search contexts. Each property in a search context should be logically related. Searches can only be performed against a single search context per request. 
+
+### 7.2 Search Metadata 
 
 If a resource supports searching it should add the `search_contexts_available` property to its metadata . The value of this property is a JSON object consisting of a JSON array for each of the available search contexts. The JSON array will contain the properties included in that search context in the order they will be searched. 
 
@@ -1087,7 +1092,7 @@ An example of the search context metadata is as follows:
             ]
 ```
 
-### 7.2 Search Query Parameters
+### 7.3 Search Query Parameters
 
 The query parameters used to specify search criteria are as follows: 
 
@@ -1096,7 +1101,7 @@ The query parameters used to specify search criteria are as follows:
 |search_context|The search context to use. 
 |search_text|The text to search for in the specified context. 
 
-### 7.3 Search Results
+### 7.4 Search Results
 
 Search results are returned as a collection. The `validation_information` metadata property on each instance returned can be used to give information about why the instance was selected. The order of the instances in the collection is determined by the API. Results of the request will be sorted before applying any subset parameters specified in the request (see [3.3.5 Large Collections](#335-large-collections)).
 
