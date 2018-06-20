@@ -246,7 +246,7 @@ value|Required if the api_type is not a value communicating an error.|Contains t
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
 |display_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
-|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
+|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
 |long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |related_resource|Required if the api_type property is `related`.|If the api_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
@@ -404,7 +404,7 @@ A single sub-resource representation would look like:
         "value": "OIT- Administration",
         "api_type": "related",
         "related_resource": "https://api.byu.edu/byuapi/employees",
-        "domain": "https://api.byu.edu/byuapi/meta/departments"
+        "domain": "https://api.byu.edu/byuapi/meta/employees/departments"
     }
 }
 ```
@@ -1138,7 +1138,7 @@ Controlled vocabularies that are referenced using the `domain` property of the p
 
 #### 8.2.1 Examples of Domain Meta Data
 
-An HTTP GET with the `application/json` mime type on the `state_code` data set located at the URL `https://api.byu.edu/byuapi/meta/students/state_code` would return the following:
+An HTTP GET with the `application/json` mime type on the `state_codes` data set located at the URL `https://api.byu.edu/byuapi/meta/students/state_codes` would return the following:
     
 ```json
     {
