@@ -1174,7 +1174,7 @@ Meta Data Sets are considered public. No authorization rules other than any API 
 
 ### 8.3 Errors
 
-Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. Extended error processing as outlined in [12.0 Errors](#120-errors) is not required.
+Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. uapi error processing as outlined in [12.0 Errors](#120-errors) is not required.
 
 ## 9.0 Files 
 
@@ -1188,7 +1188,7 @@ Supporting downloads of these files via the UAPI is done through standard REST p
 
 #### 9.1.1 File Metadata
 
-Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/json+extended` will return data associated with the file in standard UAPI format. The mime-type `application\json+extended` is used to avoid the instance where the file itself is a JSON file. 
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/json+uapi` will return data associated with the file in standard UAPI format. The mime-type `application\json+uapi` is used to avoid the instance where the file itself is a JSON file. 
 
 ### 9.2 File Uploads
 
@@ -1196,7 +1196,7 @@ Uploading of files is left to the discretion of the API designer but should foll
 
 #### 9.2.1 Updating File Metadata
 
-Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/json+extended`. 
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/json+uapi`. 
 
 
 ## 10.0 HTTP POST, PUT, DELETE
