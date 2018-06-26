@@ -90,7 +90,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [11.5.1 Top Level Resource Authorization Failure](#1151-top-level-resource-authorization-failure)
             - [11.5.2 Sub-resource Authorization Failure](#1152-sub-resource-authorization-failure)
             - [11.5.3 Partial Authorization Failure](#1153-partial-authorization-failure)
-        -[11.6 Restricted Resources](#116-restricted-resources)
+        - [11.6 Restricted Resources](#116-restricted-resources)
             - [11.6.1 Resource Metadata](#1161-resource-metadata)
             - [11.6.2 Authorized Access](#1162-authorized-access)
             - [11.6.3 Unauthorized Access Attempts](#1163-unauthorized-access-attempts)
@@ -188,7 +188,7 @@ The resource should always include the following elements:
 * Metadata
 * One or more sub-resources represented as field\_sets (see [field\_sets](#51-field_sets)).
 
-Top level resources should return a default set of properties when no sub-resources have been requested. These properties should be included in a single JSON object with the name `basic`. See [The Basic Field\_set](513-the-basic-field_set) for more information. 
+Top level resources should return a default set of properties when no sub-resources have been requested. These properties should be included in a single JSON object with the name `basic`. See [The Basic Field\_set](#513-the-basic-field_set) for more information. 
 
 Multiple sub-resources can be requested in a single HTTP request. See ["Sub-resources, Field\_sets, And Contexts"](#50-sub-resources-field_sets-and-contexts) for more information.
 
@@ -205,7 +205,7 @@ The metadata property contains data about the request for this resource includin
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
-|restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#11.6-restricted-resources) for more information. 
+|restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
 
 
 Metadata related to [field\_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource may also be included.
@@ -249,7 +249,7 @@ value|Required if the api_type is not a value communicating an error.|Contains t
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
 |display_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
-|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
+|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
 |long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |related_resource|Required if the api_type property is `related`.|If the api_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
@@ -407,18 +407,18 @@ A single sub-resource representation would look like:
         "value": "OIT- Administration",
         "api_type": "related",
         "related_resource": "https://api.byu.edu/byuapi/employees",
-        "domain": "https://api.byu.edu/byuapi/meta/departments"
+        "domain": "https://api.byu.edu/byuapi/meta/employees/departments"
     }
 }
 ```
 
 ### 3.3 Representing a Collection of Resources
 
-If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [7.0 Filters](#70-filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
+If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [6.0 Filters](#60-filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
 
 #### 3.3.1 Collection Links
 
-The links object for a collection will contain [HATEOAS](#40-hateoas) links related to processing the collection. They may include links for paging, etc.  
+The links object for a collection will contain [HATEOAS](#40-hateoas-links) links related to processing the collection. They may include links for paging, etc.  
 
 #### 3.3.2 Collection Metadata
 
@@ -431,7 +431,7 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code.
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
-|restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#11.6-restricted-resources) for more information.
+|restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information.
 |collection_size|required|The number of items of the resource which exist in the entire collection.
 
 The metadata returned for a resource collection would look like:
@@ -676,7 +676,7 @@ The API should document the field\_sets supported in the metadata of the top lev
             "phones",
             "relationships"
         ],
-        "default_field_sets": [
+        "field_sets_default": [
             "basic"
         ],
     },
@@ -907,7 +907,7 @@ A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addr
                         "method": "PUT"
                     },
                     "addresses__delete": {
-                        "rel": "addresses_delete",
+                        "rel": "addresses__delete",
                         "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
                         "method": "DELETE"
                     }
@@ -1139,7 +1139,7 @@ Controlled vocabularies that are referenced using the `domain` property of the p
 
 #### 8.2.1 Examples of Domain Meta Data
 
-An HTTP GET with the `application/json` mime type on the `state-code` data set located at the URL `https://api.byu.edu/byuapi/meta/student/state_code` would return the following:
+An HTTP GET with the `application/json` mime type on the `state_codes` data set located at the URL `https://api.byu.edu/byuapi/meta/students/state_codes` would return the following:
     
 ```json
     {
@@ -1196,7 +1196,6 @@ Uploading of files is left to the discretion of the API designer but should foll
 #### 9.2.1 Updating File Metadata
 
 Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/uapi+json`. 
-
 
 ## 10.0 HTTP POST, PUT, DELETE
 
