@@ -59,7 +59,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
         - [6.4 Wildcards](#64-wildcards)
     - [7.0 Search](#70-search)
-        - [7.1 Search Context](#71-search-context)
+        - [7.1 Search Context And Filters](#71-search-context-and-filters)
         - [7.2 Search Metadata](#72-search-metadata)
         - [7.3 Search Query Parameters](#73-search-query-parameters)
         - [7.4 Search Results](#74-search-results)
@@ -104,6 +104,9 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
         - [12.4 Sub-resource Errors](#124-sub-resource-errors)
         - [12.5 Partial Error Response](#125-partial-error-response)
+        - [12.6 Special Error Situations](#126-special-error-situations)
+            - [12.6.1 `404 Not Found` Errors](#1261-404-not-found-errors)
+            - [12.6.2 Invalid Query Parameters](#1262-invalid-query-parameters)
     - [Version History](#version-history)   
 
 
@@ -1063,9 +1066,9 @@ Individual resources can choose to support a wildcard in their query string para
 
 Filters allow for limiting the contents of a request. An API can optionally support the ability for a consumer to search across a predefined set of properties for resources containing specific text.   
 
-### 7.1 Search Context
+### 7.1 Search Context And Filters
 
-Searching can be done across multiple properties at the same time. APIs group searchable properties into search contexts. Each property in a search context should be logically related. Searches can only be performed against a single search context per request. 
+Searching can be done across multiple properties at the same time. APIs group searchable properties into search contexts. Each property in a search context should be logically related. Searches can only be performed against a single search context per request. Searches can be combined with filters to allow for complex operations. The valid combinations are API dependant and should be outlined in the API documentation. 
 
 ### 7.2 Search Metadata 
 
@@ -1106,8 +1109,6 @@ The query parameters used to specify search criteria are as follows:
 Search results are returned as a collection. The `validation_information` metadata property on each instance returned can be used to give information about why the instance was selected. The order of the instances in the collection is determined by the API. Results of the request will be sorted before applying any subset parameters specified in the request (see [3.3.5 Large Collections](#335-large-collections)).
 
 ## 8.0 Meta Data Sets and APIs
-
-**Under Review** 
 
 Resources often have associated sets of terms, like accepted state and country names and their abbreviations, that define possible values for properties. These terms, or controlled vocabularies, are necessary for a client to properly use the API. The controlled vocabularies associated with a BYU API resource should be made available through an API published in the the `meta` URL namespace.
 
@@ -1178,8 +1179,6 @@ Errors encountered while accessing any Meta URL data set should simply return th
 
 ## 9.0 Files 
 
-**Under Review**
-
 Files includes images, PDFs, text files, JSON files, etc. Files appear as sub-resources in the URL space of the UAPI but are treated differently. 
 
 ### 9.1 File Downloads
@@ -1188,7 +1187,7 @@ Supporting downloads of these files via the UAPI is done through standard REST p
 
 #### 9.1.1 File Metadata
 
-Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/json+uapi` will return data associated with the file in standard UAPI format. The mime-type `application\json+uapi` is used to avoid the instance where the file itself is a JSON file. 
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/uapi+json` will return data associated with the file in standard UAPI format. The mime-type `application\uapi+json` is used to avoid the instance where the file itself is a JSON file. 
 
 ### 9.2 File Uploads
 
@@ -1196,7 +1195,7 @@ Uploading of files is left to the discretion of the API designer but should foll
 
 #### 9.2.1 Updating File Metadata
 
-Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/json+uapi`. 
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/uapi+json`. 
 
 
 ## 10.0 HTTP POST, PUT, DELETE
@@ -1408,12 +1407,18 @@ Errors during access to individual sub-resources with or without identifiers sho
  - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
  
-### 12.6 '404 Not Found' Errors
+### 12.6 Special Error Situations
+
+#### 12.6.1 '404 Not Found' Errors
 
 Because of the need to protect restricted resources (see [11.6 Restricted Resources](#116-restricted-resources)), when a `404 Not Found` is to be returned special rules apply:
 
 - If the request is for a single top-level resource or sub-resource addressed directly via the URL the `404 Not Found` HTTP status code should be returned with no body attached to the result. 
 - If the request is for a top-level resource (single or collection) that includes multiple sub-resources via field\_sets or contexts and one or more of the sub-resources is not found the rules for Partial Error Response [12.5](#125-partial-error-response) should apply. 
+
+#### 12.6.2 Invalid Query Parameters
+
+When a request contains an undefined query parameter or a query parameter that contains an invalid value the HTTP status code `400 Bad Request` should be returned and the body of the message should contain a valid `validation_response`. In order to aid the consumer with correcting the problem the API should include the `validation_information` metadata property with messages that specify which query parameter(s) was problematic and why. 
 
 
 ------
@@ -1425,5 +1430,5 @@ Because of the need to protect restricted resources (see [11.6 Restricted Resour
 |1.0||Original published standard|
 |1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|
 |1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
-|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  
+|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  Other minor enhancements and clarifications. 
 
