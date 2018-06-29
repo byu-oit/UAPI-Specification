@@ -64,7 +64,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [7.3 Search Query Parameters](#73-search-query-parameters)
         - [7.4 Search Results](#74-search-results)
     - [8.0 Meta Data Sets and APIs](#80-meta-data-sets-and-apis)
-        - [8.1 Meta Data Set Rules](#81-meta-data-set-rules)
+        - [8.1 Meta Data Set APIs](#81-meta-data-set-apis)
         - [8.2 Domain Meta Data Sets](#82-domain-meta-data-sets)
             - [8.2.1 Examples of Domain Meta Data Sets](#821-examples-of-domain-meta-data-sets)
         - [8.3 Authorization](#83-authorization)
