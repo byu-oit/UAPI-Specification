@@ -112,7 +112,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
 
 ## 1.0 Introduction
 
-The University API (UAPI) Specification is an effort intended to bring standardization to consumers and producers of APIs. It presents a standard for URL design, request and response format, and HTTP methods and return codes. The UAPI standard is required for any API designated as part of the University API and recommended for other APIs whenever feasible. 
+The University API (UAPI) Specification is intended to bring standardization to consumers and producers of APIs. It presents a standard for URL design, request and response format, and HTTP methods and return codes. The UAPI standard is required for any API designated as part of the University API and recommended for other APIs whenever feasible. 
 
 ### 1.1 University APIs vs Domain APIs
 
@@ -160,7 +160,7 @@ Sub-resources can also have identifiers. The URL for the work address of a perso
 
 #### 2.1.4 Composite Resource Identifier
 
-Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a *composite identifier*. A composite identifier uniquely identifies a resource by using multiple pieces of information. The UAPI specification states that values in a composite identifier be separated by a comma. 
+Some resources and sub-resources must be identified by using more than one piece of information. This type of identifier is termed a *composite identifier*. A composite identifier uniquely identifies a resource by using multiple pieces of information. The values in a composite identifier should be separated by a comma. 
 
 Composite identifiers should conform to the pattern:
 
@@ -176,7 +176,7 @@ Resources have properties associated with them. Some properties are simple name 
 
 ### 3.1 Resource Representation
 
-When a consumer of an API interacts with a resource the representation of the properties of that resource are dependent upon the mime-type used. All text based resources will be represented as JSON using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP `Accept` header should be included in the request to indicate to the API which representation(s) the consumer is capable of processing and the HTTP `Content-Type` header should be included in the response indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
+When a consumer of an API interacts with a resource the representation of the properties of that resource is dependent upon the mime-type used. All text based resources will be represented as JSON using the `application/json` mime-type. Other text representations (XML, etc) can be provided if the API is capable. The HTTP `Accept` header should be included in the request to indicate to the API which representation(s) the consumer is capable of processing and the HTTP `Content-Type` header should be included in the response indicating the mime-type of the data being represented.  Binary resource properties such as images should use the appropriate mime-type for the type of data being represented. 
 
 ### 3.2 Representing a Single Resource
 
@@ -203,9 +203,9 @@ The metadata property contains data about the request for this resource includin
 |Property|Required|Description
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
-|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
+|validation_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
-|restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
+|restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. Special rules apply to restricted resources. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
 
 
 Metadata related to [field\_sets](#51-field_sets) and [contexts](#52-contexts) along with any custom metadata about the resource may also be included.
@@ -244,27 +244,27 @@ Resource properties are name value pairs containing information about the state 
 
 |Property|Required|Description
 |-----|-----|-----
-value|Required if the api_type is not a value communicating an error.|Contains the data value to be processed.
-|api_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api_type and the rules associated with each value see the list below.
+value|Yes|Contains the data value to be processed.
+|api\_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api\_type and the rules associated with each value see the list below.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
-|display_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
+|display\_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
 |domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
-|long_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
-|related_resource|Required if the api_type property is `related`.|If the api_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
+|long\_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
+|related\_resource|Required if the api\_type property is `related`.|If the api\_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
 The `api_type` field is required for all properties. It indicates more information about the value being returned such as if it is modifiable by the consumer, a derived field, a system generated value, etc. 
 
 The possible values for `api_type` are:
 
-|api_type|Modifiable by the consumer through this API|Description
+|api\_type|Modifiable by the consumer through this API|Description
 |-----|-----|-----
 read-only|No|There are either business rules or authorization considerations that do not allow the property to be changed at this time by the consumer.
 |modifiable|Yes|The property may be modified by the consumer.
 |system|No|The value was assigned by the system. A date-time field that tracks the last time the resource was updated is a good example of a system data value.
 |derived|No|The property was derived by a "calculation" on other properties. An example might be GPA.
 |unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [11.0 Authorization](#110-authorization) for more information. 
-|related|No|The responsibility for manipulating this property doesn't belong to this API. The business logic to modify the property exists in the "related_resource".
+|related|No|The responsibility for manipulating this property doesn't belong to this API. The business logic to modify the property exists in the `related_resource`.
 
 A property would look something like this:  
 
@@ -428,11 +428,11 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 
 |Property|Required|Description
 |-----|-----|-----
-|validation_response|yes|This is an object that contains two required properties: *code* and *message*.
-|validation_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code.
+|validation\_response|yes|This is an object that contains two required properties: *code* and *message*.
+|validation\_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code.
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 |restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information.
-|collection_size|required|The number of items of the resource which exist in the entire collection.
+|collection\_size|required|The number of items of the resource which exist in the entire collection.
 
 The metadata returned for a resource collection would look like:
 
@@ -461,9 +461,9 @@ The following `metadata` properties are required if sorting is supported by the 
 
 |Property|Description
 |-----|-----
-|sort_properties_available|The properties that can be used in requesting a specific order of the collection results.
-|sort_properties_default|The default properties used to sort the collection.
-|sort_order_default|The default sort order used to sort the collection. 
+|sort\_properties\_available|The properties that can be used in requesting a specific order of the collection results.
+|sort\_properties\_default|The default properties used to sort the collection.
+|sort\_order\_default|The default sort order used to sort the collection. 
 
 Sort metadata would look like the following:
 
@@ -534,7 +534,7 @@ In order to implement subsets the following query string parameters must be supp
 |-----|-----
 |subset\_start_offset|The offset for the first resource in the collection to be returned in this subset
 |subset\_size|The number of resources in the collection to return (defaults to the value of `max_subset_size`)
-|subset_start_key|The primary key of the resource to start the subset with. Optional alternative to `subset_start_offset`. 
+|subset\_start\_key|The primary key of the resource to start the subset with. Optional alternative to `subset_start_offset`. 
 
 If both `subset_start_offset` and `subset_start_key` are specified in the same query string a `400 Bad Request` should be returned for the entire request. 
 
