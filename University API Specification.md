@@ -38,7 +38,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [3.3.5.1 Collection Subsets Metadata](#3351-collection-subsets-metadata)
             - [3.3.5.2 Collection Subsets Query Parameters](#3352-collection-subsets-query-parameters)
             - [3.3.5.3 Collection Subsets HATEOAS Links](#3353-collection-subsets-hateoas-links) 
-        - [3.3.6 Empty Collections](#334-empty-collections)
+        - [3.3.6 Empty Collections](#336-empty-collections)
     - [4.0 HATEOAS Links](#40-hateoas-links)
         - [4.1 Links](#41-links)
         - [4.2 Link Format](#42-link-format)
@@ -55,6 +55,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
     - [6.0 Filters](#60-filters)
         - [6.1 Filter Parameters](#61-filter-parameters)
+            - [6.1.1 Combining Filters](#611-combining-filters)
         - [6.2 Filtering Sub-resources](#62-filtering-sub-resources)
         - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
         - [6.4 Wildcards](#64-wildcards)
@@ -63,10 +64,10 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [7.2 Search Metadata](#72-search-metadata)
         - [7.3 Search Query Parameters](#73-search-query-parameters)
         - [7.4 Search Results](#74-search-results)
-    - [8.0 Meta Data Sets and APIs](#80-meta-data-sets-and-apis)
-        - [8.1 Meta Data Set APIs](#81-meta-data-set-apis)
-        - [8.2 Domain Meta Data Sets](#82-domain-meta-data-sets)
-            - [8.2.1 Examples of Domain Meta Data Sets](#821-examples-of-domain-meta-data-sets)
+    - [8.0 Meta Data Sets](#80-meta-data-sets)
+        - [8.1 Meta Data APIs](#81-meta-data-apis)
+        - [8.2 Domain Meta Data](#82-domain-meta-data)
+            - [8.2.1 Examples of Domain Meta Data](#821-examples-of-domain-meta-data)
         - [8.3 Authorization](#83-authorization)
         - [8.4 Errors](#84-errors)
     - [9.0 Files](#90-files)
@@ -186,15 +187,15 @@ The resource should always include the following elements:
 
 * Links
 * Metadata
-* One or more sub-resources represented as field\_sets (see [field\_sets](#51-field_sets)).
+* One or more sub-resources represented as field\_sets (see [5.1 field\_sets](#51-field_sets)).
 
-Top level resources should return a default set of properties when no sub-resources have been requested. These properties should be included in a single JSON object with the name `basic`. See [The Basic Field\_set](#513-the-basic-field_set) for more information. 
+Top level resources should return a default set of properties when no sub-resources have been requested. These properties should be included in a single JSON object with the name `basic`. See [5.1.3 The Basic Field\_set](#513-the-basic-field_set) for more information. 
 
-Multiple sub-resources can be requested in a single HTTP request. See ["Sub-resources, Field\_sets, And Contexts"](#50-sub-resources-field_sets-and-contexts) for more information.
+Multiple sub-resources can be requested in a single HTTP request. See [5.0 Sub-resources, Field\_sets, And Contexts](#50-sub-resources-field_sets-and-contexts) for more information.
 
 #### 3.2.1 Links
 
-The links property is an object that represents possible future actions that can be performed against this resource. The contents of the links section may vary depending upon the context in which the resource is being accessed (date, user authorizations, etc) See [HATEOAS](#40-hateoas-links) for a more complete discussion of HATEOS links and their purpose.  
+The links property is an object that represents possible future actions that can be performed against this resource. The contents of the links section may vary depending upon the context in which the resource is being accessed (date, user authorizations, etc) See [4.0 HATEOAS Links](#40-hateoas-links) for a more complete discussion of HATEOS links and their purpose.  
 
 #### 3.2.2 Metadata
 
@@ -249,7 +250,7 @@ value|Yes|Contains the data value to be processed.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
 |display\_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
-|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta URL Namespaces and APIs](#80-meta-url-namespaces-and-apis) for more information. 
+|domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta Data Sets](#80-meta-data-sets) for more information. 
 |long\_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |related\_resource|Required if the api\_type property is `related`.|If the api\_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
@@ -283,7 +284,7 @@ Date and Date/Time data types should be represented as strings using the [RFC-33
 
 #### 3.2.4 Representing Sub-resources
 
-Single value sub-resources (i.e. those retrieved by using an identifier in the URL) are represented much the same way the `basic` object is represented. They require the same links, metadata, and properties elements. All properties are represented just under the root of the returned object (i.e. they do not have a `basic` object). 
+Single value sub-resources (i.e. those retrieved by using an identifier in the URL) are represented much the same way the `basic` object is represented. They require the same links, metadata, and properties elements. All properties are represented just under the root of the returned object (i.e. they do not have a `basic` object).
 
 #### 3.2.5 Example Single Resource Representation
 
@@ -414,7 +415,7 @@ A single sub-resource representation would look like:
 
 ### 3.3 Representing a Collection of Resources
 
-If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter (see [6.0 Filters](#60-filters) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
+If a UAPI resource (top level or sub-resource) is accessed with no identifier or via a filter or search (see [6.0 Filters](#60-filters) and [7.0 Search](#70-search)) a collection of individual resource representations is returned. This collection will have its own set of links and metadata with values that pertain to the collection. The individual resource representations as defined in [3.1 Resource Representation](#31-resource-representation) are returned in a JSON array named `values`. 
 
 #### 3.3.1 Collection Links
 
@@ -429,8 +430,8 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |Property|Required|Description
 |-----|-----|-----
 |validation\_response|yes|This is an object that contains two required properties: *code* and *message*.
-|validation\_information|no|This is an array of strings that provide information about errors correlated to the validation_response.code and HTTP response code.
-|cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
+|validation\_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code.
+|cache|required if the result is a cached value|This is an object that contains one required property: `date_time`. The `date_time` value is when the data was updated in the cache.
 |restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information.
 |collection\_size|required|The number of items of the resource which exist in the entire collection.
 
@@ -492,7 +493,7 @@ The query parameters used to specify sort preferences are as follows:
 
 #### 3.3.5 Large Collections
 
-Some resources and sub-resources represent a large number of instances. APIs that support large numbers of instances should implement subsets in order to provide the consumer a way to move through the collection in a reasonable way. It may be possible that the underlying data has changed between invocations so instances may be repeated or skipped. 
+Some resources and sub-resources represent a large number of instances. APIs that support large numbers of instances should implement subsets in order to provide the consumer a way to move through the collection in a reasonable way. The consumer should be aware that it may be possible that the underlying data has changed between invocations so instances may be repeated or skipped. 
 
 To implement subsets a resource must include specific `metadata` and `links` with the collection in the response. 
 
@@ -528,12 +529,12 @@ The metadata returned for a resource collection that supports subsets would look
 
 ##### 3.3.5.2 Collection Subsets Query Parameters
 
-In order to implement subsets the following query string parameters must be supported:
+In order to implement subsets the following query string parameters are used:
 
 |Parameter|Description
 |-----|-----
-|subset\_start_offset|The offset for the first resource in the collection to be returned in this subset
-|subset\_size|The number of resources in the collection to return (defaults to the value of `max_subset_size`)
+|subset\_start_offset|The offset for the first resource in the collection to be returned in this subset.
+|subset\_size|The number of resources in the collection to return (defaults to the value of `max_subset_size`).
 |subset\_start\_key|The primary key of the resource to start the subset with. Optional alternative to `subset_start_offset`. 
 
 If both `subset_start_offset` and `subset_start_key` are specified in the same query string a `400 Bad Request` should be returned for the entire request. 
@@ -645,11 +646,11 @@ An example links object for the person resource at `https://api.byu.edu/byuapi/p
 
 ## 5.0 Sub-resources, Field\_sets, and Contexts
 
-Access to individual sub-resources is accomplished by adding the desired sub-resource name and an optional identifier to the URL of the top level resource. There are cases where access to more than one sub-resource in a single request is necessary or desirable. The UAPI standard provides two query string parameters to make accessing multiple sub-resources in one call possible: `field_sets` and `contexts`.
+Access to individual sub-resources is accomplished by adding the desired sub-resource name and an optional identifier to the URL of the top level resource. There are cases where access to more than one sub-resource in a single request is necessary or desirable. The UAPI standard provides two query string parameters to this possible: `field_sets` and `contexts`.
 
 ### 5.1 Field\_sets
 
-Field\_sets are merely a convenient way to request and represent multiple sub-resources in the same request to a top level resource. The names of field\_sets and sub-resources must be the same. If an API supports sub-resources it must also support field\_sets. 
+Field\_sets are merely a convenient way to request and represent multiple sub-resources in a single request to a top level resource. The names of field\_sets and sub-resources must be the same. If an API supports sub-resources it must also support field\_sets. 
 
 #### 5.1.1 Field\_sets Metadata
 
@@ -661,7 +662,7 @@ The API should document the field\_sets supported in the metadata of the top lev
 |field\_sets\_available|only if field\_sets are supported|JSON array of all available field\_sets available to request for this resource. A consumer may not have access to all field\_sets in this array.  
 |field\_sets\_default|only if field\_sets are supported| The field\_sets that will be returned if no `field_sets` query parameter is specified. 
  
- Example `metadata`  from a top-level resource that supports field\_sets looks like:
+ Example `metadata` from a top-level resource that supports field\_sets looks like:
  
 ```json
     "metadata": {
@@ -684,7 +685,7 @@ The API should document the field\_sets supported in the metadata of the top lev
 
 #### 5.1.2 Field\_sets Query Parameter
 
-To specify one or more field\_sets to be returned the `field_sets` query string parameter is used to list the field\_sets being requested. 
+To specify one or more field\_sets to be returned the `field_sets` query string parameter is used to provide a comma separated list the field\_sets being requested. 
 
 #### 5.1.3 The 'basic' Field\_set
 
@@ -692,311 +693,22 @@ The UAPI specification defines a special field\_set that doesn't directly corres
 
 #### 5.1.4 Field\_set Representation
 
-Sub-resources requested using the `field\_sets` query string parameter are represented as JSON objects at the top level of the result. The name of the object is the name of the sub-resource. The representation of each sub-resource is exactly the same as if the sub-resource was accessed directly from the URL. 
+Sub-resources requested using the `field\_sets` query string parameter are represented as JSON objects at the top level of the individual resource representation. The name of the object is the name of the sub-resource. The representation of each sub-resource is exactly the same as if the sub-resource was accessed directly from the URL. 
 
 A request to `https://api.byu.edu/byuapi/persons/123456789?field_sets=basic,addresses` would look like: 
 
 ```json
 {
-    "links":...,
-    "metadata":...,
-    "basic": {
-        "links": {
-            "basic__info": {
-                "rel": "self",
-                "href": "https://api.byu.edu/byuapi/persons/123456789",
-                "method": "GET"
-            },
-            "basic__modify": {
-                "rel": "basic__modify",
-                "href": "https://api.byu.edu/byuapi/persons/123456789",
-                "method": "PUT"
-            },
-            "basic__delete": {
-                "rel": "basic__delete",
-                "href": "https://api.byu.edu/byuapi/persons/123456789",
-                "method": "DELETE"
-            }
-        },
-        "metadata": {
-            "restricted": false,  
-            "validation_response": {
-                "code": 200,
-                "message": "Success"
-            },
-            "validation_information": [
-                "No additional information"
-            ],
-            "cache": {
-                "date_time": "2018-02-21T22:26:57.480Z"
-            }
-        },
-        "byu_id": {
-            "value": "1234567890",
-            "api_type": "system",
-            "key": true
-        },
-        "person_id": {
-            "value": "987654321",
-            "api_type": "system"
-        },
-        "net_id": {
-            "value": "adddrop",
-            "api_type": "related",
-            "related_resource": "https://api.byu.edu/byuapi/persons/1234567890/credentials/NET_ID,adddrop"
-        },
-        "date_time_updated": {
-            "value": "2016-09-21T09:03:18.000Z",
-            "api_type": "system"
-        },
-        "date_time_created": {
-            "value": "1997-02-07T12:22:32.000Z",
-            "api_type": "system"
-        },
-        "first_name": {
-            "value": "John",
-            "api_type": "modifiable"
-        },
-        "middle_name": {
-            "value": "D",
-            "api_type": "modifiable"
-        },
-        "surname": {
-            "value": "Doe",
-            "api_type": "modifiable"
-        },
-        "rest_of_name": {
-            "value": "John D",
-            "api_type": "derived"
-        },
-        "name_lnf": {
-            "value": "Doe, John D",
-            "api_type": "derived"
-        }
-    },
-    "addresses": {
-        "links": {
-            "addresses__info": {
-                "rel": "self",
-                "href": "https://api.byu.edu/byuapi/persons/123456789/addresses",
-                "method": "GET"
-            }
-        },
-        "metadata": {
-            "restricted": false,  
-            "collection_size": 2,
-            "subset_start": 1,
-            "subset_size": 2,
-            "default_subset_size": 1,
-            "maximum_subset_size": 100,
-            "validation_response": {
-                "code": 200,
-                "message": "Success"
-            },
-            "validation_information": [
-                "No additional information"
-            ],
-            "cache": {
-                "date_time": "2018-02-21T22:26:57.520Z"
-            }
-        },
-        "values": [
-            {
-                "links": {
-                    "addresses__info": {
-                        "rel": "self",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/MAL",
-                        "method": "GET"
-                    },
-                    "addresses__modify": {
-                        "rel": "addresses__modify",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/MAL",
-                        "method": "PUT"
-                    },
-                    "addresses__delete": {
-                        "rel": "addresses__delete",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/MAL",
-                        "method": "DELETE"
-                    }
-                },
-                "metadata": {
-                    "restricted": false,  
-                    "validation_response": {
-                        "code": 200,
-                        "message": "Success"
-                    },
-                    "validation_information": [
-                        "No additional information"
-                    ],
-                    "cache": {
-                        "date_time": "2018-02-21T22:26:57.518Z"
-                    }
-                },
-                "byu_id": {
-                    "value": "123456789",
-                    "description": "John Doe",
-                    "api_type": "system",
-                    "key": true
-                },
-                "address_type": {
-                    "value": "MAL",
-                    "api_type": "modifiable",
-                    "key": true
-                },
-                "date_time_updated": {
-                    "value": "2012-09-18T09:42:54.000Z",
-                    "api_type": "system"
-                },
-                "date_time_created": {
-                    "value": "1997-02-07T00:00:00.000Z",
-                    "api_type": "system"
-                },
-                "address_line_1": {
-                    "value": "1300 N University Ave",
-                    "api_type": "modifiable"
-                },
-                "address_line_2": {
-                    "value": "PROVO, UT  84602",
-                    "api_type": "modifiable"
-                },
-                "address_line_3": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "address_line_4": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "building": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "room": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "country_code": {
-                    "value": "USA",
-                    "description": "United States of America",
-                    "api_type": "modifiable"
-                },
-                "city": {
-                    "value": "PROVO",
-                    "api_type": "modifiable"
-                },
-                "state_code": {
-                    "value": "UT",
-                    "description": "Utah",
-                    "api_type": "modifiable"
-                },
-                "postal_code": {
-                    "value": "84602",
-                    "api_type": "modifiable"
-                }
-            },
-           {
-                "links": {
-                    "addresses__info": {
-                        "rel": "self",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
-                        "method": "GET"
-                    },
-                    "addresses__modify": {
-                        "rel": "addresses__modify",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
-                        "method": "PUT"
-                    },
-                    "addresses__delete": {
-                        "rel": "addresses__delete",
-                        "href": "https://api.byu.edu/byuapi/persons/123456789/addresses/WRK",
-                        "method": "DELETE"
-                    }
-                },
-                "metadata": {
-                    "restricted": false,
-                    "validation_response": {
-                        "code": 200,
-                        "message": "Success"
-                    },
-                    "validation_information": [
-                        "No additional information"
-                    ],
-                    "cache": {
-                        "date_time": "2018-02-21T22:26:57.519Z"
-                    }
-                },
-                "byu_id": {
-                    "value": "123456789",
-                    "description": "John Doe",
-                    "api_type": "system",
-                    "key": true
-                },
-                "address_type": {
-                    "value": "WRK",
-                    "api_type": "modifiable",
-                    "key": true
-                },
-                "date_time_updated": {
-                    "value": "2015-06-09T10:37:00.000Z",
-                    "api_type": "system"
-                },
-                "date_time_created": {
-                    "value": "2003-05-06T12:23:14.000Z",
-                    "api_type": "system"
-                },
-                "address_line_1": {
-                    "value": "2019 ITB",
-                    "api_type": "modifiable"
-                },
-                "address_line_2": {
-                    "value": "Provo, UT  84602",
-                    "api_type": "modifiable"
-                },
-                "address_line_3": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "address_line_4": {
-                    "value": " ",
-                    "api_type": "modifiable"
-                },
-                "building": {
-                    "value": "ITB",
-                    "description": "Information Tec",
-                    "long_description": "Information Technology Bldg",
-                    "api_type": "modifiable"
-                },
-                "room": {
-                    "value": "2033",
-                    "api_type": "modifiable"
-                },
-                "country_code": {
-                    "value": "USA",
-                    "description": "United States of America",
-                    "api_type": "modifiable"
-                },
-                "city": {
-                    "value": "Provo",
-                    "api_type": "modifiable"
-                },
-                "state_code": {
-                    "value": "UT",
-                    "description": "Utah",
-                    "api_type": "modifiable"
-                },
-                "postal_code": {
-                    "value": "84602",
-                    "api_type": "modifiable"
-                }
-            }
-        ]
-    }
+    "links":{...},
+    "metadata":{...},
+    "basic": {...},
+    "addresses": {...}
 }
 ```
 
 ### 5.2 Contexts
 
-Contexts are an optional part of the UAPI specification that allow APIs with a large number of field\_sets to group them together into logical groups. This allows for simplification of the URL query string. Contexts should reflect the business domain related to the top-level resource. Field\_sets can be included in multiple contexts. 
+Contexts are an optional part of the UAPI specification that allow APIs with a large number of field\_sets to combine them into logical groups. This allows for simplification of the URL query string. Contexts should reflect the business domain related to the top-level resource. Field\_sets can be included in multiple contexts. 
 
 #### 5.2.1 Context Metadata
 
@@ -1036,7 +748,7 @@ Responses generated by using the `contexts` query string parameter are represent
 
 ### 5.3 Undefined Field\_set Or Context Parameter
 
-If the query string of a request contains an undefined field\_set or context the entire request should be rejected with a HTTP status code of `400 Bad Request`. A `metadata` property should be returned in the response body that contains the `validation_response`. A `validation_information` should also be returned containing a message or messages indicating which query string parameter is the cause of the error. 
+If the query string of a request contains an undefined field\_set or context the entire request should be rejected with a HTTP status code of `400 Bad Request`. A `metadata` property should be returned in the response body that contains the `validation_response`. `validation_information` should also be returned containing a message or messages indicating which query string parameter is the cause of the error. 
 
 ## 6.0 Filters
  
@@ -1101,20 +813,21 @@ The query parameters used to specify search criteria are as follows:
 
 |Parameter|Description
 |-----|-----
-|search_context|The search context to use. 
-|search_text|The text to search for in the specified context. 
+|search\_context|The search context to use. 
+|search\_text|The text to search for in the specified context. 
 
 ### 7.4 Search Results
 
 Search results are returned as a collection. The `validation_information` metadata property on each instance returned can be used to give information about why the instance was selected. The order of the instances in the collection is determined by the API. Results of the request will be sorted before applying any subset parameters specified in the request (see [3.3.5 Large Collections](#335-large-collections)).
 
-## 8.0 Meta Data Sets and APIs
+## 8.0 Meta Data Sets
 
-Resources often have associated sets of terms, like accepted state and country names and their abbreviations, that define possible values for properties. These terms, or controlled vocabularies, are necessary for a client to properly use the API. The controlled vocabularies associated with a BYU API resource should be made available through an API published in the the `meta` URL namespace.
+Resources often have associated sets of terms, like accepted state and country names and their abbreviations, that define possible values for properties. These terms, or controlled vocabularies, are necessary for a client to properly use the API. The controlled vocabularies associated with a UAPI compliant resource should be made available through an API published in the the `meta` URL namespace.
 
 ### 8.1 Meta Data APIs
 
 Each controlled vocabulary should have a corresponding API with the following characteristics:
+
 - The API should be located under `https://api.byu.edu/byuapi/meta/<top-level-resource>/<vocabulary-name>`.
 - Meta APIs should provide HTTP GET support only. Updating values in the controlled vocabulary is left to the domain APIs supporting the data set.
 - Meta API responses do not include `metadata` or `links` sections like regular UAPI top level resource responses. 
@@ -1128,14 +841,14 @@ Controlled vocabularies that are referenced using the `domain` property of the p
     {
         "value":"<value of this term in the controlled vocabulary>",
         "description":"<short description of this term>",
-        "long-description": "<long description of this term>"
+        "long_description": "<long description of this term>"
     }
 ```
 
 - All three properties are required and should be not be empty. 
-- Values for `description` and `long-description` can be derived from other properties of the data set to provide a standard way to represent each entry in the data set. 
+- Values for `description` and `long_description` can be derived from other properties of the data set to provide a standard way to represent each entry in the data set. 
 - `description` should be limited to 30 characters in length. It is intended for uses like populating a drop-down list.
-- `long-description` should be limited to 256 characters in length. 
+- `long_description` should be limited to 256 characters in length. 
 
 #### 8.2.1 Examples of Domain Meta Data
 
@@ -1175,7 +888,7 @@ Meta Data Sets are considered public. No authorization rules other than any API 
 
 ### 8.3 Errors
 
-Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. uapi error processing as outlined in [12.0 Errors](#120-errors) is not required.
+Errors encountered while accessing any Meta URL data set should simply return the appropriate HTTP status code. UAPI error processing as outlined in [12.0 Errors](#120-errors) is not required.
 
 ## 9.0 Files 
 
@@ -1187,7 +900,7 @@ Supporting downloads of these files via the UAPI is done through standard REST p
 
 #### 9.1.1 File Metadata
 
-Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/uapi+json` will return data associated with the file in standard UAPI format. The mime-type `application\uapi+json` is used to avoid the instance where the file itself is a JSON file. 
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/vnd.byu.uapi+json` will return data associated with the file in standard UAPI format. The mime-type `application\vnd.byu.uapi+json` is used to avoid the instance where the file itself is a JSON file. 
 
 ### 9.2 File Uploads
 
@@ -1195,7 +908,7 @@ Uploading of files is left to the discretion of the API designer but should foll
 
 #### 9.2.1 Updating File Metadata
 
-Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/uapi+json`. 
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/vnd.byu.uapi+json`. 
 
 ## 10.0 HTTP POST, PUT, DELETE
 
@@ -1245,7 +958,7 @@ To update the work mailing address of a person resource a PUT is sent to the URL
 
 #### 10.1.1 Resource Creation Using PUT
 
-There are occasions where PUT can be used to create a resource (usually a sub-resource). These occur when the identifier for the sub-resource can be determined before the sub-resource is created. For example, when there exists a defined set of possible identifier values such as the `address_type` of an address resource. The API may assume a PUT to the sub-resource will create an address of the specified type if one using that type doesn't already exist. So a PUT to the URL `https://api.byu.edu/byuapi/persons/123456789/addresses/WRK` would use the values in the body to update the address resource if one exists, otherwise it would create a new resource with that `address_type`.  
+There are occasions where PUT can be used to create a resource (usually a sub-resource). These occur when the identifier for the sub-resource can be determined before the sub-resource is created. For example, when there exists a defined set of possible identifier values such as the `address_type` of an address resource. The API may assume a PUT to the sub-resource will create an address of the specified type if one of that type doesn't already exist. So a PUT to the URL `https://api.byu.edu/byuapi/persons/123456789/addresses/WRK` would use the values in the body to update the address resource if one exists, otherwise it would create a new resource with that `address_type`.  
 
 Caution should be taken to ensure the logic required to determine the identifier is as minimal as possible to prevent the consumer from having to understand the logic behind identifier creation. 
 
@@ -1255,7 +968,7 @@ The HTTP POST verb is used to insert a new resource or sub-resource. Due to the 
 
 ### 10.3 DELETE
 
-The UAPI spec also defines the HTTP DELETE verb for deleting top level and sub-resources. If the DELETE is successful an HTTP Status Code of `204` should be returned. 
+The UAPI spec also defines the HTTP DELETE verb for deleting top level and sub-resources. If the DELETE is successful an HTTP Status Code of `204 No Content` should be returned. No response body should be returned. 
 
 ### 10.4 Response Representation 
 
@@ -1289,7 +1002,7 @@ Authorization for access to UAPI resources falls back to the authorization schem
 
 ### 11.1 Field\_set Authorization 
 
-Authorization in the UAPI is done at the field\_set / sub-resource level. Authorization at the property level is not allowed. Properties shoud be grouped into field\_sets that share common authorization business requirements along with matching the model of the resource as closely as possible. 
+Authorization in the UAPI is done at the field\_set/sub-resource level. Authorization at the property level is not allowed. Properties should be grouped into field\_sets that share common authorization business requirements along with matching the model of the resource as closely as possible. 
 
 #### 11.1.1 Data Classification 
 
@@ -1297,7 +1010,7 @@ Authorizing by field\_set introduces the dependency that the data classification
 
 ### 11.2 Top Level Resource Authorization
 
-In order for a consumer to have access to any part of a top level resource or sub-resources of the top level resource the consumer must at least have access to the `basic` field\_set. Access to other field\_sets / sub-resources is optional. 
+In order for a consumer to have access to any part of a top level resource or sub-resources of the top level resource the consumer must at least have access to the `basic` field\_set. Access to other field\_sets/sub-resources is optional. 
 
 ### 11.3 Property Authorization
 
@@ -1319,7 +1032,7 @@ If the consumer does not have authorization to access any part of a top level re
 
 #### 11.5.2 Sub-resource Authorization Failure
 
-If the consumer requests direct access (via the URL) to a sub-resource that is not authorized the response code and response body should be the same as for a top-level resource request. 
+If the consumer requests direct access (via the URL) to a sub-resource that is not authorized the response code and response body should be the same as for a forbidden top-level resource request. 
 
 #### 11.5.3 Partial Authorization Failure  
 
@@ -1339,7 +1052,7 @@ Because collections of top level resources represent multiple resources they do 
 
 #### 11.6.2 Authorized Access
 
-Access to restricted records by consumers with restricted record authorization should be no different than accessing any other resource provided by the API. The `restricted` element of the `metadata` property should be set to `true` to indicate to the consumer that the resource they are accessing is restricted. Consumers are then obligated to follow the guidelines regarding handling of restricted resources. 
+Access to restricted records by consumers with restricted record authorization should be no different than accessing any other resource provided by the API. The `restricted` element of the `metadata` property should be set to `true` to indicate to the consumer that the resource they are accessing is restricted. Consumers are then obligated to follow established guidelines regarding handling of restricted resources. 
 
 #### 11.6.3 Unauthorized Access Attempts
 
@@ -1347,7 +1060,7 @@ An attempt to access a restricted top level or sub-resource by an unauthorized c
 
 ## 12.0 Errors 
 
-Each resource and collection of resources in the JSON response body has a `metadata` property. The sub-properties `validation_response` and `validation_information` are intended to convey to the consumer information about the state of the resource or resource collection. 
+Each resource and collection of resources in the JSON response body has a `metadata` property. The sub-properties `validation_response` and `validation_information` are used to convey to the consumer information about the state of the resource or resource collection. 
 
 ### 12.1 HTTP Status Codes
 
@@ -1397,7 +1110,7 @@ Errors in processing a request for a collection of top level resources should pr
 
 ### 12.4 Sub-resource Errors
 
-Errors during access to individual sub-resources with or without identifiers should be handled the same way as top level resources outlined in [12.3](#123-top-level-resource-errors). 
+Errors during access to individual sub-resources with or without identifiers should be handled the same way as top level resources outlined in [12.3 Top Level Resource Errors](#123-top-level-resource-errors). 
  
 ### 12.5 Partial Error Response
  
@@ -1413,7 +1126,7 @@ Errors during access to individual sub-resources with or without identifiers sho
 Because of the need to protect restricted resources (see [11.6 Restricted Resources](#116-restricted-resources)), when a `404 Not Found` is to be returned special rules apply:
 
 - If the request is for a single top-level resource or sub-resource addressed directly via the URL the `404 Not Found` HTTP status code should be returned with no body attached to the result. 
-- If the request is for a top-level resource (single or collection) that includes multiple sub-resources via field\_sets or contexts and one or more of the sub-resources is not found the rules for Partial Error Response [12.5](#125-partial-error-response) should apply. 
+- If the request is for a top-level resource (single or collection) that includes multiple sub-resources via field\_sets or contexts and one or more of the sub-resources is not found the rules for Partial Error Response [12.5 Partial Error Response](#125-partial-error-response) apply. 
 
 #### 12.6.2 Invalid Query Parameters
 
