@@ -860,22 +860,22 @@ An HTTP GET with the `application/json` mime type on the `state_codes` data set 
             {
                 "value": "ID" ,
                 "description": "Idaho",
-                "long-description":"Idaho"
+                "long_description":"Idaho"
             },
             {
                 "value": "NV" ,
                 "description": "Nevada",
-                "long-description":"Nevada"
+                "long_description":"Nevada"
             },
             {
                 "value": "UT" ,
                 "description": "Utah",
-                "long-description":"Utah"
+                "long_description":"Utah"
             },
             {
                 "value": "VT" ,
                 "description": "Vermont",
-                "long-description":"Vermont"
+                "long_description":"Vermont"
             },
             ...
         ]
