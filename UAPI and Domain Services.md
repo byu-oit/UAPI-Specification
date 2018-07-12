@@ -7,11 +7,11 @@ The University API (UAPI) specification is intended to bring a level of standard
 
 Domains are organized around business systems or processes. Very few domains can function without data from other domains. APIs are the preferred method of accessing data from another domain. Direct database access should only be used in exceptional circumstances and with approval of all parties involved.  
 
-## UAPI Spec And The BYUAPI
+## The UAPI Specification And The BYUAPI
 
 The BYUAPI is the implementation of the UAPI specification with BYU specific resources including Students, Employees, Persons, etc. The BYUAPI is implemented as a [facade](https://en.wikipedia.org/wiki/Facade_pattern) on the top of domain APIs. The UAPI specification allows consumers to conform to a single JSON and URL format and function when interacting with all compliant APIs. Domain APIs that are UAPI specification compliant are not necessarily part of the BYUAPI. 
 
-## Implications of varying from the specification
+## Implications Of Varying From The Specification
 
 In general any externally consumable APIs provided by a domain should conform to as much of the UAPI specification as possible. 
 
@@ -25,11 +25,11 @@ Consider the above example. Domain A provides APIs to domains B, C, D, E, and F 
 
 Now consider how the relationships change if some or all domains conform to the UAPI specification for cross-domain APIs. In this example some of the APIs provided by domain A are part of the BYUAPI implementation. For those APIs domains B, C, and D can access their needed APIs via the BYUAPI. This reduces the coupling domain A needs to be concerned with to a single relationship with the BYUAPI. The APIs domain A consumes from domain G are also part of the BYUAPI and again the coupling for G is reduced to only the relationship with the BYUAPI. Domains E, F, and H are not part of the BYUAPI. While the tight coupling between domains remains because they are UAPI specification compliant the need for a translation layer is eliminated.  
 
-### BYUAPI impacts
+### BYUAPI Implications
 
 The BYUAPI owns no domain data. BYUAPI provided resources are aggregations of data from a number of underlying domains. The closer the APIs from the underlying domains follow the UAPI specification the less work the BYUAPI facade layer has to do. If the domain API is fully compliant the API Manager may be the only part of the facade necessary. 
 
-## Implementation considerations
+## Implementation Considerations
 
 ### URL Namespaces
 The URL namespace designated for Domain APIs is:
