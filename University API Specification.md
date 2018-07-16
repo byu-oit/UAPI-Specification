@@ -900,7 +900,7 @@ Supporting downloads of these files via the UAPI is done through standard REST p
 
 #### 9.1.1 File Metadata
 
-Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type `application/vnd.byu.uapi+json` will return data associated with the file in standard UAPI format. The mime-type `application\vnd.byu.uapi+json` is used to avoid the instance where the file itself is a JSON file. 
+Many files have data associated with them such as creation-date, owner, etc. Requests to the URL for a file with the HTTP `Accept` header containing the mime-type [`application/vnd.byu.uapi+json`](https://www.iana.org/assignments/media-types/application/vnd.byu.uapi+json) will return data associated with the file in standard UAPI format. The mime-type [`application/vnd.byu.uapi+json`](https://www.iana.org/assignments/media-types/application/vnd.byu.uapi+json) is used to avoid the instance where the file itself is a JSON file. 
 
 ### 9.2 File Uploads
 
@@ -908,7 +908,7 @@ Uploading of files is left to the discretion of the API designer but should foll
 
 #### 9.2.1 Updating File Metadata
 
-Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being `application/vnd.byu.uapi+json`. 
+Updating file metadata should be done using standard UAPI POST, PUT, and DELETE methods (see [10.0 HTTP POST, PUT, DELETE](#10-http-post-put-delete) with the mime-type of the request being [`application/vnd.byu.uapi+json`](https://www.iana.org/assignments/media-types/application/vnd.byu.uapi+json). 
 
 ## 10.0 HTTP POST, PUT, DELETE
 
