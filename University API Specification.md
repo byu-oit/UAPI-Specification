@@ -955,6 +955,7 @@ To update the work mailing address of a person resource a PUT is sent to the URL
     "verified_flag": true
 }          
 ```
+When the update is completed successfully an HTTP Status Code of `200` should be returned. The body of the response should contain either the field\_sets that were updated or the sub-resource that was updated. 
 
 #### 10.1.1 Resource Creation Using PUT
 
@@ -962,9 +963,11 @@ There are occasions where PUT can be used to create a resource (usually a sub-re
 
 Caution should be taken to ensure the logic required to determine the identifier is as minimal as possible to prevent the consumer from having to understand the logic behind identifier creation. 
 
+When a new resource is created an HTTP Status Code of `201` should be returned along with the `Location` HTTP header containing the URL for the new resource. The body of the response should contain either the `basic` field\_set or the sub-resource just created.
+
 ### 10.2 POST
 
-The HTTP POST verb is used to insert a new resource or sub-resource. Due to the complexities of creating a new resource the UAPI spec does not specify a format or restrictions on the request body. When a new resource is created an HTTP Status Code of `201` should be returned along with the `Location` HTTP header containing the URL for the new resource. 
+The HTTP POST verb is used to insert a new resource or sub-resource. Due to the complexities of creating a new resource the UAPI spec does not specify a format or restrictions on the request body. When a new resource is created an HTTP Status Code of `201` should be returned along with the `Location` HTTP header containing the URL for the new resource. The body of the response should contain either the `basic` field\_set or the sub-resource just created.  
 
 ### 10.3 DELETE
 
@@ -1142,5 +1145,5 @@ When a request contains an undefined query parameter or a query parameter that c
 |1.0||Original published standard|
 |1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|
 |1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
-|1.3| |Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  Other minor enhancements and clarifications. 
+|1.3|July 19, 2018|Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  Other minor enhancements and clarifications. 
 
