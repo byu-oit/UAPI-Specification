@@ -33,7 +33,7 @@ The BYUAPI is the implementation of the UAPI specification with BYU specific res
 
 ![Figure 1](./images/direct-domain-access.jpeg "Figure 1")
 
-Consider the above example. Domain A provides APIs to domains B and C and consumes APIs from domains D and E. If domain A chooses to define a unique API specification domains B and C must implement an ACL for all interactions with domain A in order to isolate itself from the model and interaction requirements of domain A. Domain A must also implement ACLs for all interactions with D and E for the same reason. Any changes domain A needs to make to the services it provides must be coordinated with domains B and C so those domains can change their corresponding ACLs. Domain A must also respond to any changes D and E make to the APIs it is consuming.    
+Consider the above example. Domain A provides APIs to domains B and C and consumes APIs from domains D and E. If domain A chooses to define a unique API specification domains B and C must implement an ACL for all interactions with domain A in order to isolate themselves from the model and interaction requirements of domain A. Domain A must also implement ACLs for all interactions with D and E for the same reason. Any changes domain A needs to make to the services it provides must be coordinated with domains B and C so those domains can change their corresponding ACLs. Domain A must also respond to any changes D and E make to the APIs it is consuming.    
 
 ![Figure 2](./images/UAPI-access.jpeg "Figure 2")
 
@@ -45,7 +45,7 @@ Domain A has chosen to provide its resources to the BYUAPI via a UAPI compliant 
 
 Domain B has chosen to conform to the model provided by the BYUAPI as expressed in the Open Host/Published Language. This eliminates the need for translation between models. A single UAPI interface is all that is required for that interaction. The BYUAPI will mitigate some of the issues with the Conformist approach because it is meant to isolate consuming domains from changes to the provider domain. 
 
-Domain C has unique requirements for its model that prevent it from being able to conform to the BYUAPI model directly (third party application, etc). In this case the domain has chosen to create an ACL between itself and the BYUAPI Open Host/Published Language. This ACL can be a model only translation. 
+Domain C has unique requirements for its model that prevent it from being able to conform to the BYUAPI model directly. In this case the domain has chosen to create an ACL between itself and the BYUAPI Open Host/Published Language. This ACL can be a model only translation. 
 
 ## Implications Of Varying From The Specification
 
