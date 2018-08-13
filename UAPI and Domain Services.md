@@ -3,13 +3,13 @@
 ## Introduction
 The University API (UAPI) specification is intended to bring a level of standardization to APIs that OIT provides for cross-domain access to data. The UAPI specification can and should be used by domain APIs. The purpose of this document is to provide guidance to domain teams in applying the UAPI specification within their domains.
 
-## What Is Cross-Domain Access?
-
-Domains are organized around business systems or processes. Very few domains can function without data from other domains. APIs are the preferred method of accessing data from another domain. Direct database access should only be used in exceptional circumstances and with approval of all parties involved.  
-
 ## What is a Domain?
 
 BYU OIT has adopted [Domain Driven Design (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design)(Evans, E 2004) as a model for how we model systems and the interactions between systems. Domains are a central part of DDD. In the DDD vocabulary a domain is "A sphere of knowledge, influence, or activity." (Evans, 2004, p. 512) BYU has divided up its development efforts into a number of domain teams, each responsible for some aspect of the business of the university (the domain). In a practice some development teams are dedicated to a single domain while others are responsible for multiple domains. In this discussion the term "domain" refers to some aspect of university business implemented in software that have a need to interact with other software systems (other domains) in order to perform their business function. Since teams can and are reorganized on a regular basis and responsibility for domains may be moved from one team to another, the fact that a team is responsible for a single domain or multiple domains is not relevant to the discussion as to how domains should interact.  
+
+## What Is Cross-Domain Access?
+
+Domains are organized around business systems or processes. Very few domains can function without data from other domains. APIs are the preferred method of accessing data from another domain. Direct database access should only be used in exceptional circumstances and with approval of all parties involved.  
 
 ### Sharing Data Between Domains
 
