@@ -64,13 +64,13 @@ It is possible to avoid both of these problem scenarios by restablishing the CAS
 
 2. The browser will redirect to the `SERVICE_URL` provided. 
 
-    If a query parameter named `token` is present then the browser is indicating that the user is logged into CAS and you can proceed to the next step. 
+    If a query parameter named `ticket` is present then the browser is indicating that the user is logged into CAS and you can proceed to the next step. 
     
-    If no token is provided then the user is not logged in to CAS and you may want to end any sessions you have established for the user.
+    If no ticket is provided then the user is not logged in to CAS and you may want to end any sessions you have established for the user.
 
-3. If your client (server) application has received the `token` then it should now make an HTTPS request directly to CAS, using the `token`. This step is used to validate that the `token` is authentic and provided by CAS and also is used for retrieving the user's identify. The browser should not be involved in this step.
+3. If your client (server) application has received the `ticket` then it should now make an HTTPS request directly to CAS, using the `ticket`. This step is used to validate that the `ticket` is authentic and provided by CAS and also is used for retrieving the user's identify. The browser should not be involved in this step.
 
-    Have your client (server) make an HTTPS request to https://cas.byu.edu/proxyValidate?service=SERVICE_URL&token=TOKEN. The `SERVICE_URL` must be exactly the same as what was used in Step 1. The `TOKEN` is the `token` query parameter that CAS sent to your client (server).
+    Have your client (server) make an HTTPS request to https://cas.byu.edu/proxyValidate?service=SERVICE_URL&ticket=TICKET. The `SERVICE_URL` must be exactly the same as what was used in Step 1. The `TICKET` is the `ticket` query parameter that CAS sent to your client (server).
 
 4. TODO: how to get identity from the response.
 
