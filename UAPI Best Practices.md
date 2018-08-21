@@ -6,8 +6,6 @@ This document assumes a familiarity with the UAPI specification.
 
 ## Resources
 
-The recommendations for naming resources are: 
-
 - In general all resource names should be plural (e.g. persons vs person, students vs student). Sub-resources can be singular in the case that the sub-resource truly only represents a single instance of a sub-resource per top level resource. 
 
 - All resources should be named using [snake\_case](https://en.wikipedia.org/wiki/Snake_case), specifically with all identifiers being lower case. 
