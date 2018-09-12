@@ -288,7 +288,6 @@ Boolean   | Boolean   | `boolean`      | N/A              |
 Number    | Number    | `number`       | N/A              |
 Date      | String    | `string`       | `date`           | `full-date` in [RFC-3339](https://tools.ietf.org/html/rfc3339#section-5.6) 
 Date/Time | String    | `string`       | `date-time`      | `date-time` in [RFC-3339](https://tools.ietf.org/html/rfc3339#section-5.6). It is suggested to use UTC instead of local time zones.
-Binary    | String    | `string`       | `byte`           | Base64 encoded characters
 
 APIs are free to implement additional restrictions on any of the standard scalar types. These additional restrictions should be documented. Examples include requiring that a String field match a Regular Expression or that a Number field be non-negative.
 
