@@ -23,7 +23,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [3.2.1 Links](#321-links)
         - [3.2.2 Metadata](#322-metadata)
         - [3.2.3 Properties](#323-properties)
-            - [3.2.3.1 Representing Dates and Times](#3231-representing-dates-and-times)
+            - [3.2.3.1 Data Types](#3231-data-types)
         - [3.2.4 Representing Sub-resources](#324-representing-sub-resources)
         - [3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
         - [3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
@@ -277,10 +277,19 @@ A property would look something like this:
   "value": "123456789"
 },
 ```
-##### 3.2.3.1 Representing Dates And Times
+##### 3.2.3.1 Data Types
 
-Date and Date/Time data types should be represented as strings using the [RFC-3339](https://tools.ietf.org/html/rfc3339) format. It is suggested that UTC be used instead of local time zones. 
+The "value" field must contain only scalar data (i.e, no arrays or objects). The standard University API scalar types and their mappings to JSON and OpenAPI 3 are:
 
+Data Type | JSON Type | OpenAPI `type` | OpenAPI `format` | Notes
+----------|-----------|----------------|------------------|-------
+String    | String    | `string`       | N/A              |
+Boolean   | Boolean   | `boolean`      | N/A              |
+Number    | Number    | `number`       | N/A              |
+Date      | String    | `string`       | `date`           | `full-date` in [RFC-3339](https://tools.ietf.org/html/rfc3339#section-5.6) 
+Date/Time | String    | `string`       | `date-time`      | `date-time` in [RFC-3339](https://tools.ietf.org/html/rfc3339#section-5.6). It is suggested to use UTC instead of local time zones.
+
+APIs are free to implement additional restrictions on any of the standard scalar types. These additional restrictions should be documented. Examples include requiring that a String field match a Regular Expression or that a Number field be non-negative.
 
 #### 3.2.4 Representing Sub-resources
 
