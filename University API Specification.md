@@ -65,6 +65,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
     - [6.2 Filtering Sub-resources](#62-filtering-sub-resources)
     - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
     - [6.4 Wildcards](#64-wildcards)
+    - [6.5 Comparison Operators](#65-comparison-operators)
 - [7.0 Search](#70-search)
     - [7.1 Search Context And Filters](#71-search-context-and-filters)
     - [7.2 Search Metadata](#72-search-metadata)
@@ -251,7 +252,7 @@ Resource properties contain information about the state of a resource. The perso
 
 |Element|Required|Description
 |-----|-----|-----
-value \| values \| object \| objects|One and only one is required|Contains the data value to be processed. See individual sections for a definition of the possible representations.
+value \| value_array \| object \| object_array|One and only one is required|Contains the data value to be processed. See individual sections for a definition of the possible representations.
 |api\_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api\_type and the rules associated with each value see the list below.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
@@ -278,7 +279,7 @@ read-only|No|There are either business rules or authorization considerations tha
 Property values can be expressed as either singleton scalar values, arrays of scalar values, complex objects, or arrays of complex objects.
 
 ##### 3.2.4.1 Representing a Scalar Value
-The `value` element is used to represent a single scalar as the value of the property. 
+The `value` element is used to represent a single scalar as the value of the property. The value returned can be `null` if the data type of the property supports it.  
 
 A property with a single scalar value would look something like this:  
 
@@ -298,7 +299,7 @@ Date and Date/Time data types should be represented as strings using the [RFC-33
 
 ##### 3.2.4.2 Representing Arrays of Scalar Values
 
-The `values` element is used to represent an array of scalar values as the value of the property. The array is represented as a JSON array. The elements for the property are divided between those that apply to the property as a whole and those that are specific to the entries in the array. 
+The `value_array` element is used to represent an array of scalar values as the value of the property. The array is represented as a JSON array. The elements for the property are divided between those that apply to the property as a whole and those that are specific to the entries in the array. The `value_array` element cannot be `null`. If the array has no elements the array an empty array should be returned. 
 
 |Element|Applies to Property or Array Entry|Note
 |-----|-----|-----
@@ -312,17 +313,20 @@ The `values` element is used to represent an array of scalar values as the value
 
 ```json
 "instructor_byu_ids": {
-    "api_type": "read-only",
+    "api_type": "related",
     "display_label": "Instructors",
-    "values": [
+    "related": "https://api.byu.edu/classes/20185,cs142,1",
+    "value_array": [
         {
             "value": "123456789",
             "description": "Joe Instructor",
+            "api_type": "related",
             "related": "https://api.byu.edu/persons/123456789"
         },
         {
             "value": "987654321",
             "description": "Jane Instructor",
+            "api_type": "related",
             "related": "https://api.byu.edu/persons/987654321"
         }
     ] 
@@ -331,11 +335,11 @@ The `values` element is used to represent an array of scalar values as the value
 
 ##### 3.2.4.3 Representing Complex Objects
 
-The `object` element is used to represent a single complex JSON object as the value of the property. The object is represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an object.
+The `object` element is used to represent a single complex JSON object as the value of the property. The object is represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an object. The `object` element can be `null`. 
 
-|Element|Note
-|-----|-----|-----
-|api\_type|Must be either `read-only` or `related`.
+|Element|Note|
+|-----|-----|
+|api\_type|Must be either `read_only` or `related`.
 |display\_label|May be used to indicate a `display_label` for the entire object.
 |related|If applied to the property the URL represents the resource to use to interact with the object as a whole. 
 
@@ -390,10 +394,10 @@ An example of an property containing an object is as follows:
 
 ##### 3.2.4.4 Representing Arrays of Complex Objects
 
-The `objects` element is used to represent an array of complex JSON objects as the value of the property. The objects are represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an array of objects.
+The `object_array` element is used to represent an array of complex JSON objects as the value of the property. The objects are represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an array of objects. An `object_array` element cannot be `null`. If there are no objects to in the array then an empty array should be returned. 
 
 |Element|Note
-|-----|-----|-----
+|-----|-----
 |api\_type|Must be either `read-only` or `related`.
 |display\_label|May be used to indicate a `display_label` for the entire array of objects.
 |related|If applied to the property the URL represents the resource to use to interact with the object array as a whole. 
@@ -402,7 +406,7 @@ An example of an property containing an array of objects is as follows:
 
 ```json
 "when_taught": {
-    "objects": [
+    "object_array": [
         {
             "building": {
                 "value": "RB",
@@ -473,7 +477,7 @@ An example of an property containing an array of objects is as follows:
 
 ##### 3.2.4.5 Special Considerations For Representing Complex Objects
 
-While the UAPI specification supports complex objects (`values`, `object`, and `objects`) they should be used judiciously. There are a number of implications to using complex objects including:
+While the UAPI specification supports complex objects (`value_array`, `object`, and `object_array`) they should be used judiciously. There are a number of implications to using complex objects including:
 
 - Lack of addressability - Complex objects cannot be addressed directly the same way sub-resources can. 
 - Lack of selectability - Complex objects are always included in the field\_set that contains them, unlike field\_sets in general which can be included at the discretion of the consumer. 
@@ -963,7 +967,7 @@ Multiple filters can be combined to create more complex filtering rules. APIs ca
  
 #### 6.2 Filtering Sub-resources
  
- Filters apply to the lowest level resource specified on the URL. If the URL only specifies a top level resource a collection of top level resources that match the filter will be returned. If the URL includes a sub-resource the filter will be applied to that sub-resource and the collection returned will be instances of the sub-resource. For example, the URL `https://api.byu.edu/byuapi/persons?net_id=johndoe` will return a collection of persons that have a `net_id` of `johndoe`. The URL `https://api.byu.edu/byuapi/persons/123456789/addresses?address_type=MAL` will return a collection of all mailing addresses associated to the person with the byu_id `123456789`.
+ Filters apply to the lowest level resource specified on the URL. If the URL only specifies a top level resource a collection of top level resources that match the filter will be returned. If the URL includes a sub-resource the filter will be applied to that sub-resource and the collection returned will be instances of the sub-resource. For example, the URL `https://api.byu.edu/byuapi/persons?net_id=johndoe` will return a collection of persons that have a `net_id` of `johndoe`. The URL `https://api.byu.edu/byuapi/persons/123456789/addresses?address_type=MAL` will return a collection of all mailing addresses associated to the person with the byu_id `123456789` that have an `address_type` of `MAL`. 
  
 #### 6.3 Dot Notation (Filtering With Sub-resources)
 
@@ -972,6 +976,28 @@ There are times when it makes sense to query a top level resource by a value in 
 #### 6.4 Wildcards
 
 Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
+
+#### 6.5 Comparison Operators
+
+Filters can optionally support operators. The format of a filter including an comparison operator is `filter_name[operator]=value(s)`. The following comparison operators are supported. 
+
+|Operator|Notes|Example
+|-----|-----|----
+|none(default)|Exact match is required. If the filter supports multiple comma separated values the values are "OR"ed together.|`https://api.byu.edu/byuapi/persons?net_id=johndoe`
+|`starts_with`|The property starts with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[starts_with]=john`
+|`ends_with`|The property values end with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[ends_with]=doe`
+|`contains`|The property values contain the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[contains]=john`
+|`gt`| The property values are greater than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
+|`gt_or_eq`|The property values are greater than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
+|`lt`| The property values are less than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
+|`lt_or_eq`|The property values are less than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
+|`not_eq`|The property values are not equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[not_eq]=johndoe`
+|'is_null'|Returns `true/false` depending upon if the property value is `null`|`https://api.byu.edu/byuapi/persons?net_id[is_null]=true`
+|'is_empty'|Returns `true`/`false` depending upon if the property value is empty|`https://api.byu.edu/byuapi/persons?net_id[is_empty]=true`
+|`not_in`|The property values are not in the list contained in the provided parameter. Only applicable for filters that allow for multiple values|`https://api.byu.edu/byuapi/persons?net_ids[not_in]=johndoe,janedoe`
+
+
+The provider should include in the documentation for the service which operators are allowed for their specific filters.
 
 ## 7.0 Search
 
