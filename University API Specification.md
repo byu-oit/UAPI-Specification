@@ -1,7 +1,7 @@
 # BYU University API Standard
 
 Specification Version 1.1   
-Document Version 1.4
+Document Version 1.5
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -1372,4 +1372,5 @@ When a request contains an undefined query parameter or a query parameter that c
 |1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
 |1.3|July 19, 2018|Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  Other minor enhancements and clarifications. 
 |1.4|?|Added support for complex objects and specify which data types are acceptable.
+|1.5|?|Added support for conditional operators on filters.
 
