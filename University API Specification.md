@@ -992,8 +992,8 @@ Filters can optionally support operators. The format of a filter including an co
 |`lt`| The property values are less than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
 |`lt_or_eq`|The property values are less than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
 |`not_eq`|The property values are not equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[not_eq]=johndoe`
-|'is_null'|Returns `true/false` depending upon if the property value is `null`|`https://api.byu.edu/byuapi/persons?net_id[is_null]=true`
-|'is_empty'|Returns `true`/`false` depending upon if the property value is empty|`https://api.byu.edu/byuapi/persons?net_id[is_empty]=true`
+|`is_null`|Returns `true/false` depending upon if the property value is `null`|`https://api.byu.edu/byuapi/persons?net_id[is_null]=true`
+|`is_empty`|Returns `true`/`false` depending upon if the property value is empty|`https://api.byu.edu/byuapi/persons?net_id[is_empty]=true`
 |`not_in`|The property values are not in the list contained in the provided parameter. Only applicable for filters that allow for multiple values|`https://api.byu.edu/byuapi/persons?net_ids[not_in]=johndoe,janedoe`
 
 
