@@ -987,8 +987,8 @@ Filters can optionally support operators. The format of a filter including an co
 |`starts_with`|The property starts with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[starts_with]=john`
 |`ends_with`|The property values end with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[ends_with]=doe`
 |`contains`|The property values contain the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[contains]=john`
-|`gt`| The property values are greater than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
-|`gt_or_eq`|The property values are greater than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
+|`gt`| The property values are greater than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[gt]=johndoe`
+|`gt_or_eq`|The property values are greater than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[gt_or_eq]=johndoe`
 |`lt`| The property values are less than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
 |`lt_or_eq`|The property values are less than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
 |`not_eq`|The property values are not equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[not_eq]=johndoe`
