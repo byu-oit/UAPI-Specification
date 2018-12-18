@@ -107,6 +107,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
     - [12.2 Error Response Format](#122-error-response-format)
         - [12.2.1 validation\_response](#1221-validation_response)
         - [12.2.2 validation\_information](#1222-validation_information)
+        - [12.2.3 validation\_identifiers](#1223-validation-identifiers)
     - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
         - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
         - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
@@ -212,6 +213,7 @@ The metadata property contains data about the request for this resource includin
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
+|validation_identifiers|no|This is a JSON object containing the identifers for this resource. This should be returned if the resource is part of a collection being returned. See [12.2.3 validation_identifiers](#1223-validation-identifiers) for more information.  
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 |restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. Special rules apply to restricted resources. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
 
@@ -636,7 +638,7 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |validation\_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code.
 |cache|required if the result is a cached value|This is an object that contains one required property: `date_time`. The `date_time` value is when the data was updated in the cache.
 |restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information.
-|collection\_size|required|The number of items of the resource which exist in the entire collection.
+|collection\_size|recommended|The number of items of the resource which exist in the entire collection. Can be omitted if the size is unknown or acquiring the number id computationally intensive. 
 
 The metadata returned for a resource collection would look like:
 
@@ -1321,6 +1323,19 @@ The optional `validation_information` metadata property can be used to communica
          ]
 ```
 
+#### 12.2.3 validation_identifiers
+
+There are instances where an entry in a collection has an error while other entries in the collection do not. The optional `validation_identifiers` metadata property on the specific entry in the collection can be used to communicate the identifers for that entry in the collection that has the error. This allows the API designer to include in the error an appropriate level of detail as to which entries in a collection had errors. Care should be taken to be sure no unauthorized information is leaked by including the identifiers in the error. The `validation_identifiers` property is represented as an `object` with the following format:
+
+```json
+    "validation_identifiers": {
+        "byu_id": "123456789",
+        "address_type": "MAL"
+    }
+```
+
+The properties included in the `validation_identifers` should be consistent regardless of the type of error returned.  
+
 ### 12.3 Top Level Resource Errors
 
 Requests for top level resources take three forms - requests for collections of resources (no identifier on the resource URL) and requests for specific resources (identifier included in the URL) and either of the two with `field_sets` or `contexts` query string parameters.  
@@ -1334,7 +1349,7 @@ Errors in processing a request for a single top level resource with no additiona
 Errors in processing a request for a collection of top level resources should proceed as follows:
 
 - If an error occurs with the overall request the HTTP status code for the request should indicate the type of error that occurred. The body of the response should contain a UAPI standard format response containing at least the `metadata` property with the `validation_response` property and optionally the `validation_information` property. 
-- If an error occurs in processing the request for one or more of the resources in the collection the `validation_response` and `validation_information` metadata properties for that resource should be set with the appropriate error information.  The HTTP status code for the entire request may be a `200 Success` even if only part of the response is error free. 
+- If an error occurs in processing the request for one or more of the resources in the collection the `validation_response` and `validation_information` metadata properties for that resource should be set with the appropriate error information.  Optionally the `validation_identifiers` property can be set with the identifiers for the entry with the error. The HTTP status code for the entire request may be a `200 Success` even if only part of the response is error free. 
 
 ### 12.4 Sub-resource Errors
 
@@ -1347,6 +1362,7 @@ Errors during access to individual sub-resources with or without identifiers sho
  - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
  
+
 ### 12.6 Special Error Situations
 
 #### 12.6.1 '404 Not Found' Errors
