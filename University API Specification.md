@@ -1,7 +1,7 @@
 # BYU University API Standard
 
 Specification Version 1.1   
-Document Version 1.3
+Document Version 1.5
 
 The BYU University API Standard is licensed under [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -23,10 +23,16 @@ The BYU University API Standard is licensed under [The Apache License, Version 
         - [3.2.1 Links](#321-links)
         - [3.2.2 Metadata](#322-metadata)
         - [3.2.3 Properties](#323-properties)
-            - [3.2.3.1 Representing Dates and Times](#3231-representing-dates-and-times)
-        - [3.2.4 Representing Sub-resources](#324-representing-sub-resources)
-        - [3.2.5 Example Single Resource Representation](#325-example-single-resource-representation)
-        - [3.2.6 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
+        - [3.2.4 Representing Property Values](#324-representing-property-values)
+            - [3.2.4.1 Representing a Scalar Value](#3241-representing-a-scalar-value)
+                - [3.2.4.1.1 Representing Dates and Times](#32411-representing-dates-and-times)
+            - [3.2.4.2 Representing Arrays of Scalar Values](#3242-representing-arrays-of-scalar-values)
+            - [3.2.4.3 Representing Complex Objects](#3243-representing-complex-objects)
+            - [3.2.4.4 Representing Arrays of Complex Objects](#3244-representing-arrays-of-complex-objects)
+            - [3.2.4.5 Special Considerations for Representing Complex Objects](#3245-special-considerations-for-representing-complex-objects)
+        - [3.2.5 Representing Sub-resources](#324-representing-sub-resources)
+        - [3.2.6 Example Single Resource Representation](#325-example-single-resource-representation)
+        - [3.2.7 Example Single Sub-resource Representation](#326-example-single-sub-resource-representation)
     - [3.3 Representing a Collection of Resources](#33-representing-a-collection-of-resources)
         - [3.3.1 Collection Links](#331-collection-links)
         - [3.3.2 Collection Metadata](#332-collection-metadata)
@@ -39,76 +45,78 @@ The BYU University API Standard is licensed under [The Apache License, Version 
             - [3.3.5.2 Collection Subsets Query Parameters](#3352-collection-subsets-query-parameters)
             - [3.3.5.3 Collection Subsets HATEOAS Links](#3353-collection-subsets-hateoas-links) 
         - [3.3.6 Empty Collections](#336-empty-collections)
-    - [4.0 HATEOAS Links](#40-hateoas-links)
-        - [4.1 Links](#41-links)
-        - [4.2 Link Format](#42-link-format)
-    - [5.0 Sub-resources, Field\_sets, and Contexts](#50-sub-resources-field_sets-and-contexts)
-        - [5.1 Field\_sets](#51-field_sets)
-            - [5.1.1 Field\_sets Metadata](#511-field_sets-metadata)
-            - [5.1.2 Field\_sets Query Parameter](#512-field_sets-query-parameter)
-            - [5.1.3 The 'basic' field\_set](#513-the-basic-field_set)
-            - [5.1.4 Field\_set Representation](#514-field_set-representation)
-        - [5.2 Contexts](#52-contexts)
-            - [5.2.1 Context Metadata](#521-context-metadata)
-            - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
-            - [5.2.3 Context Representation](#523-context-representation)  
-        - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
-    - [6.0 Filters](#60-filters)
-        - [6.1 Filter Parameters](#61-filter-parameters)
-            - [6.1.1 Combining Filters](#611-combining-filters)
-        - [6.2 Filtering Sub-resources](#62-filtering-sub-resources)
-        - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
-        - [6.4 Wildcards](#64-wildcards)
-    - [7.0 Search](#70-search)
-        - [7.1 Search Context And Filters](#71-search-context-and-filters)
-        - [7.2 Search Metadata](#72-search-metadata)
-        - [7.3 Search Query Parameters](#73-search-query-parameters)
-        - [7.4 Search Results](#74-search-results)
-    - [8.0 Meta Data Sets](#80-meta-data-sets)
-        - [8.1 Meta Data APIs](#81-meta-data-apis)
-        - [8.2 Domain Meta Data](#82-domain-meta-data)
-            - [8.2.1 Examples of Domain Meta Data](#821-examples-of-domain-meta-data)
-        - [8.3 Authorization](#83-authorization)
-        - [8.4 Errors](#84-errors)
-    - [9.0 Files](#90-files)
-        - [9.1 File Downloads](#91-file-downloads)
-            - [9.1.1 File Metadata](#911-file-metadata)
-        - [9.2 File Uploads](#92-file-uploads)
-            - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
-    - [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
-        - [10.1 PUT](#101-put)
-            - [10.1.1 Resource Creation Using PUT](#1011-resource-creation-using-put)
-        - [10.2 POST](#102-post)
-        - [10.3 DELETE](#103-delete)
-        - [10.4 Response Representation](#104-response-representation)
-    - [11.0 Authorization](#110-authorization)
-        - [11.1 Field\_set Authorization](#111-field_set-authorization)
-            - [11.1.1 Data Classification](#1111-data-classification)
-        - [11.2 Top Level Resource Authorization](#112-top-level-resource-authorization)
-        - [11.3 Property Authorization](#113-property-authorization)
-        - [11.4 Filter Authorization](#114-filter-authorization)
-        - [11.5 Authorization Failures](#115-authorization-failures)
-            - [11.5.1 Top Level Resource Authorization Failure](#1151-top-level-resource-authorization-failure)
-            - [11.5.2 Sub-resource Authorization Failure](#1152-sub-resource-authorization-failure)
-            - [11.5.3 Partial Authorization Failure](#1153-partial-authorization-failure)
-        - [11.6 Restricted Resources](#116-restricted-resources)
-            - [11.6.1 Resource Metadata](#1161-resource-metadata)
-            - [11.6.2 Authorized Access](#1162-authorized-access)
-            - [11.6.3 Unauthorized Access Attempts](#1163-unauthorized-access-attempts)
-    - [12.0 Errors](#120-errors)
-        - [12.1 HTTP Status Codes](#121-http-status-codes)
-        - [12.2 Error Response Format](#122-error-response-format)
-            - [12.2.1 validation\_response](#1221-validation_response)
-            - [12.2.2 validation\_information](#1222-validation_information)
-        - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
-            - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
-            - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
-        - [12.4 Sub-resource Errors](#124-sub-resource-errors)
-        - [12.5 Partial Error Response](#125-partial-error-response)
-        - [12.6 Special Error Situations](#126-special-error-situations)
-            - [12.6.1 `404 Not Found` Errors](#1261-404-not-found-errors)
-            - [12.6.2 Invalid Query Parameters](#1262-invalid-query-parameters)
-    - [Version History](#version-history)   
+- [4.0 HATEOAS Links](#40-hateoas-links)
+    - [4.1 Links](#41-links)
+    - [4.2 Link Format](#42-link-format)
+- [5.0 Sub-resources, Field\_sets, and Contexts](#50-sub-resources-field_sets-and-contexts)
+    - [5.1 Field\_sets](#51-field_sets)
+        - [5.1.1 Field\_sets Metadata](#511-field_sets-metadata)
+        - [5.1.2 Field\_sets Query Parameter](#512-field_sets-query-parameter)
+        - [5.1.3 The 'basic' field\_set](#513-the-basic-field_set)
+        - [5.1.4 Field\_set Representation](#514-field_set-representation)
+    - [5.2 Contexts](#52-contexts)
+        - [5.2.1 Context Metadata](#521-context-metadata)
+        - [5.2.2 Context Query String Parameter](#522-context-query-string-parameter)
+        - [5.2.3 Context Representation](#523-context-representation)  
+    - [5.3 Undefined Field\_set or Context parameter](#53-undefined-field_set-or-context-parameter)
+- [6.0 Filters](#60-filters)
+    - [6.1 Filter Parameters](#61-filter-parameters)
+        - [6.1.1 Combining Filters](#611-combining-filters)
+    - [6.2 Filtering Sub-resources](#62-filtering-sub-resources)
+    - [6.3 Dot Notation (Filtering With Sub-resources)](#63-dot-notation-filtering-with-sub-resources)
+    - [6.4 Wildcards](#64-wildcards)
+    - [6.5 Comparison Operators](#65-comparison-operators)
+- [7.0 Search](#70-search)
+    - [7.1 Search Context And Filters](#71-search-context-and-filters)
+    - [7.2 Search Metadata](#72-search-metadata)
+    - [7.3 Search Query Parameters](#73-search-query-parameters)
+    - [7.4 Search Results](#74-search-results)
+- [8.0 Meta Data Sets](#80-meta-data-sets)
+    - [8.1 Meta Data APIs](#81-meta-data-apis)
+    - [8.2 Domain Meta Data](#82-domain-meta-data)
+        - [8.2.1 Examples of Domain Meta Data](#821-examples-of-domain-meta-data)
+    - [8.3 Authorization](#83-authorization)
+    - [8.4 Errors](#84-errors)
+- [9.0 Files](#90-files)
+    - [9.1 File Downloads](#91-file-downloads)
+        - [9.1.1 File Metadata](#911-file-metadata)
+    - [9.2 File Uploads](#92-file-uploads)
+        - [9.2.1 Updating File Metadata](#921-updating-file-metadata)
+- [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete)
+    - [10.1 PUT](#101-put)
+        - [10.1.1 Resource Creation Using PUT](#1011-resource-creation-using-put)
+    - [10.2 POST](#102-post)
+    - [10.3 DELETE](#103-delete)
+    - [10.4 Response Representation](#104-response-representation)
+- [11.0 Authorization](#110-authorization)
+    - [11.1 Field\_set Authorization](#111-field_set-authorization)
+        - [11.1.1 Data Classification](#1111-data-classification)
+    - [11.2 Top Level Resource Authorization](#112-top-level-resource-authorization)
+    - [11.3 Property Authorization](#113-property-authorization)
+    - [11.4 Filter Authorization](#114-filter-authorization)
+    - [11.5 Authorization Failures](#115-authorization-failures)
+        - [11.5.1 Top Level Resource Authorization Failure](#1151-top-level-resource-authorization-failure)
+        - [11.5.2 Sub-resource Authorization Failure](#1152-sub-resource-authorization-failure)
+        - [11.5.3 Partial Authorization Failure](#1153-partial-authorization-failure)
+    - [11.6 Restricted Resources](#116-restricted-resources)
+        - [11.6.1 Resource Metadata](#1161-resource-metadata)
+        - [11.6.2 Authorized Access](#1162-authorized-access)
+        - [11.6.3 Unauthorized Access Attempts](#1163-unauthorized-access-attempts)
+- [12.0 Errors](#120-errors)
+    - [12.1 HTTP Status Codes](#121-http-status-codes)
+    - [12.2 Error Response Format](#122-error-response-format)
+        - [12.2.1 validation\_response](#1221-validation_response)
+        - [12.2.2 validation\_information](#1222-validation_information)
+        - [12.2.3 validation\_identifiers](#1223-validation_identifiers)
+    - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
+        - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
+        - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
+    - [12.4 Sub-resource Errors](#124-sub-resource-errors)
+    - [12.5 Partial Error Response](#125-partial-error-response)
+    - [12.6 Special Error Situations](#126-special-error-situations)
+        - [12.6.1 `404 Not Found` Errors](#1261-404-not-found-errors)
+        - [12.6.2 Invalid Query Parameters](#1262-invalid-query-parameters)
+- [Version History](#version-history)   
 
 
 ## 1.0 Introduction
@@ -205,6 +213,7 @@ The metadata property contains data about the request for this resource includin
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
+|validation_identifiers|no|This is a JSON object containing the identifers for this resource. This should be returned if the resource is part of a collection being returned. See [12.2.3 validation_identifiers](#1223-validation_identifiers) for more information.  
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 |restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. Special rules apply to restricted resources. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
 
@@ -241,17 +250,17 @@ See [12.0 Errors](#120-errors) for more information on error handling.
 
 #### 3.2.3 Properties
 
-Resource properties are name value pairs containing information about the state of a resource. The persons resource has properties such as byu\_id, net\_id, preferred name, etc. Property values are returned in a JSON  object that provides additional information for the consumer about the property. The JSON object has the following elements:
+Resource properties contain information about the state of a resource. The persons resource has properties such as byu\_id, net\_id, preferred name, etc. Property values are returned in a UAPI specific format that provides additional information for the consumer about the property. The The UAPI format is a JSON object that has the following elements:
 
-|Property|Required|Description
+|Element|Required|Description
 |-----|-----|-----
-value|Yes|Contains the data value to be processed.
+value \| value_array \| object \| object_array|One and only one is required|Contains the data value to be processed. See individual sections for a definition of the possible representations.
 |api\_type|Yes|Describes how this value may be used in this API. For a list of the possible values for api\_type and the rules associated with each value see the list below.
 |key|Required if the property is the identifier or one of the composite identifiers of the resource.|Designates that the property is one of the key elements for this resource. Key fields are required to have values - they are not allowed to be blank or null. 
 |description|No|Explains the data value in human-friendly terms. Should be limited to 30 characters. 
+|long\_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |display\_label|No|Provides a suggested string to use when creating a label for this property in the user interface. Should be limited to 30 characters. 
 |domain|Required if the value property is part of a set of allowable values.|Contains the URL that can be used to retrieve the set of allowable values. The result of invoking the URL could be used to populate the UI's. For example the value `"domain": "https://api.byu.edu/byuapi/meta/classes/year_terms"` may return a set of the valid year terms. See [8.0 Meta Data Sets](#80-meta-data-sets) for more information. 
-|long\_description|No|Explains the data value in human-friendly terms; contains more information than the (short) description. Should be limited to 256 characters. 
 |related\_resource|Required if the api\_type property is `related`.|If the api\_type is `related` this property will contain the resource-name that "owns" this property. The resource-name can be used to find a HATEOAS link that can access this property.
 
 The `api_type` field is required for all properties. It indicates more information about the value being returned such as if it is modifiable by the consumer, a derived field, a system generated value, etc. 
@@ -267,26 +276,222 @@ read-only|No|There are either business rules or authorization considerations tha
 |unauthorized|No|The consumer is not authorized to retrieve this property. **This api\_type is deprecated. It should not be used for ANY new development.** See [11.0 Authorization](#110-authorization) for more information. 
 |related|No|The responsibility for manipulating this property doesn't belong to this API. The business logic to modify the property exists in the `related_resource`.
 
-A property would look something like this:  
+#### 3.2.4 Representing Property Values
+
+Property values can be expressed as either singleton scalar values, arrays of scalar values, complex objects, or arrays of complex objects.
+
+##### 3.2.4.1 Representing a Scalar Value
+The `value` element is used to represent a single scalar as the value of the property. The value returned can be `null` if the data type of the property supports it.  
+
+A property with a single scalar value would look something like this:  
 
 ```json
 "byu_id": {
   "api_type": "system",
   "display_label": "BYU ID",
   "key": true,
-  "value": "123456789"
+  "value": "123456789",
+  "description": "Joe Student"
 },
 ```
-##### 3.2.3.1 Representing Dates And Times
+
+###### 3.2.4.1.1 Representing Dates And Times
 
 Date and Date/Time data types should be represented as strings using the [RFC-3339](https://tools.ietf.org/html/rfc3339) format. It is suggested that UTC be used instead of local time zones. 
 
+##### 3.2.4.2 Representing Arrays of Scalar Values
 
-#### 3.2.4 Representing Sub-resources
+The `value_array` element is used to represent an array of scalar values as the value of the property. The array is represented as a JSON array. The elements for the property are divided between those that apply to the property as a whole and those that are specific to the entries in the array. The `value_array` element cannot be `null`. If the array has no elements the array an empty array should be returned. 
+
+|Element|Applies to Property or Array Entry|Note
+|-----|-----|-----
+|api\_type|Property|
+|display\_label|Property|
+|description|Entry|The description of the individual entry in the array.
+|long\_description|Entry|
+|domain|Property|
+|related|Both|If applied to the property the URL represents the resource to use to interact with the entire array. If applied to the entry the URL should contain the reference to this specific entry in the array.
+|key|Not Allowed|Arrays cannot be part of the primary key of a resource.
+
+```json
+"instructor_byu_ids": {
+    "api_type": "related",
+    "display_label": "Instructors",
+    "related": "https://api.byu.edu/classes/20185,cs142,1",
+    "value_array": [
+        {
+            "value": "123456789",
+            "description": "Joe Instructor",
+            "api_type": "related",
+            "related": "https://api.byu.edu/persons/123456789"
+        },
+        {
+            "value": "987654321",
+            "description": "Jane Instructor",
+            "api_type": "related",
+            "related": "https://api.byu.edu/persons/987654321"
+        }
+    ] 
+}
+```
+
+##### 3.2.4.3 Representing Complex Objects
+
+The `object` element is used to represent a single complex JSON object as the value of the property. The object is represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an object. The `object` element can be `null`. 
+
+|Element|Note|
+|-----|-----|
+|api\_type|Must be either `read_only` or `related`.
+|display\_label|May be used to indicate a `display_label` for the entire object.
+|related|If applied to the property the URL represents the resource to use to interact with the object as a whole. 
+
+An example of an property containing an object is as follows:
+
+```json
+"final_exam_schedule": {
+    "object": {
+        "building": {
+            "value": "RB",
+            "description": "Richards Building",
+            "api_type": "related",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1",
+            "domain": "https://api.byu.edu/byuapi/meta/classes/buildings"
+        },
+        "room": {
+            "value": "164",
+            "api_type": "related",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        },
+        "days": {
+            "value": "S",
+            "api_type": "related",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        },
+        "start_time": {
+            "value": "11:00",
+            "api_type": "related",
+            "description": "11:00am",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        },
+        "end_time": {
+            "value": "14:00",
+            "api_type": "related",
+            "description": "2:00pm",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        },
+        "start_date": {
+            "value": "2018-12-15",
+            "api_type": "related",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        },
+        "end_date": {
+            "value": "2018-12-15",
+            "api_type": "related",
+            "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/FINAL%20EXAM,1"
+        }
+    },
+    "api_type": "read-only"
+},
+```
+
+##### 3.2.4.4 Representing Arrays of Complex Objects
+
+The `object_array` element is used to represent an array of complex JSON objects as the value of the property. The objects are represented in standard UAPI specification format as described in [3.2.3 Properties](#323-properties). Only certain elements are valid for a property that contains an array of objects. An `object_array` element cannot be `null`. If there are no objects to in the array then an empty array should be returned. 
+
+|Element|Note
+|-----|-----
+|api\_type|Must be either `read-only` or `related`.
+|display\_label|May be used to indicate a `display_label` for the entire array of objects.
+|related|If applied to the property the URL represents the resource to use to interact with the object array as a whole. 
+
+An example of an property containing an array of objects is as follows:
+
+```json
+"when_taught": {
+    "object_array": [
+        {
+            "building": {
+                "value": "RB",
+                "description": "Richards Building",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,3",
+                "domain": "https://api.byu.edu/byuapi/meta/classes/buildings"
+            },
+            "room": {
+                "value": "206",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,3"
+            },
+            "days": {
+                "value": "MW",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,3"
+            },
+            "start_time": {
+                "value": "12:00",
+                "api_type": "related",
+                "description": "12:00pm",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,3"
+            },
+            "end_time": {
+                "value": "12:50",
+                "api_type": "related",
+                "description": "12:50pm",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,3"
+            },
+        },
+        {
+            "building": {
+                "value": "RB",
+                "description": "Richards Building",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,2",
+                "domain": "https://api.byu.edu/byuapi/meta/classes/buildings"
+            },
+            "room": {
+                "value": "164",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,2"
+            },
+            "days": {
+                "value": "F",
+                "api_type": "related",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,2"
+            },
+            "start_time": {
+                "value": "12:00",
+                "api_type": "related",
+                "description": "12:00pm",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,2"
+            },
+            "end_time": {
+                "value": "12:50",
+                "api_type": "related",
+                "description": "12:50pm",
+                "related_resource": "https://api.byu.edu/byuapi/classes/v2/Fall2018,C%20S,301R,003/assigned_schedules/CLS,2"
+            },
+        }
+    ],
+    "api_type": "read-only"
+},
+          
+```
+
+##### 3.2.4.5 Special Considerations For Representing Complex Objects
+
+While the UAPI specification supports complex objects (`value_array`, `object`, and `object_array`) they should be used judiciously. There are a number of implications to using complex objects including:
+
+- Lack of addressability - Complex objects cannot be addressed directly the same way sub-resources can. 
+- Lack of selectability - Complex objects are always included in the field\_set that contains them, unlike field\_sets in general which can be included at the discretion of the consumer. 
+- Data classification issues - Like field\_sets, complex objects inherit the classification of the most restricted property they contain. This classification expands to include the entire field\_set that contains the complex object.  
+
+
+
+#### 3.2.5 Representing Sub-resources
 
 Single value sub-resources (i.e. those retrieved by using an identifier in the URL) are represented much the same way the `basic` object is represented. They require the same links, metadata, and properties elements. All properties are represented just under the root of the returned object (i.e. they do not have a `basic` object).
 
-#### 3.2.5 Example Single Resource Representation
+#### 3.2.6 Example Single Resource Representation
 
 A single top level resource representation would look like:
 
@@ -355,7 +560,7 @@ A single top level resource representation would look like:
 }
 ```
 
-#### 3.2.6 Example Single Sub-resource Representation 
+#### 3.2.7 Example Single Sub-resource Representation 
 
 A single sub-resource representation would look like:
 
@@ -433,7 +638,7 @@ Metadata related to [field_sets](#51-field_sets) and [contexts](#52-contexts) al
 |validation\_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code.
 |cache|required if the result is a cached value|This is an object that contains one required property: `date_time`. The `date_time` value is when the data was updated in the cache.
 |restricted|Required for sub-resource collections that deal with individuals. Not required for top level resource collections.|Indicates that the sub-resource represents some aspect of a person that has requested that their records be restricted. See [11.6 - Restricted Resources](#116-restricted-resources) for more information.
-|collection\_size|required|The number of items of the resource which exist in the entire collection.
+|collection\_size|recommended|The number of items of the resource which exist in the entire collection. Can be omitted if the size is unknown or acquiring the number id computationally intensive. 
 
 The metadata returned for a resource collection would look like:
 
@@ -764,7 +969,7 @@ Multiple filters can be combined to create more complex filtering rules. APIs ca
  
 #### 6.2 Filtering Sub-resources
  
- Filters apply to the lowest level resource specified on the URL. If the URL only specifies a top level resource a collection of top level resources that match the filter will be returned. If the URL includes a sub-resource the filter will be applied to that sub-resource and the collection returned will be instances of the sub-resource. For example, the URL `https://api.byu.edu/byuapi/persons?net_id=johndoe` will return a collection of persons that have a `net_id` of `johndoe`. The URL `https://api.byu.edu/byuapi/persons/123456789/addresses?address_type=MAL` will return a collection of all mailing addresses associated to the person with the byu_id `123456789`.
+ Filters apply to the lowest level resource specified on the URL. If the URL only specifies a top level resource a collection of top level resources that match the filter will be returned. If the URL includes a sub-resource the filter will be applied to that sub-resource and the collection returned will be instances of the sub-resource. For example, the URL `https://api.byu.edu/byuapi/persons?net_id=johndoe` will return a collection of persons that have a `net_id` of `johndoe`. The URL `https://api.byu.edu/byuapi/persons/123456789/addresses?address_type=MAL` will return a collection of all mailing addresses associated to the person with the byu_id `123456789` that have an `address_type` of `MAL`. 
  
 #### 6.3 Dot Notation (Filtering With Sub-resources)
 
@@ -773,6 +978,28 @@ There are times when it makes sense to query a top level resource by a value in 
 #### 6.4 Wildcards
 
 Individual resources can choose to support a wildcard in their query string parameters where they make sense. The asterisk (`*`) should be used as the wildcard character for consistency across resources.
+
+#### 6.5 Comparison Operators
+
+Filters can optionally support operators. The format of a filter including an comparison operator is `filter_name[operator]=value(s)`. The following comparison operators are supported. 
+
+|Operator|Notes|Example
+|-----|-----|----
+|none(default)|Exact match is required. If the filter supports multiple comma separated values the values are "OR"ed together.|`https://api.byu.edu/byuapi/persons?net_id=johndoe`
+|`starts_with`|The property starts with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[starts_with]=john`
+|`ends_with`|The property values end with the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[ends_with]=doe`
+|`contains`|The property values contain the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[contains]=john`
+|`gt`| The property values are greater than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[gt]=johndoe`
+|`gt_or_eq`|The property values are greater than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[gt_or_eq]=johndoe`
+|`lt`| The property values are less than the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt]=johndoe`
+|`lt_or_eq`|The property values are less than or equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[lt_or_eq]=johndoe`
+|`not_eq`|The property values are not equal to the provided parameter|`https://api.byu.edu/byuapi/persons?net_id[not_eq]=johndoe`
+|`is_null`|Returns `true/false` depending upon if the property value is `null`|`https://api.byu.edu/byuapi/persons?net_id[is_null]=true`
+|`is_empty`|Returns `true`/`false` depending upon if the property value is empty|`https://api.byu.edu/byuapi/persons?net_id[is_empty]=true`
+|`not_in`|The property values are not in the list contained in the provided parameter. Only applicable for filters that allow for multiple values|`https://api.byu.edu/byuapi/persons?net_ids[not_in]=johndoe,janedoe`
+
+
+The provider should include in the documentation for the service which operators are allowed for their specific filters.
 
 ## 7.0 Search
 
@@ -1009,7 +1236,7 @@ Authorization in the UAPI is done at the field\_set/sub-resource level. Authoriz
 
 #### 11.1.1 Data Classification 
 
-Authorizing by field\_set introduces the dependency that the data classification (see [data classification definitions](https://infohub.byu.edu/resources/classification/summary)) for the entire field\_set is the data classification for the most restricted property it contains. 
+Authorizing by field\_set introduces the dependency that the data classification (see [data classification definitions](https://infohub.byu.edu/resources/classification/summary)) for the entire field\_set is the data classification for the most restricted property it contains. The same applies for complex objects that are included as part of a field\_set. 
 
 ### 11.2 Top Level Resource Authorization
 
@@ -1096,6 +1323,19 @@ The optional `validation_information` metadata property can be used to communica
          ]
 ```
 
+#### 12.2.3 validation_identifiers
+
+There are instances where an entry in a collection has an error while other entries in the collection do not. The optional `validation_identifiers` metadata property on the specific entry in the collection can be used to communicate the identifers for that entry in the collection that has the error. This allows the API designer to include in the error an appropriate level of detail as to which entries in a collection had errors. Care should be taken to be sure no unauthorized information is leaked by including the identifiers in the error. The `validation_identifiers` property is represented as an `object` with the following format:
+
+```json
+    "validation_identifiers": {
+        "byu_id": "123456789",
+        "address_type": "MAL"
+    }
+```
+
+The properties included in the `validation_identifers` should be consistent regardless of the type of error returned.  
+
 ### 12.3 Top Level Resource Errors
 
 Requests for top level resources take three forms - requests for collections of resources (no identifier on the resource URL) and requests for specific resources (identifier included in the URL) and either of the two with `field_sets` or `contexts` query string parameters.  
@@ -1109,7 +1349,7 @@ Errors in processing a request for a single top level resource with no additiona
 Errors in processing a request for a collection of top level resources should proceed as follows:
 
 - If an error occurs with the overall request the HTTP status code for the request should indicate the type of error that occurred. The body of the response should contain a UAPI standard format response containing at least the `metadata` property with the `validation_response` property and optionally the `validation_information` property. 
-- If an error occurs in processing the request for one or more of the resources in the collection the `validation_response` and `validation_information` metadata properties for that resource should be set with the appropriate error information.  The HTTP status code for the entire request may be a `200 Success` even if only part of the response is error free. 
+- If an error occurs in processing the request for one or more of the resources in the collection the `validation_response` and `validation_information` metadata properties for that resource should be set with the appropriate error information.  Optionally the `validation_identifiers` property can be set with the identifiers for the entry with the error. The HTTP status code for the entire request may be a `200 Success` even if only part of the response is error free. 
 
 ### 12.4 Sub-resource Errors
 
@@ -1122,6 +1362,7 @@ Errors during access to individual sub-resources with or without identifiers sho
  - The field\_set properties for parts of the response that experienced errors will contain at least the `metadata` property with the appropriate values for the `validation_response`, `validation_information`, and `restricted` properties. 
  - The field\_set properties for parts of the response that succeeded will contain the UAPI representation of the field\_set with the `validation_response` set to the appropriate HTTP status code, normally `200 Success`. 
  
+
 ### 12.6 Special Error Situations
 
 #### 12.6.1 '404 Not Found' Errors
@@ -1146,4 +1387,6 @@ When a request contains an undefined query parameter or a query parameter that c
 |1.1||Complete rewrite of the standard document to include new items such as field\_sets, contexts, etc. All information about domain APIs has been moved to a separate document.|
 |1.2|May 31, 2018|Added date/time specification, clarified top level resource links and metadata, fixed dot notation example. 
 |1.3|July 19, 2018|Added requirements around restricted persons including clarifying how 404 errors are to be handled. Added 403 error for invalid field\_set and context parameters. Added sections for sorting, subsets of large collections, and search.  Other minor enhancements and clarifications. 
+|1.4|?|Added support for complex objects and specify which data types are acceptable.
+|1.5|?|Added support for conditional operators on filters.
 
