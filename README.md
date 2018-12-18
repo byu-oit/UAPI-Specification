@@ -4,9 +4,7 @@ The UAPI Specification and related documents are contained in this repository.
 
 The `master` branch should contain the latest official versions of the specification. 
 
-The `develop` branch contains versions of the document that are still a work in progress. Once approved the documents will be merged with the `master` branch. 
-
-Please submit any pull requests against the `develop` branch. 
+Please create a feature branch for any updates to the `master` branch. 
 
 For questions, edits, and clarifications please feel free to open issues in this repository. 
 
