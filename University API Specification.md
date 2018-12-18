@@ -107,7 +107,7 @@ The BYU University API Standard is licensed under [The Apache License, Version 
     - [12.2 Error Response Format](#122-error-response-format)
         - [12.2.1 validation\_response](#1221-validation_response)
         - [12.2.2 validation\_information](#1222-validation_information)
-        - [12.2.3 validation\_identifiers](#1223-validation-identifiers)
+        - [12.2.3 validation\_identifiers](#1223-validation_identifiers)
     - [12.3 Top Level Resource Errors](#123-top-level-resource-errors)
         - [12.3.1 Single Top Level Resource Errors](#1231-single-top-level-resoure-errors)
         - [12.3.2 Top Level Resource Collection Errors](#1232-top-level-resource-colletion-errors)
@@ -213,7 +213,7 @@ The metadata property contains data about the request for this resource includin
 |-----|-----|-----
 |validation_response|yes|This is an object that contains two required properties: *code* and *message*.
 |validation_information|no|This is an array of strings that provide information about errors correlated to the `validation_response.code` and HTTP response code. See [10.0 HTTP POST, PUT, DELETE](#100-http-post-put-delete) for more information. 
-|validation_identifiers|no|This is a JSON object containing the identifers for this resource. This should be returned if the resource is part of a collection being returned. See [12.2.3 validation_identifiers](#1223-validation-identifiers) for more information.  
+|validation_identifiers|no|This is a JSON object containing the identifers for this resource. This should be returned if the resource is part of a collection being returned. See [12.2.3 validation_identifiers](#1223-validation_identifiers) for more information.  
 |cache|required if the result is a cached value|This is an object that contains one required property: *date_time*. The date_time value is when the data was updated in the cache.
 |restricted|Required if the resource deals with an individual|Indicates that the resource represents a person that has requested that their records be restricted. Special rules apply to restricted resources. See [11.6 - Restricted Resources](#116-restricted-resources) for more information. 
 
