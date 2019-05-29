@@ -89,7 +89,7 @@ One of the features of UAPI compliant APIs is the ability specify filters on the
 
 In Postman modify the URL for the `Get Persons by Netid` and change the `?net_id=adddrop` filter to specify your netid instead of the test id and press `Send`.
 
-![](./images/Test-driving-images/GetPersonByNetid.jpg)
+![](./images/Test-driving-images/GetPersonByNetId.jpg)
 
 The Persons API will return a JSON object (don't panic about the size). There is a standard format that all the UAPI compliant APIs use. Let's explore this structure a little.
 
