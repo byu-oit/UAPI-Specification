@@ -2,7 +2,7 @@
 
 The Persons API (V2) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
 
-We will use Postman - an interactive REST client - to explore some of what the Persons API can do.
+We will use Postman - an interactive REST client - to explore some of what the Persons API can do.´
 
 ## Persons API
 
@@ -12,7 +12,7 @@ The Persons API, like all of BYU's APIs, is managed by our API Manager. In order
 
 Access the [API Manager Store](https://api.byu.edu/store). Click the `Login` button in the upper right corner of the page to authentication with the API Manager Store. Authentication is required to generate access keys.
 
- ![](./images/Test-driving-images/APIStore-login.JPG)
+ ![](./images/Test-driving-images/APIStore-login.jpg)
 
 Gaining access to an API through the API Manager is a two step process. First we need to create an application. Second we will have our application subscribe to use the Persons API.
 
