@@ -12,7 +12,7 @@ The Persons API, like all of BYU's APIs, is managed by our API Manager. In order
 
 Access the [API Manager Store](https://api.byu.edu/store). Click the `Login` button in the upper right corner of the page to authentication with the API Manager Store. Authentication is required to generate access keys.
 
- ![](./images/Test-driving-images/APIStore-login.jpg)
+![](./images/Test-driving-images/APIStore-login.jpg)
 
 Gaining access to an API through the API Manager is a two step process. First we need to create an application. Second we will have our application subscribe to use the Persons API.
 
@@ -20,22 +20,21 @@ An application represents a group of APIs. For a normal application you would cr
 
 To create an application click on the `My Applications` button on the top of the page. Give the application a `Name` and optional description. The rest of the fields can be the default for this tutorial.  Click `Add` to create our new application. 
 
- ![](./images/Test-driving-images/Add-application.jpg)
+![](./images/Test-driving-images/Add-application.jpg)
 
 Now we need to generate a `client_id` and `client_secret` for our application. These uniquely identify this application to the API Manager. The `client_id` is similar to a `net_id` and is considered public. The `client_secret` is similar to a password and should be kept confidential. If the `client_secret` is compromised the application will need to be deleted and a new one created in order to generate new credentials.
 
 To generate the credentials click on the `My Subscriptions` button at the top of the window. Be sure that the correct application is selected and click on the `Generate keys` button. After a few seconds the keys will be displayed. The `client_id` is labeled the `Consumer Key` on the page and the `client_secret` is labeled the `Consumer Secret`. Save those two values, you'll need them later (you can always return to this page to retrieve the values when you need them).
- 
- ![](./images/Test-driving-images/Generate-keys.jpg)
+
+![](./images/Test-driving-images/Generate-keys.jpg)
 
 Now we need to find the Persons API and subscribe to it. Since there are hundreds of APIs in the store we'll search for the API. Click on the `APIs` button at the top of the page to bring up the list of APIs in the store. Enter "Persons" in the search field at the top of the page and press enter. 
 
- ![](./images/Test-driving-images/Persons-search.jpg)
+![](./images/Test-driving-images/Persons-search.jpg)
 
 On the list of matching APIs select version 2 (v2) of the Persons API.
 
- ![](./images/Test-driving-images/Persons-search-results.jpg)
-
+![](./images/Test-driving-images/Persons-search-results.jpg)
 
 Now we need to subscribe to the Persons API. Make sure your application is selected and click on the `Subscribe` button. This will add a subscription.
 
@@ -57,7 +56,6 @@ Once Postman is installed we need to create a Postman environment that will stor
 In Postman click on the `Import` button and select the two downloaded files. This will add the configurations to the environment.
 
 ![](./images/Test-driving-images/Postman-import.jpg)
-
 
 Once you have imported the configuration make sure the environment selection is set to "Persons". Click on the `Environment Quick Look` button to see the values in the environment.
 
