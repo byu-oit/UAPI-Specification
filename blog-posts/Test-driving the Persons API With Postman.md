@@ -103,10 +103,27 @@ Click on the arrow next to the `links` property to collapse that portion of the 
 
 ### Collections vs individual resources via a URL
 
+It is possible to look up an individual resource using the primary identifier, BYU ID number.
+
+In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
+
+IMAGE HERE
+
+The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array.
+
+IMAGE HERE
+
 ### Basic Lookup (filtered)
 
 #### What a response looks like
 
+Links
+
+Metadata
+
 ### Single resource lookup
 
+
+
 ## Exploring sub-resources
+
