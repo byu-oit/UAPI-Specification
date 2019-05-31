@@ -103,17 +103,13 @@ Click on the arrow next to the `links` property to collapse that portion of the 
 
 ### Collections vs individual resources via a URL
 
-It is possible to look up an individual resource using the primary identifier, BYU ID number.
-
-In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
-
-IMAGE HERE
-
-The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array.
-
-IMAGE HERE
+The API calls we have been using are returning collections of data in the `values` array. It is possible to look up an individual resource using the primary identifier (BYU ID number). You will see an example of this later.
 
 ### Basic Lookup (filtered)
+
+Filtering your query is another way to retrieve specific datasets. You construct a filter by selecting the resource you would like to filter on and then adding the condition and values. `resource[attribute]=value`
+
+In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your netid. This result should look very similar to your previous responses.
 
 #### What a response looks like
 
@@ -123,7 +119,12 @@ Metadata
 
 ### Single resource lookup
 
+In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
 
+IMAGE HERE
+
+The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array. This identifier ,`basic`, is a `fieldset` wich you can learn more about using to retrieve specific data.
+
+IMAGE HERE
 
 ## Exploring sub-resources
-
