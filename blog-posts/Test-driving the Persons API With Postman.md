@@ -111,6 +111,8 @@ Filtering your query is another way to retrieve specific datasets. Some APIs sup
 
 In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
 
+*Note: This filter appends a wildcard character "`*`" at the end of the query so you may get multiple results if you enter a partial address.*
+
 #### What a response looks like
 
 The links section of the response provides you additional routes to access clarifying information or additional results.
@@ -130,4 +132,7 @@ The response should include a `basic` set of data in place of the values array. 
 IMAGE HERE
 
 ## Exploring sub-resources
-The `email_addresses` identifier we used in one of the last requests is what we call a subresource. They can be used to filter all users or you can filter and query within a single users information.
+
+The `email_addresses` identifier we used in one of the last requests is what we call a `subresource`. They can be used to filter all users or you can filter and query within a single users information.
+
+In Postman look at the `Get Persons Subresource` request. It is requesting all of a persons addresses. Replace `000000000` with your BYU ID and send the request.
