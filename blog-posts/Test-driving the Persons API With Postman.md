@@ -107,15 +107,17 @@ The API calls we have been using are returning collections of data in the `value
 
 ### Basic Lookup (filtered)
 
-Filtering your query is another way to retrieve specific datasets. You construct a filter by selecting the resource you would like to filter on and then adding the condition and values. `resource[attribute]=value`
+Filtering your query is another way to retrieve specific datasets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by a wider variety of identifiers.
 
-In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your netid. This result should look very similar to your previous responses.
+In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
 
 #### What a response looks like
 
-Links
+The links section of the response provides you additional routes to access clarifying information or additional results.
 
-Metadata
+IMAGE HERE
+
+The metadata provides information on pagination of large result sets and response code. It also gives you information on the field sets returned and the field sets avaliable for retrieval.
 
 ### Single resource lookup
 
@@ -128,3 +130,4 @@ The response should include a `basic` set of data in place of the values array. 
 IMAGE HERE
 
 ## Exploring sub-resources
+The `email_addresses` identifier we used in one of the last requests is what we call a subresource. They can be used to filter all users or you can filter and query within a single users information.
