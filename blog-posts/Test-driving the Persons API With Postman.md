@@ -133,6 +133,6 @@ IMAGE HERE
 
 ## Exploring sub-resources
 
-The `email_addresses` identifier we used in one of the last requests is what we call a `subresource`. They can be used to filter all users or you can filter and query within a single users information.
+The `email_addresses` identifier we used in one of the last requests is what we call a `subresource` identifier. They can be used to filter collections or you can filter within a single users information.
 
 In Postman look at the `Get Persons Subresource` request. It is requesting all of a persons addresses. Replace `000000000` with your BYU ID and send the request.
