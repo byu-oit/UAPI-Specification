@@ -114,7 +114,7 @@ In Postman use the `Get Person Filtered` API call. Replace the value after `=` w
 *Note: This filter appends a wildcard character "`*`" at the end of the query so you may get multiple results if you enter a partial address.*
 
 #### What a response looks like
-We are going to break down each of the sections and what they do. Here is the response from that last request.
+We are going to break down each sections pupose. Here is the response from that last request.
 
 ![Email filtered results](./images/Test-driving-images/EmailFilteredResults.png)
 
@@ -122,17 +122,17 @@ The links section of the response provides you additional routes to access clari
 
 ![Links](./images/Test-driving-images/ResultsLinks.png)
 
-The metadata provides information on pagination of large result sets and the response code. In this case it is a simple 200 but the UAPI does specify extensive error codes to help API consumers resolve issues. The metadata also gives you information on the field sets returned and the field sets avaliable for retrieval. The Persons v3 API also supports optional `contexts` which create convienient sets of fieldsets.
+The metadata provides information on pagination of large result sets and the response code. In this case it is a simple `200` but the UAPI does specify extensive error codes to help API consumers resolve issues. The metadata also gives you information on the field sets returned and the field sets avaliable for retrieval. The Persons v3 API also supports optional `contexts` which create convienient sets of fieldsets (groups of related data).
 
 ![Metadata](./images/Test-driving-images/ResultsMetadata.png)
 
 ### Single resource lookup
 
-In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
+All of the API calls so far have been returning collections of results in the `values` array but now we will do a single resource lookup. In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
 
 ![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByID.png)
 
-The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array. This identifier ,`basic`, is a `fieldset` wich you can learn more about using to retrieve specific data.
+The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array. This `basic` identifier, represents the default `fieldset` returned by queries to the Persons API.
 
 ![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByIDResult.png)
 
