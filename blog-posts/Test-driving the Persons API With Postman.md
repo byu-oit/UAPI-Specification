@@ -107,29 +107,36 @@ The API calls we have been using are returning collections of data in the `value
 
 ### Basic Lookup (filtered)
 
-Filtering your query is another way to retrieve specific datasets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by a wider variety of identifiers.
+Filtering your query is another way to retrieve specific datasets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by filtering on subresources (we will cover subresources later).
 
 In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
+
+![Email filtered request](./images/Test-driving-images/EmailFiltered.png)
 
 *Note: This filter appends a wildcard character "`*`" at the end of the query so you may get multiple results if you enter a partial address.*
 
 #### What a response looks like
+We are going to break down each of the sections and what they do. Here is the response from that last request.
 
-The links section of the response provides you additional routes to access clarifying information or additional results.
+![Email filtered results](./images/Test-driving-images/EmailFilteredResults.png)
 
-IMAGE HERE
+The links section of the response provides you additional routes to access clarifying information or additional results. This is especially helpful if you have many results and want to page through them.
 
-The metadata provides information on pagination of large result sets and response code. It also gives you information on the field sets returned and the field sets avaliable for retrieval.
+![Links](./images/Test-driving-images/ResultsLinks.png)
+
+The metadata provides information on pagination of large result sets and the response code. In this case it is a simple 200 but the UAPI does specify extensive error codes to help API consumers resolve issues. The metadata also gives you information on the field sets returned and the field sets avaliable for retrieval. The Persons v3 API also supports optional `contexts` which create convienient sets of fieldsets.
+
+![Metadata](./images/Test-driving-images/ResultsMetadata.png)
 
 ### Single resource lookup
 
 In Postman use the `Get Persons by BYU ID` request. Replace `000000000` with your BYU ID (the number on your BYU ID card).
 
-IMAGE HERE
+![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByID.png)
 
 The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array. This identifier ,`basic`, is a `fieldset` wich you can learn more about using to retrieve specific data.
 
-IMAGE HERE
+![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByIDResult.png)
 
 ## Exploring sub-resources
 
