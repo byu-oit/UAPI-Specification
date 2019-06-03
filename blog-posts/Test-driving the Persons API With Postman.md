@@ -59,7 +59,7 @@ Once you have imported the configuration make sure the environment selection is 
 
 ![](./images/Test-driving-images/Postman-environment.jpg)
 
-Click the `Edit` link to open the environment editor. Fill in the values for `client_id` and `client_secret` from your API Manager application. Put the values for your BYU netid and password in the `username` and `password` fields. These are necessary for authenticating to the API Manager and the Persons API. The `accessToken` will be filled in programmatically later. 
+Click the `Edit` link to open the environment editor. Fill in the values for `client_id` and `client_secret` from your API Manager application. Put the values for your BYU netid and password in the `username` and `password` fields. These are necessary for authenticating to the API Manager and the Persons API. The `accessToken` will be filled in programmatically later.
 
 ![](./images/Test-driving-images/Postman-quicklook.jpg)
 
@@ -105,7 +105,7 @@ The API calls we have been using are returning collections of data in the `value
 
 ### Basic Lookup (filtered)
 
-Filtering your query is another way to retrieve specific datasets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by filtering on subresources (we will cover subresources later).
+Filtering your query is another way to retrieve specific data-sets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by filtering on subresources (we will cover subresources later).
 
 In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
 
@@ -114,7 +114,8 @@ In Postman use the `Get Person Filtered` API call. Replace the value after `=` w
 *Note: This filter appends a wildcard character "`*`" at the end of the query so you may get multiple results if you enter a partial address.*
 
 #### What a response looks like
-We are going to break down each sections pupose. Here is the response from that last request.
+
+We are going to break down each sections purpose. Here is the response from that last request.
 
 ![Email filtered results](./images/Test-driving-images/EmailFilteredResults.png)
 
@@ -122,7 +123,7 @@ The links section of the response provides you additional routes to access clari
 
 ![Links](./images/Test-driving-images/ResultsLinks.png)
 
-The metadata provides information on pagination of large result sets and the response code. In this case it is a simple `200` but the UAPI does specify extensive error codes to help API consumers resolve issues. The metadata also gives you information on the field sets returned and the field sets avaliable for retrieval. The Persons v3 API also supports optional `contexts` which create convienient sets of fieldsets (groups of related data).
+The metadata provides information on pagination of large result sets and the response code. In this case it is a simple `200` but the UAPI does specify extensive error codes to help API consumers resolve issues. The metadata also gives you information on the field sets returned and the field sets available for retrieval. The Persons v3 API also supports optional `contexts` which create convenient sets of fieldsets (groups of related data).
 
 ![Metadata](./images/Test-driving-images/ResultsMetadata.png)
 
