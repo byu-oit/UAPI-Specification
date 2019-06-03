@@ -2,9 +2,7 @@
 
 The Persons API (V2) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
 
-We will use Postman - an interactive REST client - to explore some of what the Persons API can do.´
-
-## Persons API
+We will use Postman - an interactive REST client - to explore some of what the Persons API can do.
 
 ## API Manager Setup
 
@@ -18,7 +16,7 @@ Gaining access to an API through the API Manager is a two step process. First we
 
 An application represents a group of APIs. For a normal application you would create one application and add subscriptions to all the APIs that application will use. We will create a single application and add a subscription for the Persons API.
 
-To create an application click on the `My Applications` button on the top of the page. Give the application a `Name` and optional description. The rest of the fields can be the default for this tutorial.  Click `Add` to create our new application. 
+To create an application click on the `My Applications` button on the top of the page. Give the application a `Name` and optional description. The rest of the fields can be the default for this tutorial.  Click `Add` to create our new application.
 
 ![](./images/Test-driving-images/Add-application.jpg)
 
