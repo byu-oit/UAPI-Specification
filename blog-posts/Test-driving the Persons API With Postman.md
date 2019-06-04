@@ -1,6 +1,6 @@
 # Test-driving the Persons API With Postman
 
-The Persons API (V2) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
+The Persons API (V3) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
 
 We will use Postman - an interactive REST client - to explore some of what the Persons API can do.
 
@@ -30,7 +30,7 @@ Now we need to find the Persons API and subscribe to it. Since there are hundred
 
 ![](./images/Test-driving-images/Persons-search.jpg)
 
-On the list of matching APIs select version 2 (v2) of the Persons API.
+On the list of matching APIs select version 3 (V3) of the Persons API.
 
 ![](./images/Test-driving-images/Persons-search-results.jpg)
 
@@ -83,7 +83,7 @@ If you receive an error message be sure you have put your `client-id`, `client-s
 
 The identifer that the Person's API uses is the `byu_id`. Most users don't know what that number is (it's the number on the id card). So we'll start by looking up information by using a netid - something that everybody should know.
 
-One of the features of UAPI compliant APIs is the ability specify filters on the request. In our case we'll filter on `net_id` so we don't have to know what the `byu_id` is. Click on the `Get Person by Netid` API call on the left. Postman will open a new tab. The URL for the Persons API is `https://api.byu.edu/byuapi/persons/v2/`. Access to all features of the API go though this URL.
+One of the features of UAPI compliant APIs is the ability specify filters on the request. In our case we'll filter on `net_id` so we don't have to know what the `byu_id` is. Click on the `Get Person by Netid` API call on the left. Postman will open a new tab. The URL for the Persons API is `https://api.byu.edu/byuapi/persons/v3/`. Access to all features of the API go though this URL.
 
 In Postman modify the URL for the `Get Persons by Netid` and change the `?net_id=adddrop` filter to specify your netid instead of the test id and press `Send`.
 
