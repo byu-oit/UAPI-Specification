@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "450ba0a5-3b94-4961-beee-318e027cec1c",
+		"name": "BYUAPI Persons V3",
+		"description": "Test production apis with a password grant type",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Password Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da52f536-ee38-4f4c-8565-0d4a0bd6f1e4",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"accessToken\", data.access_token);",
+							"tests['token returned'] = responseBody.has(\"access_token\")",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.byu.edu/token",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"path": [
+						"token"
+					]
+				},
+				"description": "get Access Token using the password grant type"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Person by NetId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/?net_ids=adddrop",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"port": "443",
+					"path": [
+						"byuapi",
+						"persons",
+						"v3",
+						""
+					],
+					"query": [
+						{
+							"key": "net_ids",
+							"value": "adddrop"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Person by BYU ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/00000000",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"port": "443",
+					"path": [
+						"byuapi",
+						"persons",
+						"v3",
+						"00000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Person Filtered",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/?email_addresses.email_address=youraddress",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"port": "443",
+					"path": [
+						"byuapi",
+						"persons",
+						"v3",
+						""
+					],
+					"query": [
+						{
+							"key": "email_addresses.email_address",
+							"value": "youraddress"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
