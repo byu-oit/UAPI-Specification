@@ -32,11 +32,11 @@ Now we need to find the Persons API and subscribe to it. Since there are hundred
 
 On the list of matching APIs select version 3 (V3) of the Persons API.
 
-![](./images/Test-driving-images/Persons-search-results.jpg)
+![](./images/Test-driving-images/Persons-search-results.png)
 
 Now we need to subscribe to the Persons API. Make sure your application is selected and click on the `Subscribe` button. This will add a subscription.
 
-![](./images/Test-driving-images/Subscription.jpg)
+![](./images/Test-driving-images/Subscription.png)
 
 >**Note** - the API Store has an API Console where you can try calling APIs. The console will not work for this API.
 
@@ -135,10 +135,17 @@ All of the API calls so far have been returning collections of results in the `v
 
 The response should include a `basic` set of data in place of the values array. This should be the same information as was returned by the previous request inside of the `values` array. This `basic` identifier, represents the default `fieldset` returned by queries to the Persons API.
 
-![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByIDResult.png)
+![Get Person by BYU Id request](./images/Test-driving-images/GetPersonByIDResult.png) 
 
 ## Exploring sub-resources
 
 The `email_addresses` identifier we used in one of the last requests is what we call a `subresource` identifier. They can be used to filter collections or you can filter within a single users information.
 
 In Postman look at the `Get Persons Subresource` request. It is requesting all of a persons addresses. Replace `000000000` with your BYU ID and send the request.
+
+## Further Reading
+
+We only touched the surface of many of these topics. The [complete UAPI Specification](https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#byu-university-api-standard) provides additional details.
+
+Check out [UAPI Section 5]( https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#50-sub-resources-field_sets-and-contexts )
+for more information on sub-resources, contexts and filters.
