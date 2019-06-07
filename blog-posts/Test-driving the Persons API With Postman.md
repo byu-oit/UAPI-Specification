@@ -50,7 +50,9 @@ Download Postman from their [site](https://getpostman.com/apps). You can choose 
 
 Once Postman is installed we need to create a Postman environment that will store our configuration. Download the skeleton environment and configuration files for this tutorial:
 
- {**need link to postman environment from GitHub **}
+[BYU Postman Environment Download](https://raw.githubusercontent.com/byu-oit/UAPI-Specification/master/blog-posts/files/Persons.postman_environment.json)  
+[BYU Persons API Postman Collection Download](https://raw.githubusercontent.com/byu-oit/UAPI-Specification/master/blog-posts/files/BYUAPI%20Persons%20V3.postman_collection.json)
+
 In Postman click on the `Import` button and select the two downloaded files. This will add the configurations to the environment.
 
 ![](./images/Test-driving-images/Postman-import.jpg)
