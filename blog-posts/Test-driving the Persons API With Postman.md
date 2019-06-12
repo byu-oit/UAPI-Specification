@@ -6,13 +6,13 @@ We will use Postman - an interactive REST client - to explore some of what the P
 
 ## API Manager Setup
 
-The Persons API, like all of BYU's APIs, is managed by our API Manager. In order to access any API through the API Manager a consumer must generate a set of access keys. That is our first step.  
+The Persons API, like all of BYU's APIs, is managed by our API Manager. In order to access any API through the API Manager, a consumer must generate a set of access keys. That is our first step.  
 
-Access the [API Manager Store](https://api.byu.edu/store). Click the `Login` button in the upper right corner of the page to authentication with the API Manager Store. Authentication is required to generate access keys.
+Access the [API Manager Store](https://api.byu.edu/store). Click the `Login` button in the upper right corner of the page to authenticate with the API Manager Store. Authentication is required to generate access keys.
 
 ![](./images/Test-driving-images/APIStore-login.jpg)
 
-Gaining access to an API through the API Manager is a two step process. First we need to create an application. Second we will have our application subscribe to use the Persons API.
+Gaining access to an API through the API Manager is a two step process. First, we need to create an application. Second, we need our application to subscribe to use the Persons API.
 
 An application represents a group of APIs. For a normal application you would create one application and add subscriptions to all the APIs that application will use. We will create a single application and add a subscription for the Persons API.
 
