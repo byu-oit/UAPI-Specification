@@ -1,6 +1,6 @@
 # Test-driving the Persons API With Postman
 
-The Persons API (V3) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
+The Persons API (v3) is a good example of an API that conforms to the University API (UAPI) Specification. The Persons API provides access to a large amount of identity data if the user knows how to operate it correctly. It is also a good model for how to operate all UAPI conformant APIs.
 
 We will use Postman - an interactive REST client - to explore some of what the Persons API can do.
 
@@ -30,7 +30,7 @@ Now we need to find the Persons API and subscribe to it. Since there are hundred
 
 ![](./images/Test-driving-images/Persons-search.jpg)
 
-On the list of matching APIs select version 3 (V3) of the Persons API.
+On the list of matching APIs select version 3 (v3) of the Persons API.
 
 ![](./images/Test-driving-images/Persons-search-results.png)
 
