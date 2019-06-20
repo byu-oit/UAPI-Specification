@@ -115,7 +115,7 @@ In Postman use the `Get Person Filtered` API call. Replace the value after `=` w
 
 >**Note** - This filter appends a wildcard character "`*`" at the end of the query so you may get multiple values.
 
-#### What a response looks like
+### What a response looks like
 
 We are going to break down each sections purpose. Here is the response from that last request.
 
