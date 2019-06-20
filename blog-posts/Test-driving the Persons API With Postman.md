@@ -113,7 +113,7 @@ In Postman use the `Get Person Filtered` API call. Replace the value after `=` w
 
 ![Email filtered request](./images/Test-driving-images/EmailFiltered.png)
 
-*Note: This filter appends a wildcard character "`*`" at the end of the query so you may get multiple results.*
+>**Note** - This filter appends a wildcard character "`*`" at the end of the query so you may get multiple values.
 
 #### What a response looks like
 
@@ -121,7 +121,7 @@ We are going to break down each sections purpose. Here is the response from that
 
 ![Email filtered results](./images/Test-driving-images/EmailFilteredResults.png)
 
-The links section of the response provides you additional routes to access clarifying information or additional results. This is especially helpful if you have many results and want to page through them.
+The links section of the response provides additional routes to access clarifying information or additional results. This is especially helpful if you have many results and want to page through them.
 
 ![Links](./images/Test-driving-images/ResultsLinks.png)
 
