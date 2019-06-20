@@ -145,6 +145,8 @@ The `email_addresses` identifier we used in one of the last requests is what we 
 
 In Postman look at the `Get Persons Subresource` request. It is requesting all of a persons addresses. Replace `000000000` with your BYU ID and send the request.
 
+![Get Subresouces](./images/Test-driving-images/Subresource.png)
+
 ## Further Reading
 
 We only touched the surface of many of these topics. The [complete UAPI Specification](https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#byu-university-api-standard) provides additional details.
