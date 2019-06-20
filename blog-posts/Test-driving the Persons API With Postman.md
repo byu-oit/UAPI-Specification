@@ -153,3 +153,5 @@ We only touched the surface of many of these topics. The [complete UAPI Specific
 
 Check out [UAPI Section 5]( https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#50-sub-resources-field_sets-and-contexts )
 for more information on sub-resources, contexts and filters.
+
+Check out [UAPI Section 6]( https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#60-filters) for expanded filter usage. 
