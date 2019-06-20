@@ -149,7 +149,7 @@ In Postman look at the `Get Persons Subresource` request. It is requesting all o
 
 You should be getting familiar with the response and query structure, so feel free to experiment with other subresources available to the Persons API.
 
-## Further Reading
+# Further Reading
 
 We only touched the surface of many of these topics. The [complete UAPI Specification](https://github.com/byu-oit/UAPI-Specification/blob/master/University%20API%20Specification.md#byu-university-api-standard) provides additional details.
 
