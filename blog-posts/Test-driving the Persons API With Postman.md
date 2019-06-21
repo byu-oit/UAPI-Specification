@@ -73,7 +73,7 @@ The `accessToken` identifies you and your API Manager application to the Persons
 
 To obtain the access token select the `Get Password Access Token` service on the list of API calls on the left of the page (be sure the `Collections` tab is selected to see the provided API calls). Click the `Send` button to execute the API call.
 
-![](./images/Test-driving-images/GetPasswordAccessToken.jpg)
+![](./images/Test-driving-images/GetPasswordAccessToken.png)
 
 If all goes well, you should receive a 200 HTTP status code and a JSON object that contains the access token along with some other data. There is a test script that Postman runs after the call returns that will copy the `access_token` to the `accessToken` variable in the environment for the rest of the API calls to use.
 
@@ -89,7 +89,7 @@ One of the features of UAPI compliant APIs is the ability specify filters on the
 
 In Postman modify the URL for the `Get Persons by Netid` and change the `?net_id=adddrop` filter to specify your netid instead of the test id and press `Send`.
 
-![](./images/Test-driving-images/GetPersonByNetId.jpg)
+![](./images/Test-driving-images/GetPersonByNetId.png)
 
 The Persons API will return a JSON object (don't panic about the size). There is a standard format that all the UAPI compliant APIs use. Let's explore this structure a little.
 
@@ -111,7 +111,7 @@ Filtering your query is another way to retrieve specific data-sets. Some APIs su
 
 In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
 
-![Email filtered request](./images/Test-driving-images/EmailFiltered.png)
+![Email filtered request](./images/Test-driving-images/EmailFilteredv3.png)
 
 >**Note** - This filter appends a wildcard character "`*`" at the end of the query so you may get multiple values.
 
