@@ -67,7 +67,7 @@ Click the `Edit` link to open the environment editor. Fill in the values for `cl
 
 ## Exploring the Persons Resource
 
-Now that Postman is configured, the next step is to access the API. The Postman API is protected by the API Manager so it requires an `Authorization` header with an OAuth 2.0 Bearer token. The specifics of OAuth are the subject for a another day. The Postman configuration you loaded comes with the `Get Password Access Token` API call that will obtain the Bearer token for you and put it into the `accessToken` environment variable. All the other API calls in the configuration are configured to add the `Authorization` header with the appropriate value. The `accessToken` is only good for one hour so you may need to run the `Get Password Access Token` API call occasionally as you work with the API.
+The Persons API is protected by the API Manager so it requires an `Authorization` header with an OAuth 2.0 Bearer token. The specifics of OAuth are the subject for a another day. The Postman configuration you loaded comes with the `Get Password Access Token` API call that will obtain the Bearer token for you and put it into the `accessToken` environment variable. All the other API calls in the configuration are configured to add the `Authorization` header with the appropriate value. The `accessToken` is only good for one hour so you may need to run the `Get Password Access Token` API call occasionally as you work with the API.
 
 The `accessToken` identifies you and your API Manager application to the Persons API service (that is why you had to add the client credentials and your netid and password to the Postman environment). The Postman service will use this identification to determine what data the API will provide.
 
@@ -83,11 +83,11 @@ If you receive an error message be sure you have put your `client-id`, `client-s
 
 ### Looking Up A Resource By Netid
 
-The identifer that the Person's API uses is the `byu_id`. Most users don't know what that number is (it's the number on the id card). So, we'll start by looking up information by using a netid - something that everybody should know.
+The main identifer that the Person's API uses is the `byu_id`. Most users don't know what that number is (it's the number on the id card). So, we'll start by looking up information by using a netid - something that everybody should know.
 
-One of the features of UAPI compliant APIs is the ability specify filters on the request. In our case we'll filter on `net_id` so we don't have to know what the `byu_id` is. Click on the `Get Person by Netid` API call on the left. Postman will open a new tab. The URL for the Persons API is `https://api.byu.edu/byuapi/persons/v3/`. Access to all features of the API go though this URL.
+One of the features of UAPI compliant APIs is the ability specify filters on the request. In our case we'll filter on `net_id` so we don't have to know what the `byu_id` is. Click on the `Get Person by Netid` API call on the left. Postman will open a new tab. The root URL for the Persons API is `https://api.byu.edu/byuapi/persons/v3/`. Access to all features of the API go though this URL.
 
-In Postman modify the URL for the `Get Persons by Netid` and change the `?net_id=adddrop` filter to specify your netid instead of the test id and press `Send`.
+In Postman modify the URL for the `Get Persons by Netid` and change the `?net_id=adddrop` filter to specify your netid instead of the test id ("adddrop") and press `Send`.
 
 ![](./images/Test-driving-images/GetPersonByNetId.png)
 
@@ -107,7 +107,7 @@ The API calls we have been using are returning collections of data in the `value
 
 ### Basic Lookup (filtered)
 
-Filtering your query is another way to retrieve specific data-sets. Some APIs support filters in the format `resource[attribute]=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by filtering on subresources (we will cover subresources later).
+There are several ways to filter for specific data-sets. Some APIs support filters in the format `resource[attribute]=value` or in dot notation `subresource.attribute=value`. The Persons v3 API utilizes dot notation filters. They allow you to look up a persons information by filtering on subresources (these are resources that are associated with the top level Person resource).
 
 In Postman use the `Get Person Filtered` API call. Replace the value after `=` with your personal email. This result should look very similar to your previous responses.
 
