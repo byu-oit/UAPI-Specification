@@ -2,13 +2,17 @@
 
 The following are guidelines for REST services. Your API doesn't need to follow all of these guidelines to be functional, but failing to follow too many guidelines will result in a REST API that is confusing and hard to consume.
 
-**Table of Contents**
+**Page Contents**
 
 - [Terminology](#terminology)
 - [Examples Background](#examples-background)
 - [API Request Inputs](#api-request-inputs)
 - [API Response Outputs](#api-response-outputs)
 - [HTTP Methods](#http-methods)
+    - [GET](#get)
+    - [POST](#post)
+    - [PUT](#put)
+    - [DELETE](#delete)
 - [Versioning](#versioning)
 
 ## Terminology
