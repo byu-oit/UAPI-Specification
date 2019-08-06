@@ -1,6 +1,6 @@
 # REST Guidelines
 
-The following are guidelines for REST services. Your API doesn't need to follow all of these guidelines to be functional, but failing to follow too many guidelines will result in a REST API that is utter garbage.
+The following are guidelines for REST services. Your API doesn't need to follow all of these guidelines to be functional, but failing to follow too many guidelines will result in a REST API that is confusing and hard to consume.
 
 **Table of Contents**
 
