@@ -1,6 +1,6 @@
 # REST Guidelines
 
-The following are guidelines for REST services. Your API doesn't need to follow all of these guidelines to be functional, but failing to follow too many guidelines will result in a REST API that is confusing and hard to consume.
+The following are guidelines are the industry best practices for REST services. Your API doesn't need to follow all of these guidelines to be functional, but failing to follow too many guidelines will result in a REST API that is confusing and hard to consume.
 
 **Page Contents**
 
@@ -17,13 +17,23 @@ The following are guidelines for REST services. Your API doesn't need to follow 
 
 ## Terminology
 
-- *API* - An interface that accepts inputs and produces associated outputs. For example, adding `2 + 3` results in `5`. The inputs are `2 + 3` and the output is `5`. REST API's provided a standardized interface for interacting with web resources.
+#### API
 
-- *Collection* - Multiple resources together. For example a `Person` can be a resource and the collection for this resource would be a list of `Person` resources.
+An interface that accepts inputs and produces associated outputs. For example, an API that adds two numbers and returns the result could accept the inputs `2` and `3` and would output `5`. REST API's provided a standardized API interface for interacting with web resources.
 
-- *Endpoint* - A location within the REST API (specified by domain, path, and [method](#http-methods)) that is used to retrieve or affect resources.
+#### Collection
 
-- *Idempotent* - Calling an endpoint more than once with the same input parameters will have no additional effect.  
+Multiple [resources](#resource) together. For example a `Person` can be a resource and the collection for this resource would be a list of `Person` resources.
+
+#### Endpoint
+
+A location within the REST API (specified by domain, path, and [method](#http-methods)) that is used to retrieve or affect resources.
+
+#### Idempotent
+
+Calling an [endpoint](#endpoint) more than once with the same input parameters will have no additional effect. For example, a request to an [API](#api) to get [resources](#resource) would be considered idempotent so long as the request did not also add, delete, or modify existing [resources](#resource). 
+
+#### Resource
 
 - *Resource* - A set of related data. For example, a `Person` resource could include related data such as `first name`, `last name` and `birthdate`.
 
@@ -41,11 +51,13 @@ For the examples contained within this document we'll be using:
 
 2) A fictitious REST API with the following endpoints:
 
-    - `GET /`
-    - `POST /`
-    - `GET /{id}`
-    - `PUT /{id}`
-    - `DELETE /{id}`
+    | Endpoint | Description |
+    | -------- | ----------- |
+    | `GET /` | Gets a list of email addresses. |
+    | `POST /` | Stores a new email addresses. |
+    | `GET /{id}` | Gets the email address associated with the ID. |
+    | `PUT /{id}` | Sets the email address with the associated ID. |
+    | `DELETE /{id}` | Deletes the email address and its associated ID. |
 
 3) A fictitious domain: `http://email-registry.com`
 
@@ -59,9 +71,11 @@ There are five ways to provide input to an API:
 
     - The path is part of the endpoint identifier.
     
-    - A path may be static or fixed in that it is always the same.
+    - A path may be static or dynamic.
     
-    - A path may be dynamic and allow for inputs, although path input be identifiers that uniquely identify a single resource.
+    - A static path never changes. Using the [examples](#examples-background), these would include `GET /` and `POST /` (where `GET` and `POST` are the methods).
+    
+    - A dynamic path accepts variables. Using the [examples](#examples-background), these would include `GET /{id}`, `PUT /{id}`, and `DELETE /{id}`  (where `GET`, `PUT`, and `DELETE` are the methods). These examples allow for an `id` to be passed in on the path and that `id` will be used to help fulfill the request.
     
 3. The query string.
 
@@ -69,17 +83,23 @@ There are five ways to provide input to an API:
     
     - Can define filtering and pagination inputs.
     
-    - Order of the query string parameters should not matter.
+    - The order of the query string parameters input should not matter.
 
 3. The headers.
 
     - Headers contain information about the request and information about how the response should be formulated.
+     
+    - Three common request headers:
     
-    - The `Authorization` header is used to pass credentials or OAuth tokens to the endpoint.
+        1. The `Content-Type` header could be set to `application/json` signifying to the API receiving the request that the body of the request is a JSON formatted string.
+        
+        2. The `Accepts` header could be set to `application/json, application/xml;q=0.9`, telling the REST API that it will accept a JSON or XML response with a preference for JSON. [MDN Accept header documentation.](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)
+    
+        3. The `Authorization` header is used to pass credentials or OAuth tokens to the endpoint.
     
 4. The body.
 
-    This is the payload for the request. The content type is generally `application/json` but can be of any type.
+    This is the payload for the request. The recommended content type is generally `application/json` but can be of any type.
 
 ## API Response Outputs
 
@@ -87,7 +107,7 @@ After making an API request, the response returns three pieces of information:
 
 1. The response status code.
 
-    This code should always be the first thing that an application looks at after receiving and API response and it will indicate the success or failure to fulfill the API request. For a list of common response codes see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes.
+    This code should always be the first thing that an application looks at after receiving and API response and it will indicate the success or failure to fulfill the API request. The [HTTP Methods](#http-methods) section below shows some common response codes for each method, but for a full list of common response codes see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes.
 
 2. The headers. These headers contain the metadata about the response, including the content type being returned.
 
@@ -95,9 +115,15 @@ After making an API request, the response returns three pieces of information:
 
     - Response bodies should return the requested resource or resources.
     
-    - The response may return some additional computed attributes that are associated with the resource that may not have been included in the request that stored the resource. For example, an auto incrementing unique identifier, or a "last updated date" property.
+    - The response may return some additional computed attributes that are associated with the resource that may not have been included in the request that stored the resource. For example:
+     
+        - An auto incrementing unique identifier.
+         
+        - A "last updated date" property.
+        
+        - [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) links.
     
-    - Avoid presentation layer content. For example, don't send back and HTML page when returning a JSON document would suffice. This lets many different presentation layers use the same set of data.
+    - Avoid presentation layer content. For example, don't send back an HTML page when returning a JSON document would suffice. This lets many different presentation layers use the same set of data.
 
 ## HTTP Methods
 
@@ -107,7 +133,7 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
 **Methods Summary**
 
-| Method | Description | Idempotent | Body OK |
+| Method | Description | Idempotent | Request Body OK |
 | ------ | ----------- | ---------- | ------------ |
 | GET | Request data about a resource or resources. | Yes | No |
 | POST | Create a new resource. | No | Yes |
@@ -122,7 +148,7 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
 - The `GET` method can use the path, query parameters, and headers as input but should avoid using the request body.
 
-- For getting a single resource it is common to put the resource identifier in the path.
+- For getting a single resource it is common to put the resource identifier in the path. [Examples](#examples-background) of this include `GET /{id}`, `PUT /{id}`, and `DELETE /{id}`.
 
 **Common Response Codes**
 
@@ -132,13 +158,28 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
     ```
     GET /
-    ["bob@fake.net", "amanda@fake.net", "chris@fake.net"]
+  
+    [
+        {
+            "id": 1,
+            "email": "bob@fake.net"
+        },
+        {
+            "id": 2,
+            "email": "amanda@fake.net"
+        },
+        {
+            "id": 3,
+            "email": "chris@fake.net"
+        }
+    ]
     ```
   
     *Get a collection with zero items*
 
     ```
     GET /
+  
     []
     ```
   
@@ -148,20 +189,31 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
     
     ```
     GET /1
+  
     bob@fake.net
     ```
 
-- `400` - There is something wrong with the request. The response body would ideally include what was wrong with the request.
+- `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
 - `401` - The request requires authentication and the request did not have authentication information.
 
 - `403` - The request provided authentication information but the authenticated user is not authorized to get the results.
 
-- `404` - Generally this indicates that the requested endpoint was not found. If the endpoint itself addresses a resource through path parameters then a `404` would indicate that the resource does not exist. If the endpoint returns a collection then a `404` should not be used if the collection exists but has no items, instead use a `200` and send back an empty collection.
+- `404` - This status code commonly indicates one of two things which may be distinguished using the response body. Following the [examples](#examples-background) these two common uses include:
 
-    ```
-    GET /foo
-    ``` 
+    1. The requested endpoint does not exist.
+    
+        A request to `GET /2/cats` would return a `404` because there is no endpoint in the API for the specified path.
+        
+        The response body could say `Endpoint does not exist.`
+    
+    2. The requested resource does not exist.
+    
+        A request to `GET /5` would return a `404` because the resource does not exist.
+        
+        The response body could say `Resource not found.`
+
+    If the endpoint returns a collection then a `404` should not be used when the collection is empty. Instead use a `200` and send back an empty collection.
 
 ### POST
 
@@ -187,11 +239,11 @@ Common response codes for a `POST` request include:
 
 - `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar (ideally identical) to the resource returned by `GET /{id}`.
 
-- `400` - There is something wrong with the request. The response body would ideally include what was wrong with the request.
+- `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
 - `401` - The request requires authentication and the request did not have authentication information.
 
-- `403` - The request provided authentication information but the authenticated user is not authorized to get the results.
+- `403` - The request provided authentication information but the authenticated user is not authorized to perform the action.
 
 - `404` - The requested endpoint was not found.
 
@@ -201,7 +253,7 @@ Common response codes for a `POST` request include:
 
 - This `PUT` method is idempotent. Calling the same endpoint multiple times with the same input will not change the resource to be anything different than the first request. It also will have no side-effects for the system. 
 
-- `PUT` should not be used for partial updates of a resource.
+- `PUT` should not be used for partial updates of a resource. If you must support this use the `PATCH` method that has not yet been fully standardized but is intended for partial updates.
 
 - `PUT` endpoints will commonly include the identifier in the endpoint's path.
 
@@ -221,17 +273,17 @@ Common response codes for a `PUT` request include:
 
 - `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`.
 
-- `400` - There is something wrong with the request.
+- `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
 - `401` - The request requires authentication and the request did not have authentication information.
 
-- `403` - The request provided authentication information but the authenticated user is not authorized to get the results.
+- `403` - The request provided authentication information but the authenticated user is not authorized to perform the action.
 
-- `404` - The requested endpoint was not found.
+- `404` - The requested endpoint was not found or the requested resource did not exist. See the documentation for the [GET](#get) `404` response code for more details about the difference between these two possible causes for the `404`.
 
 ### DELETE
 
-- This `DELETE` method is idempotent and calling the same endpoint multiple times will result in the resource being deleted without side-effects for the system.
+- This `DELETE` method is idempotent and calling the same endpoint multiple times will result in the resource being deleted (or remaining deleted) without side-effects for the system.
 
 - `DELETE` endpoints will commonly include the identifier in the endpoint's path.
 
@@ -241,7 +293,7 @@ Common response codes for a `DELETE` request include:
 
 - `204` - The resource was deleted and no response body is being sent.
 
-- `400` - There is something wrong with the request.
+- `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
 - `401` - The request requires authentication and the request did not have authentication information.
 
@@ -255,7 +307,7 @@ Once an API is published it must not break the contract by changing endpoints or
 
 It is important to version your API so that if the need arises to break your API contract you can create a new version that users can begin to point their applications to. You should not disable previous API versions until no one is using them, although it is important to mark them as deprecated.
 
-Versioning your API is done by prefixing the version information to the path, following the domain.
+Versioning your API is commonly done by prefixing the version information to the path, following the domain.
 
 Examples:
 
