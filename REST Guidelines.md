@@ -217,6 +217,8 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
 ### POST
 
+https://tools.ietf.org/html/rfc7231#section-4.3.3
+
 - Each `POST` request should generate a new resource.
 
 - Calling the same `POST` API endpoint with the same input parameters and body should either create a new resource or return an error.
@@ -238,6 +240,8 @@ If we `POST` twice to the endpoint `POST /` with the body `sam@fake.net`, then o
 Common response codes for a `POST` request include:
 
 - `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar (ideally identical) to the resource returned by `GET /{id}`.
+
+    Additionally, a `Location` header should be set, specifying the endpoint for where the created resource can be retrieved. For example, if the created resource had `5` as an identifier then the location header would look like this `Location: http://email-registry.com/5` or like this `Location: /5` (location relative to POST request location).
 
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
@@ -269,9 +273,9 @@ Calling the endpoint `PUT /1` multiple times with the body `sam@fake.net` will a
 
 Common response codes for a `PUT` request include:
 
-- `200` - The resource already existed and was set to the specified value. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`.
+- `200` - The resource already existed and was set to the specified value. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`. [X](#ref-ietf-put)
 
-- `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`.
+- `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`. [X](#ref-ietf-put)
 
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
@@ -314,3 +318,25 @@ Examples:
 - `http://api.email-registry.com/v1/`
 
 - `http://api.email-registry.com/v2/`
+
+# References
+
+<a name="ref-ietf-get"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.1
+
+<a name="ref-ietf-post"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.3
+
+<a name="ref-ietf-put"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.4
+
+<a name="ref-ietf-delete"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.5
+
+
+
+https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
+
+[ietf-safe]: https://tools.ietf.org/html/rfc7231#section-4.2.1
+[ietf-idempotent]: https://tools.ietf.org/html/rfc7231#section-4.2.2
+[ietf-get]: https://tools.ietf.org/html/rfc7231#section-4.3.1
+[ietf-post]: https://tools.ietf.org/html/rfc7231#section-4.3.3
+[ietf-put]: https://tools.ietf.org/html/rfc7231#section-4.3.4
+[ietf-delete]: https://tools.ietf.org/html/rfc7231#section-4.3.5
+
