@@ -25,17 +25,31 @@ An interface that accepts inputs and produces associated outputs. For example, a
 
 Multiple [resources](#resource) together. For example a `Person` can be a resource and the collection for this resource would be a list of `Person` resources.
 
+*[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
+
 #### Endpoint
 
 A location within the REST API (specified by domain, path, and [method](#http-methods)) that is used to retrieve or affect resources.
 
+*[Wikipedia Web API](https://en.wikipedia.org/wiki/Web_API)*
+
+*[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
+
 #### Idempotent
 
-Calling an [endpoint](#endpoint) more than once with the same input parameters will have no additional effect. For example, a request to an [API](#api) to get [resources](#resource) would be considered idempotent so long as the request did not also add, delete, or modify existing [resources](#resource). 
+An [endpoint](#endpoint) is considered idempotent if multiple requests with the same input will have the same effect on the resource as that of a single request. For example, deleting a resource is considered idempotent and telling it to delete again will still result in the resource being deleted.
+
+*[IETF rfc7231 Idempotent](https://tools.ietf.org/html/rfc7231#section-4.2.2)*
 
 #### Resource
 
 - *Resource* - A set of related data. For example, a `Person` resource could include related data such as `first name`, `last name` and `birthdate`.
+
+*[IETF rfc7231 Resources](https://tools.ietf.org/html/rfc7231#section-2)*
+
+*[Wikipedia Web API](https://en.wikipedia.org/wiki/Web_API)*
+
+*[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
 
 ## Examples Background
 
@@ -93,9 +107,17 @@ There are five ways to provide input to an API:
     
         1. The `Content-Type` header could be set to `application/json` signifying to the API receiving the request that the body of the request is a JSON formatted string.
         
-        2. The `Accepts` header could be set to `application/json, application/xml;q=0.9`, telling the REST API that it will accept a JSON or XML response with a preference for JSON. [MDN Accept header documentation.](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)
+            *[IETF rfc7231 Content-Type](https://tools.ietf.org/html/rfc7231#section-3.1.1.5)*
+        
+        2. The `Accepts` header could be set to `application/json, application/xml;q=0.9`, telling the REST API that it will accept a JSON or XML response with a preference for JSON. 
+        
+            *[IETF rfc7231 Accept](https://tools.ietf.org/html/rfc7231#section-5.3.2)*
+            
+            *[MDN Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)*
     
         3. The `Authorization` header is used to pass credentials or OAuth tokens to the endpoint.
+        
+            *[IETF rfc7235 Authorization](https://tools.ietf.org/html/rfc7235#section-4.2)*
     
 4. The body.
 
@@ -107,7 +129,7 @@ After making an API request, the response returns three pieces of information:
 
 1. The response status code.
 
-    This code should always be the first thing that an application looks at after receiving and API response and it will indicate the success or failure to fulfill the API request. The [HTTP Methods](#http-methods) section below shows some common response codes for each method, but for a full list of common response codes see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes.
+    This code should always be the first thing that an application looks at after receiving and API response and it will indicate the success or failure to fulfill the API request. The [HTTP Methods](#http-methods) section below shows some common response codes for each method, but for a full list of common response codes see [Wikipedia: List of HTTP Status Codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
 
 2. The headers. These headers contain the metadata about the response, including the content type being returned.
 
@@ -139,6 +161,10 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 | POST | Create a new resource. | No | Yes |
 | PUT | Put a resource to the specified state. | Yes | Yes |
 | DELETE | Remove a resource. | Yes | Yes |
+
+*[Wikipedia: Relationship Between URI and HTTP Methods](https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods)*
+
+*[IETF rfc7231 Request Methods](https://tools.ietf.org/html/rfc7231#section-4)*
 
 ### GET
 
@@ -195,9 +221,17 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
+    *[IETF rfc7231 Client Error 4xx](https://tools.ietf.org/html/rfc7231#section-6.5)*
+    
+    *[IETF rfc7231 400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)*
+
 - `401` - The request requires authentication and the request did not have authentication information.
 
+    *[IETF rfc7235 401 Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)*
+
 - `403` - The request provided authentication information but the authenticated user is not authorized to get the results.
+
+    *[IETF rfc7231 403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)*
 
 - `404` - This status code commonly indicates one of two things which may be distinguished using the response body. Following the [examples](#examples-background) these two common uses include:
 
@@ -214,6 +248,8 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
         The response body could say `Resource not found.`
 
     If the endpoint returns a collection then a `404` should not be used when the collection is empty. Instead use a `200` and send back an empty collection.
+    
+    *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
 ### POST
 
@@ -242,14 +278,26 @@ Common response codes for a `POST` request include:
 - `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar (ideally identical) to the resource returned by `GET /{id}`.
 
     Additionally, a `Location` header should be set, specifying the endpoint for where the created resource can be retrieved. For example, if the created resource had `5` as an identifier then the location header would look like this `Location: http://email-registry.com/5` or like this `Location: /5` (location relative to POST request location).
+    
+    *[IETF rfc7231 POST](https://tools.ietf.org/html/rfc7231#section-4.3.3)*
 
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
+    *[IETF rfc7231 Client Error 4xx](https://tools.ietf.org/html/rfc7231#section-6.5)*
+    
+    *[IETF rfc7231 400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)*
+
 - `401` - The request requires authentication and the request did not have authentication information.
+
+    *[IETF rfc7235 401 Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)*
 
 - `403` - The request provided authentication information but the authenticated user is not authorized to perform the action.
 
+    *[IETF rfc7231 403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)*
+
 - `404` - The requested endpoint was not found.
+    
+    *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
 ### PUT
 
@@ -273,17 +321,31 @@ Calling the endpoint `PUT /1` multiple times with the body `sam@fake.net` will a
 
 Common response codes for a `PUT` request include:
 
-- `200` - The resource already existed and was set to the specified value. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`. [X](#ref-ietf-put)
+- `200` - The resource already existed and was set to the specified value. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`.
 
-- `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`. [X](#ref-ietf-put)
+    *[IETF rfc7231 PUT](https://tools.ietf.org/html/rfc7231#section-4.3.4)*
+
+- `201` - The resource was created. If a response body is provided then it should represent the resource created and look very similar to the resource returned by `GET /{id}`.
+
+    *[IETF rfc7231 PUT](https://tools.ietf.org/html/rfc7231#section-4.3.4)*
 
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
 
+    *[IETF rfc7231 Client Error 4xx](https://tools.ietf.org/html/rfc7231#section-6.5)*
+    
+    *[IETF rfc7231 400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)*
+
 - `401` - The request requires authentication and the request did not have authentication information.
+
+    *[IETF rfc7235 401 Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)*
 
 - `403` - The request provided authentication information but the authenticated user is not authorized to perform the action.
 
+    *[IETF rfc7231 403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)*
+
 - `404` - The requested endpoint was not found or the requested resource did not exist. See the documentation for the [GET](#get) `404` response code for more details about the difference between these two possible causes for the `404`.
+    
+    *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
 ### DELETE
 
@@ -297,13 +359,25 @@ Common response codes for a `DELETE` request include:
 
 - `204` - The resource was deleted and no response body is being sent.
 
+    *[IETF rfc7231 DELETE](https://tools.ietf.org/html/rfc7231#section-4.3.5)*
+
 - `400` - There is something wrong with the request. The response body would ideally include a description of what was wrong with the request.
+
+    *[IETF rfc7231 Client Error 4xx](https://tools.ietf.org/html/rfc7231#section-6.5)*
+    
+    *[IETF rfc7231 400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)*
 
 - `401` - The request requires authentication and the request did not have authentication information.
 
+    *[IETF rfc7235 401 Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)*
+
 - `403` - The request provided authentication information but the authenticated user is not authorized to get the results.
 
+    *[IETF rfc7231 403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)*
+
 - `404` - The requested endpoint was not found. Don't use this to indicate that the resource was not found, use `204` instead to indicate that it has been successfully deleted.
+
+    *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
 # Versioning
 
@@ -319,24 +393,16 @@ Examples:
 
 - `http://api.email-registry.com/v2/`
 
-# References
+*[Microsoft REST API Guidelines: Versioning](https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md#12-versioning)*
 
-<a name="ref-ietf-get"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.1
+*[Wikipedia: Web API](https://en.wikipedia.org/wiki/Web_API#Endpoints)*
 
-<a name="ref-ietf-post"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.3
+*[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
 
-<a name="ref-ietf-put"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.4
+*[REST API Versioning Strategies](https://www.xmatters.com/integrations-blog/blog-four-rest-api-versioning-strategies/)*
 
-<a name="ref-ietf-delete"></a> X. https://tools.ietf.org/html/rfc7231#section-4.3.5
+<!--
+TODO:
 
-
-
-https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
-
-[ietf-safe]: https://tools.ietf.org/html/rfc7231#section-4.2.1
-[ietf-idempotent]: https://tools.ietf.org/html/rfc7231#section-4.2.2
-[ietf-get]: https://tools.ietf.org/html/rfc7231#section-4.3.1
-[ietf-post]: https://tools.ietf.org/html/rfc7231#section-4.3.3
-[ietf-put]: https://tools.ietf.org/html/rfc7231#section-4.3.4
-[ietf-delete]: https://tools.ietf.org/html/rfc7231#section-4.3.5
-
+- Resolve whether delete should use 204 or 404 for non existing resource
+-->
