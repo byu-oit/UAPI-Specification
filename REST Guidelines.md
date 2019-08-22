@@ -391,13 +391,13 @@ Once an API is published it must not break the contract by changing endpoints or
 
 It is important to version your API so that if the need arises to break your API contract you can create a new version that users can begin to point their applications to. You should not disable previous API versions until no one is using them, although it is important to mark them as deprecated.
 
-Versioning your API is commonly done by prefixing the version information to the path, following the domain.
+Versioning your API is commonly done by prefixing the version information to the path, following the domain, but at BYU we do this a little differently. At BYU our APIs are tied to a DDD domain or context and each context is versioned individually. 
 
-Examples:
+BYU Specific Examples:
 
-- `http://api.email-registry.com/v1/`
+- `http://api.byu.edu/context/v1/`
 
-- `http://api.email-registry.com/v2/`
+- `http://api.byu.edu/context/v2/`
 
 *[Microsoft REST API Guidelines: Versioning](https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md#12-versioning)*
 
