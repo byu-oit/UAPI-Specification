@@ -43,13 +43,21 @@ An [endpoint](#endpoint) is considered idempotent if multiple requests with the 
 
 #### Resource
 
-- *Resource* - A set of related data. For example, a `Person` resource could include related data such as `first name`, `last name` and `birthdate`.
+A set of related data. For example, a `Person` resource could include related data such as `first name`, `last name` and `birthdate`.
 
 *[IETF rfc7231 Resources](https://tools.ietf.org/html/rfc7231#section-2)*
 
 *[Wikipedia Web API](https://en.wikipedia.org/wiki/Web_API)*
 
 *[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
+
+#### Stateless
+
+REST is stateless. Each request must contain all of the data necessary to perform the request. The server does not store any information about the client session.
+
+*[RESTful API: Statelessness](https://restfulapi.net/statelessness/)*
+
+*[IETF rfc7231 Abstract](https://tools.ietf.org/html/rfc7231)*
 
 ## Examples Background
 
@@ -85,17 +93,15 @@ There are five ways to provide input to an API:
 
     - The path is part of the endpoint identifier.
     
-    - A path may be static or dynamic.
+    - A path may be static or it may contain path parameters (i.e. variables).
     
     - A static path never changes. Using the [examples](#examples-background), these would include `GET /` and `POST /` (where `GET` and `POST` are the methods).
     
-    - A dynamic path accepts variables. Using the [examples](#examples-background), these would include `GET /{id}`, `PUT /{id}`, and `DELETE /{id}`  (where `GET`, `PUT`, and `DELETE` are the methods). These examples allow for an `id` to be passed in on the path and that `id` will be used to help fulfill the request.
+    - A path with parameters accepts variables. Using the [examples](#examples-background), these would include `GET /{id}`, `PUT /{id}`, and `DELETE /{id}`  (where `GET`, `PUT`, and `DELETE` are the methods). These examples allow for an `id` to be passed in on the path and that `id` will be used to help fulfill the request.
     
 3. The query string.
 
-    - Can be used to identify a single resource or a search criteria for multiple resources.
-    
-    - Can define filtering and pagination inputs.
+    - The most common usages for the query string are for filtering, search, and pagination.
     
     - The order of the query string parameters input should not matter.
 
@@ -253,8 +259,6 @@ The most common methods include `GET`, `POST`, `PUT` and `DELETE`. DO NOT confus
 
 ### POST
 
-https://tools.ietf.org/html/rfc7231#section-4.3.3
-
 - Each `POST` request should generate a new resource.
 
 - Calling the same `POST` API endpoint with the same input parameters and body should either create a new resource or return an error.
@@ -357,7 +361,7 @@ Common response codes for a `PUT` request include:
 
 Common response codes for a `DELETE` request include:
 
-- `204` - The resource was deleted and no response body is being sent.
+- `204` - The resource was deleted (i.e. now does not exist) and no response body is being sent.
 
     *[IETF rfc7231 DELETE](https://tools.ietf.org/html/rfc7231#section-4.3.5)*
 
@@ -375,7 +379,9 @@ Common response codes for a `DELETE` request include:
 
     *[IETF rfc7231 403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)*
 
-- `404` - The requested endpoint was not found. Don't use this to indicate that the resource was not found, use `204` instead to indicate that it has been successfully deleted.
+- `404` - The requested endpoint was not found.
+
+    Don't use this to indicate that the resource was not found, use `204` instead to indicate that it does not exist (i.e. is deleted or gone). One of the big advantages of idempotent methods, like `DELETE`, is that they can be retried in case of network fail, process fail, etc. In that case many clients (web browsers included) will auto retry the request and if the first request succeeded but the response never made it to the client then the retry request should still receive a success response of `204`.
 
     *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
@@ -400,9 +406,3 @@ Examples:
 *[RESTful API Designing Guidelines](https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9)*
 
 *[REST API Versioning Strategies](https://www.xmatters.com/integrations-blog/blog-four-rest-api-versioning-strategies/)*
-
-<!--
-TODO:
-
-- Resolve whether delete should use 204 or 404 for non existing resource
--->
