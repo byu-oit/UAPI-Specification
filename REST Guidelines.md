@@ -382,6 +382,8 @@ Common response codes for a `DELETE` request include:
 - `404` - The requested endpoint was not found.
 
     Don't use this to indicate that the resource was not found, use `204` instead to indicate that it does not exist (i.e. is deleted or gone). One of the big advantages of idempotent methods, like `DELETE`, is that they can be retried in case of network fail, process fail, etc. In that case many clients (web browsers included) will auto retry the request and if the first request succeeded but the response never made it to the client then the retry request should still receive a success response of `204`.
+    
+    If you are attempting to delete a sub resource of a parent resource that does not exist then you should use a `404`. For example, if you have an endpoint `DELETE /persons/5/addresses/2` that you would use to `DELETE` address `2` from person `5`, but person `5` does not exist then that would be an acceptable use for a `404`, indicating the person `5` was not found to delete the sub resource from.
 
     *[IETF rfc7231 404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)*
 
