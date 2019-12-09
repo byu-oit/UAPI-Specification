@@ -310,26 +310,26 @@ The `value_array` element is used to represent an array of scalar values as the 
 |description|Entry|The description of the individual entry in the array.
 |long\_description|Entry|
 |domain|Property|
-|related|Both|If applied to the property the URL represents the resource to use to interact with the entire array. If applied to the entry the URL should contain the reference to this specific entry in the array.
+|related\_resource|Both|If applied to the property the URL represents the resource to use to interact with the entire array. If applied to the entry the URL should contain the reference to this specific entry in the array.
 |key|Not Allowed|Arrays cannot be part of the primary key of a resource.
 
 ```json
 "instructor_byu_ids": {
     "api_type": "related",
     "display_label": "Instructors",
-    "related": "https://api.byu.edu/classes/20185,cs142,1",
+    "related_resource": "https://api.byu.edu/classes/20185,cs142,1",
     "value_array": [
         {
             "value": "123456789",
             "description": "Joe Instructor",
             "api_type": "related",
-            "related": "https://api.byu.edu/persons/123456789"
+            "related_resource": "https://api.byu.edu/persons/123456789"
         },
         {
             "value": "987654321",
             "description": "Jane Instructor",
             "api_type": "related",
-            "related": "https://api.byu.edu/persons/987654321"
+            "related_resource": "https://api.byu.edu/persons/987654321"
         }
     ] 
 }
@@ -343,7 +343,7 @@ The `object` element is used to represent a single complex JSON object as the va
 |-----|-----|
 |api\_type|Must be either `read_only` or `related`.
 |display\_label|May be used to indicate a `display_label` for the entire object.
-|related|If applied to the property the URL represents the resource to use to interact with the object as a whole. 
+|related\_resource|If applied to the property the URL represents the resource to use to interact with the object as a whole. 
 
 An example of an property containing an object is as follows:
 
@@ -402,7 +402,7 @@ The `object_array` element is used to represent an array of complex JSON objects
 |-----|-----
 |api\_type|Must be either `read-only` or `related`.
 |display\_label|May be used to indicate a `display_label` for the entire array of objects.
-|related|If applied to the property the URL represents the resource to use to interact with the object array as a whole. 
+|related\_resource|If applied to the property the URL represents the resource to use to interact with the object array as a whole. 
 
 An example of an property containing an array of objects is as follows:
 
