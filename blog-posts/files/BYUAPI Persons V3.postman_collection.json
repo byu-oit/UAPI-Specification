@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "36d100c6-4e47-4923-a737-c08d92890744",
-		"name": "BYUAPI Persons V2",
+		"_postman_id": "450ba0a5-3b94-4961-beee-318e027cec1c",
+		"name": "BYUAPI Persons V3",
 		"description": "Test production apis with a password grant type",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,7 +13,6 @@
 					"listen": "test",
 					"script": {
 						"id": "da52f536-ee38-4f4c-8565-0d4a0bd6f1e4",
-						"type": "text/javascript",
 						"exec": [
 							"var data = JSON.parse(responseBody);",
 							"postman.setEnvironmentVariable(\"accessToken\", data.access_token);",
@@ -21,7 +20,8 @@
 							"",
 							"",
 							""
-						]
+						],
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -104,7 +104,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://api.byu.edu:443/byuapi/persons/v2/?net_id=adddrop",
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/?net_ids=adddrop",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -115,13 +115,85 @@
 					"path": [
 						"byuapi",
 						"persons",
-						"v2",
+						"v3",
 						""
 					],
 					"query": [
 						{
-							"key": "net_id",
+							"key": "net_ids",
 							"value": "adddrop"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Person by BYU ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/00000000",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"port": "443",
+					"path": [
+						"byuapi",
+						"persons",
+						"v3",
+						"00000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Person Filtered",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.byu.edu:443/byuapi/persons/v3/?email_addresses.email_address=youraddress",
+					"protocol": "https",
+					"host": [
+						"api",
+						"byu",
+						"edu"
+					],
+					"port": "443",
+					"path": [
+						"byuapi",
+						"persons",
+						"v3",
+						""
+					],
+					"query": [
+						{
+							"key": "email_addresses.email_address",
+							"value": "youraddress"
 						}
 					]
 				}
