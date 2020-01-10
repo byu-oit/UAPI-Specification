@@ -4,6 +4,8 @@ The [BYU University API Specification (UAPI)](https://github.com/byu-oit/UAPI-Sp
 
 This document assumes a familiarity with the UAPI specification.
 
+You may also be interested in reading about [REST Guidelines](./REST%20Guidelines.md) that provides general information about REST best practices.
+
 ## Resources
 
 - In general all resource names should be plural (e.g. persons vs person, students vs student). Sub-resources can be singular in the case that the sub-resource truly only represents a single instance of a sub-resource per top level resource. 
